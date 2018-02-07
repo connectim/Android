@@ -8,14 +8,20 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.ChatActivity;
+import connect.activity.chat.bean.GroupMemberUtil;
 import connect.activity.contact.bean.ContactNotice;
 import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.bean.ContactEntity;
+import connect.database.green.bean.ConversionEntity;
+import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.ToastEUtil;
@@ -156,7 +162,7 @@ public class ContactInfoActivity extends BaseActivity {
         }
     }
 
-    private void searchUser(String uid) {
+    private void searchUser(final String uid) {
         Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setCriteria(uid)
                 .setTyp(2)
@@ -191,6 +197,23 @@ public class ContactInfoActivity extends BaseActivity {
                                 ContactNotice.receiverContact();
                             }
                         }
+                    }
+
+                    ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(uid);
+                    if (conversionEntity != null) {
+                        conversionEntity.setAvatar(workmate.getAvatar());
+                        conversionEntity.setName(workmate.getName());
+                        ConversionHelper.getInstance().insertRoomEntity(conversionEntity);
+                    }
+
+                    List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMembersByUid(uid);
+                    if (memberEntities != null && memberEntities.size() > 0) {
+                        GroupMemberUtil.getIntance().clearMembersMap();
+                        for (GroupMemberEntity entity : memberEntities) {
+                            entity.setUsername(workmate.getName());
+                            entity.setAvatar(workmate.getAvatar());
+                        }
+                        ContactHelper.getInstance().inserGroupMemEntity(memberEntities);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -87,8 +87,8 @@
 
             <ImageView
                 android:id="@id/notify"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_16"
+                android:layout_width="@dimen/dp_12"
+                android:layout_height="@dimen/dp_12"
                 android:contentDescription="@string/app_name"
                 android:src="@mipmap/icon_close_notify"
                 android:visibility="gone" />

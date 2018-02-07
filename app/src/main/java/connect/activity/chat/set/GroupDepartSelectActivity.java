@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 
@@ -280,8 +281,11 @@ public class GroupDepartSelectActivity extends BaseActivity {
         });
 
         requestDepartmentInfoShow(2);
-        if (isCreate && selectedUids.size() > 0) {
-            requestUserInfo(selectedUids.get(0));
+        if (selectedUids != null && isCreate && selectedUids.size() > 0) {
+            String id = selectedUids.get(0);
+            if (!TextUtils.isEmpty(id)) {
+                requestUserInfo(id);
+            }
         }
     }
 
@@ -361,7 +365,7 @@ public class GroupDepartSelectActivity extends BaseActivity {
     };
 
     protected void requestDepartmentInfoShow(final long id) {
-        List<OrganizerEntity> entities = OrganizerHelper.organizerHelper.loadParamEntityByUpperId(id);
+        List<OrganizerEntity> entities = OrganizerHelper.getInstance().loadParamEntityByUpperId(id);
         departSelectAdapter.notifyData(entities);
 
         requestDepartmentInfo(id, new BaseListener<Connect.SyncWorkmates>() {
@@ -389,8 +393,8 @@ public class GroupDepartSelectActivity extends BaseActivity {
                 }
                 departSelectAdapter.notifyData(departSelectBeanList);
 
-                OrganizerHelper.organizerHelper.removeOrganizerEntityByUpperId(id);
-                OrganizerHelper.organizerHelper.insertOrganizerEntities(departSelectBeanList);
+                OrganizerHelper.getInstance().removeOrganizerEntityByUpperId(id);
+                OrganizerHelper.getInstance().insertOrganizerEntities(departSelectBeanList);
             }
 
             @Override

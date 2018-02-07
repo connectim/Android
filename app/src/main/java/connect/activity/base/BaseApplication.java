@@ -3,7 +3,6 @@ package connect.activity.base;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.support.multidex.MultiDex;
 
 import com.tencent.bugly.crashreport.CrashReport;
@@ -12,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.base.inter.InterAccount;
-import connect.widget.bottominput.EmoManager;
-import connect.activity.login.LoginPhoneActivity;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoManager;
@@ -23,7 +20,7 @@ import connect.service.UpdateInfoService;
 import connect.utils.ConfigUtil;
 import connect.utils.FileUtil;
 import connect.utils.ProgressUtil;
-import instant.bean.Session;
+import connect.widget.bottominput.EmoManager;
 import instant.ui.InstantSdk;
 
 /**

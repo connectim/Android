@@ -88,9 +88,11 @@ public abstract class BaseChatActvity extends BaseActivity {
             case GROUPCHAT:
             case GROUP_DISCUSSION:
                 normalChat = new CGroupChat(chatIdentify);
+                updateTitleName();
                 break;
             case CONNECT_SYSTEM:
                 normalChat = CRobotChat.getInstance();
+                updateTitleName();
                 break;
         }
 

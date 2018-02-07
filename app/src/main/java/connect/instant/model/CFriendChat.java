@@ -45,7 +45,17 @@ public class CFriendChat extends FriendChat implements ConversationListener {
             List<RoomAttrBean> roomAttrBeen = ConversionHelper.getInstance().loadRoomEntities(uid);
             if (roomAttrBeen.size() == 0) {
                 List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMemEntitiesWithOutGroupKey(uid);
-                if (memberEntities.size() > 0) {
+                if (memberEntities.size() == 0) {
+                    ConversionEntity conversionEntity =  ConversionHelper.getInstance().loadRoomEnitity(uid);
+                    if (conversionEntity != null) {
+                        userName = conversionEntity.getName();
+                        userAvatar = conversionEntity.getAvatar();
+
+                        if (baseListener != null) {
+                            baseListener.Success("");
+                        }
+                    }
+                }else{
                     GroupMemberEntity memberEntity = memberEntities.get(0);
                     userName = memberEntity.getUsername();
                     userAvatar = memberEntity.getAvatar();

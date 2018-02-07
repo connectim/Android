@@ -66,7 +66,7 @@ public class ContactHelper extends BaseDao {
     }
 
     public void insertContacts(List<ContactEntity> entities) {
-        contactEntityDao.insertInTx(entities);
+        contactEntityDao.insertOrReplaceInTx(entities);
     }
 
     public List<ContactEntity> loadAll() {
@@ -371,6 +371,13 @@ public class ContactHelper extends BaseDao {
             cursor.close();
         }
         return groupMemEntities;
+    }
+
+    public List<GroupMemberEntity> loadGroupMembersByUid(String uid) {
+        QueryBuilder<GroupMemberEntity> queryBuilder = groupMemberEntityDao.queryBuilder();
+        queryBuilder.where(GroupMemberEntityDao.Properties.Uid.eq(uid)).build();
+        List<GroupMemberEntity> memberEntities = queryBuilder.list();
+        return (memberEntities == null || memberEntities.size() == 0) ? null : memberEntities;
     }
 
     public GroupMemberEntity loadGroupMemberEntity(String identify, String publickey) {

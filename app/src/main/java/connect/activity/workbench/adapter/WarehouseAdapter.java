@@ -2,6 +2,7 @@ package connect.activity.workbench.adapter;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +42,8 @@ public class WarehouseAdapter extends RecyclerView.Adapter<WarehouseAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Connect.StaffLog staffLog = mListData.get(position);
         holder.timeTv.setText(activity.getString(R.string.Work_Time, TimeUtil.getTime(staffLog.getDateTime()*1000, TimeUtil.DEFAULT_DATE_FORMAT)));
-        holder.typeTv.setText(activity.getString(R.string.Work_Entering_the_warehouse, staffLog.getLocation()));
+        holder.typeTv.setText(activity.getString(R.string.Work_Entering_the_warehouse,
+                TextUtils.isEmpty(staffLog.getLocation()) ? staffLog.getDeviceId() : staffLog.getLocation()));
 
         if(staffLog.getStatus() == 1){
             holder.statusTv.setText(R.string.Wallet_Confirmed);
