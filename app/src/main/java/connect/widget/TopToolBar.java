@@ -89,6 +89,10 @@ public class TopToolBar extends LinearLayout {
         leftRela.setOnClickListener(onClickListener);
     }
 
+    public void setLeftEnable(boolean b) {
+        leftRela.setEnabled(b);
+    }
+
     public void setTitle(String title) {
         titleImg.setVisibility(GONE);
         titleTv.setText(title);

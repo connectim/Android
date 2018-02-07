@@ -616,6 +616,10 @@ public class ContactHelper extends BaseDao {
         contactEntityDao.deleteAll();
     }
 
+    public void clearGroupEntities() {
+        groupEntityDao.deleteAll();
+    }
+
     public void deleteEntity(String uid) {
         QueryBuilder<ContactEntity> qb = contactEntityDao.queryBuilder();
         DeleteQuery<ContactEntity> bd = qb.where(ContactEntityDao.Properties.Uid.eq(uid))
@@ -665,6 +669,12 @@ public class ContactHelper extends BaseDao {
     public void removeGroupEntity(String groupkey) {
         QueryBuilder<GroupEntity> qb = groupEntityDao.queryBuilder();
         DeleteQuery<GroupEntity> bd = qb.where(GroupEntityDao.Properties.Identifier.eq(groupkey)).buildDelete();
+        bd.executeDeleteWithoutDetachingEntities();
+    }
+
+    public void removeCommonGroupEntity() {
+        QueryBuilder<GroupEntity> qb = groupEntityDao.queryBuilder();
+        DeleteQuery<GroupEntity> bd = qb.where(GroupEntityDao.Properties.Common.eq(1)).buildDelete();
         bd.executeDeleteWithoutDetachingEntities();
     }
 

@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 
@@ -123,6 +124,11 @@ public class GroupCreateActivity extends BaseActivity implements TalkGroupCreate
     }
 
     @Override
+    public void setLeftEnanle(boolean b) {
+        toolbar.setLeftEnable(b);
+    }
+
+    @Override
     public void setPresenter(TalkGroupCreateContract.Presenter presenter) {
         this.presenter = presenter;
     }
@@ -132,4 +138,9 @@ public class GroupCreateActivity extends BaseActivity implements TalkGroupCreate
         return activity;
     }
 
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return false;
+    }
 }

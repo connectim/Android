@@ -57,6 +57,8 @@ public class TalkGroupCreatePresenter implements TalkGroupCreateContract.Present
      */
     @Override
     public void createGroup(String groupName) {
+        view.setLeftEnanle(false);
+
         List<Connect.AddGroupUserInfo> groupUserInfos = new ArrayList<>();
         for (Connect.Workmate entity : contactEntities) {
             Connect.AddGroupUserInfo userInfo = Connect.AddGroupUserInfo.newBuilder()
@@ -79,6 +81,8 @@ public class TalkGroupCreatePresenter implements TalkGroupCreateContract.Present
                     if (ProtoBufUtil.getInstance().checkProtoBuf(groupInfo)) {
                         insertLocalData(groupInfo);
                     }
+
+                    view.setLeftEnanle(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -88,6 +92,7 @@ public class TalkGroupCreatePresenter implements TalkGroupCreateContract.Present
             public void onError(Connect.HttpResponse response) {
                 // - 2421 groupinfo error
                 // - 2422 group create failed
+                view.setLeftEnanle(true);
                 if (response.getCode() == 2421) {
                     ToastEUtil.makeText(activity, R.string.Link_Group_create_information_error, ToastEUtil.TOAST_STATUS_FAILE).show();
                 } else if (response.getCode() == 2422) {

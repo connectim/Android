@@ -14,6 +14,8 @@ public interface TalkGroupCreateContract {
 
     interface BView extends BaseView<TalkGroupCreateContract.Presenter> {
         List<Connect.Workmate> groupMemberList();
+
+        void setLeftEnanle(boolean b);
     }
 
     interface Presenter extends BasePresenter {
