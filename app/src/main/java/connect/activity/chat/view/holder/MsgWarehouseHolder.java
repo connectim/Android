@@ -49,29 +49,29 @@ public class MsgWarehouseHolder extends MsgBaseHolder {
         Connect.NotifyMessage notifyMessage = Connect.NotifyMessage.parseFrom(msgExtEntity.getContents());
         wareType  = notifyMessage.getNotifyType();
 
-        switch (wareType){
+        switch (wareType) {
             case 20:
-                unRegisterNotify = Connect.UnRegisterNotify.parseFrom(StringUtil.hexStringToBytes(notifyMessage.getContent()));
-                title = context.getString(R.string.Robot_New_Visitor_Apply);
-                titleTxt.setText(title);
-                try {
-                    timeTxt.setText(TimeUtil.getMsgTime(TimeUtil.getCurrentTimeInLong(), (long) (unRegisterNotify.getTime() * 1000)));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                content = context.getString(R.string.Robot_Visiting_Purpose, unRegisterNotify.getLocation());
-                contentTxt.setText(content);
-                break;
-            case 21:
                 visitorNotify = Connect.VisitorNotify.parseFrom(StringUtil.hexStringToBytes(notifyMessage.getContent()));
-                title = context.getString(R.string.Robot_Abnormal_Remind);
+                title = context.getString(R.string.Robot_New_Visitor_Apply);
                 titleTxt.setText(title);
                 try {
                     timeTxt.setText(TimeUtil.getMsgTime(TimeUtil.getCurrentTimeInLong(), (long) (visitorNotify.getTime() * 1000)));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                content = visitorNotify.getReason();
+                content = context.getString(R.string.Robot_Visiting_Purpose, visitorNotify.getReason());
+                contentTxt.setText(content);
+                break;
+            case 21:
+                unRegisterNotify = Connect.UnRegisterNotify.parseFrom(StringUtil.hexStringToBytes(notifyMessage.getContent()));
+                title = context.getString(R.string.Robot_Abnormal_Remind);
+                titleTxt.setText(title);
+                try {
+                    timeTxt.setText(TimeUtil.getMsgTime(TimeUtil.getCurrentTimeInLong(), (long) (unRegisterNotify.getTime() * 1000)));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                content = context.getString(R.string.Robot_WareHouse_Warn, unRegisterNotify.getLocation());
                 contentTxt.setText(content);
                 break;
         }
@@ -82,11 +82,11 @@ public class MsgWarehouseHolder extends MsgBaseHolder {
                 Activity activity = (Activity) context;
                 switch (wareType) {
                     case 20:
-                        long id = unRegisterNotify.getId();
-                        WarehouseDetailActivity.lunchActivity(activity, id);
+                        WarehouseActivity.lunchActivity(activity);
                         break;
                     case 21:
-                        WarehouseActivity.lunchActivity(activity);
+                        long id = unRegisterNotify.getId();
+                        WarehouseDetailActivity.lunchActivity(activity, id);
                         break;
                 }
             }

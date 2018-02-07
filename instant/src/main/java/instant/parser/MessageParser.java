@@ -97,11 +97,11 @@ public class MessageParser extends InterParse {
                 RobotLocalReceiver.localReceiver.systemRedPackageMessage(redPackage);
                 break;
             case 20://访客申请
-                Connect.UnRegisterNotify unRegisterNotify = Connect.UnRegisterNotify.parseFrom(msMessage.getBody().toByteArray());
+                Connect.VisitorNotify  unRegisterNotify = Connect.VisitorNotify .parseFrom(msMessage.getBody().toByteArray());
                 RobotLocalReceiver.localReceiver.warehouseMessage(20, unRegisterNotify.toByteArray());
                 break;
             case 21://仓库异常
-                Connect.VisitorNotify visitorNotify = Connect.VisitorNotify.parseFrom(msMessage.getBody().toByteArray());
+                Connect.UnRegisterNotify  visitorNotify = Connect.UnRegisterNotify .parseFrom(msMessage.getBody().toByteArray());
                 RobotLocalReceiver.localReceiver.warehouseMessage(21, visitorNotify.toByteArray());
                 break;
             case 102://announce message
@@ -111,7 +111,6 @@ public class MessageParser extends InterParse {
             case 103://red packet has get notice
                 Connect.SystemRedpackgeNotice packgeNotice = Connect.SystemRedpackgeNotice.parseFrom(msMessage.getBody().toByteArray());
                 RobotLocalReceiver.localReceiver.systemRedpackgeNoticeMessage(packgeNotice);
-
                 break;
             case 104://apply group agree/refuse
                 Connect.ReviewedResponse reviewedResponse = Connect.ReviewedResponse.parseFrom(msMessage.getBody().toByteArray());
