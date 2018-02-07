@@ -53,8 +53,7 @@
                 android:src="@mipmap/input_del"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginLeft="@dimen/dp_5"
-                android:layout_marginRight="@dimen/dp_5"
+                android:padding="@dimen/dp_10"
                 android:visibility="invisible"/>
         </RelativeLayout>
     </LinearLayout>

@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp_5"
+                android:padding="@dimen/dp_5"
                 android:layout_marginRight="@dimen/dp_5"
                 android:contentDescription="@string/app_name"
                 android:src="@mipmap/input_del"

@@ -126,7 +126,6 @@ public class CommandReceiver implements CommandListener {
             connectEntity = new ContactEntity();
             connectEntity.setUid(connect);
             connectEntity.setName(connect);
-            connectEntity.setUid(connect);
 
             friendInfoEntities.add(connectEntity);
         }
