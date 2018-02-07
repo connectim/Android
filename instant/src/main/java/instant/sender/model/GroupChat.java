@@ -93,7 +93,7 @@ public class GroupChat extends NormalChat {
     }
 
     public void setNickName(String name) {
-        this.myGroupName = name;
+        this.groupName = name;
     }
 
     public ChatMsgEntity groupTxtMsg(String string, List<String> address) {

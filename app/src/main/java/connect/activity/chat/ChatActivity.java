@@ -36,6 +36,7 @@ import connect.activity.chat.set.PrivateSetActivity;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
+import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
@@ -266,22 +267,33 @@ public class ChatActivity extends BaseChatSendActivity {
             @Override
             protected void onPostExecute(ConversionSettingEntity settingEntity) {
                 super.onPostExecute(settingEntity);
+
+
                 String titleName = "";
-                titleName = normalChat.nickName();
-                if (titleName.length() > 15) {
-                    titleName = titleName.substring(0, 12);
-                    titleName += "...";
-                }
                 switch (chatType) {
                     case CONNECT_SYSTEM:
+                        titleName =getString(R.string.app_name);
                         toolbar.setTitle(titleName);
                         break;
                     case PRIVATE:
+                        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(chatIdentify);
+                        titleName = TextUtils.isEmpty(contactEntity.getName()) ? "" : contactEntity.getName();
+                        if (titleName.length() > 15) {
+                            titleName = titleName.substring(0, 12);
+                            titleName += "...";
+                        }
                         toolbar.setTitle(settingEntity.getDisturb() == 0 ? null : R.mipmap.icon_close_notify, titleName);
                         break;
                     case GROUPCHAT:
                     case GROUP_DISCUSSION:
-                        List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(normalChat.chatKey());
+                        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(chatIdentify);
+                        titleName = TextUtils.isEmpty(groupEntity.getName()) ? "" : groupEntity.getName();
+                        if (titleName.length() > 15) {
+                            titleName = titleName.substring(0, 12);
+                            titleName += "...";
+                        }
+
+                        List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(chatIdentify);
                         toolbar.setTitle(settingEntity.getDisturb() == 0 ? null : R.mipmap.icon_close_notify, (titleName + String.format(Locale.ENGLISH, "(%d)", memEntities.size())));
                         break;
                 }
@@ -430,8 +442,9 @@ public class ChatActivity extends BaseChatSendActivity {
         long sendtime = 0;
         String draft = InputBottomLayout.bottomLayout.getDraft();
 
+        ChatMsgEntity lastExtEntity =null;
         if (chatAdapter.getMsgEntities().size() != 0) {
-            ChatMsgEntity lastExtEntity = chatAdapter.getMsgEntities().get(chatAdapter.getItemCount() - 1);
+            lastExtEntity = chatAdapter.getMsgEntities().get(chatAdapter.getItemCount() - 1);
             if (lastExtEntity != null) {
                 if (lastExtEntity.getMessageType() != -500) {
                     showtxt = lastExtEntity.showContent();
@@ -449,6 +462,14 @@ public class ChatActivity extends BaseChatSendActivity {
                 break;
             case GROUPCHAT:
             case GROUP_DISCUSSION:
+                if (lastExtEntity != null) {
+                    GroupMemberEntity memberEntity = ContactHelper.getInstance().loadGroupMemberEntity(chatIdentify, lastExtEntity.getMessage_from());
+                    if (memberEntity != null) {
+                        String memberName = memberEntity.getUsername();
+                        showtxt = memberName + ": " + showtxt;
+                    }
+                }
+
                 ((CGroupChat) normalChat).updateRoomMsg(draft, showtxt, sendtime);
                 break;
         }

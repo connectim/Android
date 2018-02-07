@@ -88,6 +88,9 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                 roomAttr.getRoomtype() == Connect.ChatType.GROUPCHAT_VALUE ||
                 roomAttr.getRoomtype() == Connect.ChatType.GROUP_DISCUSSION_VALUE) {
             String showName = TextUtils.isEmpty(roomAttr.getName()) ? "" : roomAttr.getName();
+            if (showName.length() > 15) {
+                showName = showName.subSequence(0, 15) + "...";
+            }
             String showAvatar = TextUtils.isEmpty(roomAttr.getAvatar()) ? "" : roomAttr.getAvatar();
 
             holder.nameTxt.setText(showName);

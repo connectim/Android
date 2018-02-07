@@ -22,13 +22,9 @@ public class ParamHelper extends BaseDao {
         paramEntityDao = daoSession.getParamEntityDao();
     }
 
-    public static ParamHelper getInstance() {
+    public synchronized static ParamHelper getInstance() {
         if (paramHelper == null) {
-            synchronized (ParamHelper.class) {
-                if (paramHelper == null) {
-                    paramHelper = new ParamHelper();
-                }
-            }
+            paramHelper = new ParamHelper();
         }
         return paramHelper;
     }

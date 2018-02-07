@@ -21,7 +21,6 @@ import connect.activity.workbench.VisitorsAuditActivity;
 import connect.activity.workbench.adapter.VisitorAdapter;
 import connect.ui.activity.R;
 import connect.utils.UriUtil;
-import connect.utils.data.ResourceUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.utils.system.SystemUtil;
@@ -129,6 +128,9 @@ public class AuditFragment extends BaseFragment {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_PROXY_VISITOR_RECORDS, visitorRecordsReq, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
+                if (refreshview == null) {
+                    return;
+                }
                 refreshview.setRefreshing(false);
                 try {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());

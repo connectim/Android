@@ -31,6 +31,10 @@ public class OrganizerHelper extends BaseDao {
         return organizerHelper;
     }
 
+    public static void closeHelper() {
+        organizerHelper = null;
+    }
+
     public List<OrganizerEntity> loadParamEntityByUpperId(long id) {
         QueryBuilder<OrganizerEntity> queryBuilder = organizerEntityDao.queryBuilder();
         queryBuilder.where(OrganizerEntityDao.Properties.UpperId.eq(id)).build();

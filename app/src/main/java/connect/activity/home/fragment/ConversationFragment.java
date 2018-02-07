@@ -32,11 +32,13 @@ import connect.activity.home.bean.RoomAttrBean;
 import connect.activity.home.fragment.view.ChatAddPopWindow;
 import connect.activity.home.view.ConnectStateView;
 import connect.activity.home.view.LineDecoration;
+import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.log.LogManager;
 import connect.utils.system.SystemUtil;
+import instant.utils.SharedUtil;
 import protos.Connect;
 
 /**
@@ -199,7 +201,7 @@ public class ConversationFragment extends BaseFragment {
             case R.id.relativelayout_1:
                 PopupWindow popWindow = new ChatAddPopWindow(getActivity());
                 int offsetX = SystemUtil.dipToPx(30);
-                int offsetY = SystemUtil.dipToPx(1);
+                int offsetY = SystemUtil.dipToPx(0);
                 popWindow.showAsDropDown(connectStateView.findViewById(R.id.txt1), offsetX, offsetY);
                 break;
             case R.id.search_image1:
@@ -212,7 +214,7 @@ public class ConversationFragment extends BaseFragment {
 
         @Override
         public void itemClick(Connect.ChatType chatType, String identify) {
-            ChatActivity.startActivity(activity, chatType, identify);
+             ChatActivity.startActivity(activity, chatType, identify);
         }
     }
 

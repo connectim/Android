@@ -244,6 +244,7 @@ public class CommandParser extends InterParse {
      */
     private void syncContacts(ByteString buffer) throws Exception {
         String version = SharedUtil.getInstance().getStringValue(SharedUtil.CONTACTS_VERSION);
+        version= "";
         if (TextUtils.isEmpty(version)) {
             Connect.SyncCompany relationship = Connect.SyncCompany.parseFrom(buffer);
             version = relationship.getWorkmatesVersion().getVersion();

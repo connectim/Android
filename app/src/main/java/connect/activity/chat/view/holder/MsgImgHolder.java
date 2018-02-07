@@ -60,7 +60,7 @@ public class MsgImgHolder extends MsgChatHolder {
                 String path = FileUtil.isLocalFile(thumb) ? thumb : FileUtil.newContactFileName(msgExtEntity.getMessage_ower(), msgExtEntity.getMessage_id(), FileUtil.FileType.IMG);
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.IMGVIEWER, path);
 
-                if (msgExtEntity.getSnap_time() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
+                if ((msgExtEntity.getSnap_time() == null || msgExtEntity.getSnap_time() == 0) && msgExtEntity.parseDirect() == MsgDirect.From) {
                     msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
                     MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                 }

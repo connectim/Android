@@ -603,6 +603,10 @@ public class ContactHelper extends BaseDao {
         ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
     }
 
+    public void clearContactEntities() {
+        contactEntityDao.deleteAll();
+    }
+
     public void deleteEntity(String uid) {
         QueryBuilder<ContactEntity> qb = contactEntityDao.queryBuilder();
         DeleteQuery<ContactEntity> bd = qb.where(ContactEntityDao.Properties.Uid.eq(uid))
