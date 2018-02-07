@@ -19,11 +19,12 @@ import connect.ui.activity.R;
 public class FileUtil {
 
     /** app */
-    private static String APP_ROOT_NAME = "connect";
+    private static String APP_ROOT_NAME = "iWork";
     /** Root path for local file */
     public static String DIR_ROOT = getExternalStorePath();
     /** Temporary folder */
-    public static final String DIR_TEMP = "temp" + File.separator;
+    public static String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() +
+            File.separator + APP_ROOT_NAME + File.separator + "temp";
 
     /**
      * Get the private file path
@@ -81,8 +82,8 @@ public class FileUtil {
         String index = randomFileName();
         index = index + type.getFileType();
 
-        String root = Environment.getExternalStorageDirectory().getAbsolutePath();
-        return createAbsNewFile(root + File.separator +index);
+        //String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+        return createAbsNewFile(tempPath + File.separator +index);
     }
 
     /**

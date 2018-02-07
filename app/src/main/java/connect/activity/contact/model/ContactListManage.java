@@ -7,12 +7,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import connect.activity.base.BaseApplication;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.activity.base.compare.FriendCompara;
 import connect.activity.home.bean.ContactBean;
+import connect.ui.activity.R;
 import connect.utils.PinyinUtil;
 
 /**
@@ -78,6 +80,7 @@ public class ContactListManage {
     }
 
     private ArrayList<ContactBean> sortContactFriend(String pubKeyExc ,List<ContactEntity> loacalFriend){
+        String sysName = BaseApplication.getInstance().getString(R.string.app_name);
         Collections.sort(loacalFriend, friendCompara);
         ArrayList<ContactBean> friendList = new ArrayList<>();
         for(ContactEntity friendEntity : loacalFriend){
@@ -90,7 +93,7 @@ public class ContactListManage {
             contactBean.setUid(friendEntity.getUid());
             contactBean.setOu(friendEntity.getOu());
             contactBean.setGender(friendEntity.getGender() == null ? 1 : friendEntity.getGender());
-            if(TextUtils.isEmpty(friendEntity.getPublicKey())){
+            if(friendEntity.getUid().equals(sysName) && friendEntity.getName().equals(sysName)){
                 contactBean.setStatus(6);
                 friendList.add(contactBean);
             }else{

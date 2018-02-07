@@ -220,8 +220,9 @@ public class VisitorsActivity extends BaseFragmentActivity {
 
     public void shareMsg(String activityTitle, String msgTitle, String msgText, File file) {
         try {
-            String filepath = file.getAbsolutePath();
-            String imageUri = MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), filepath, msgTitle, msgText);
+            //通知图库更新
+            //String filepath = file.getAbsolutePath();
+            //String imageUri = MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), filepath, msgTitle, msgText);
 
             Intent intent = new Intent(Intent.ACTION_SEND);
             if (file == null) {
@@ -237,7 +238,7 @@ public class VisitorsActivity extends BaseFragmentActivity {
             }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(Intent.createChooser(intent, activityTitle));
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
