@@ -91,8 +91,8 @@ public class WarehouseDetailActivity extends BaseActivity {
     }
 
     @OnClick(R.id.know_text)
-    void comfirmInfo(View view) {
-        requestComfirm();
+    void confirmInfo(View view) {
+        requestConfirm();
     }
 
     private void requestStaff(){
@@ -115,14 +115,14 @@ public class WarehouseDetailActivity extends BaseActivity {
         });
     }
 
-    private void requestComfirm(){
+    private void requestConfirm(){
         Connect.UnRegisterCheck  unRegisterCheck = Connect.UnRegisterCheck .newBuilder()
                 .setId(staffId)
                 .setStatus(1).build();
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.STORES_V1_IWORK_LOG_COMFIRM, unRegisterCheck, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
-                ToastUtil.getInstance().showToast(R.string.Login_Update_successful);
+                ToastUtil.getInstance().showToast(R.string.Wallet_Confirmed);
                 ActivityUtil.goBack(mActivity);
             }
 
