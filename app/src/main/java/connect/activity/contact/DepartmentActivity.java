@@ -109,7 +109,7 @@ public class DepartmentActivity extends BaseActivity {
                 .build();
         nameList.add(department);
         nameLinear.notifyAddView(nameList, scrollview);
-        requestDepartment(department.getId());
+        requestDepartment(2L);
     }
 
     @OnClick(R.id.left_img)

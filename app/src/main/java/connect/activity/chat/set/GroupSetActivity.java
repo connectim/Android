@@ -151,7 +151,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SearchContentActivity.lunchActivity(activity, 1);
+                SearchContentActivity.lunchActivity(activity, 2);
             }
         });
     }

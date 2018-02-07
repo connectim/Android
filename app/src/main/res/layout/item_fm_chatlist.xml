@@ -90,7 +90,7 @@
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 android:contentDescription="@string/app_name"
-                android:src="@mipmap/message_notify_disable_small2x"
+                android:src="@mipmap/icon_close_notify"
                 android:visibility="gone" />
         </LinearLayout>
 

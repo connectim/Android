@@ -712,6 +712,7 @@
     <string name="Link_View_Detail">View Detail</string>
     <string name="Robot_New_Visitor_Apply">New visitor apply!</string>
     <string name="Robot_Abnormal_Remind">Abnormal warehouse remind!</string>
-    <string name="Robot_Visiting_Purpose">Visiting purpose: (%1$s)</string>
+    <string name="Robot_Visiting_Purpose">Visiting purpose: %1$s</string>
     <string name="Robot_WareHouse_Warn">%1$s Detected stranger to enter</string>
+    <string name="Link_Today">Today</string>
 </resources>

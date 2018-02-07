@@ -631,6 +631,7 @@
     <string name="Link_View_Detail">查看详情</string>
     <string name="Robot_New_Visitor_Apply">新的访客申请!</string>
     <string name="Robot_Abnormal_Remind">仓库异常出入提醒!</string>
-    <string name="Robot_Visiting_Purpose">来访目的: (%1$s)</string>
+    <string name="Robot_Visiting_Purpose">来访目的: %1$s</string>
     <string name="Robot_WareHouse_Warn">%1$s 检测到陌生人进入</string>
+    <string name="Link_Today">今天</string>
 </resources>

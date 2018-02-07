@@ -75,6 +75,7 @@ public class DaoManager {
 
             Database db = null;
             boolean appMode = ConfigUtil.getInstance().appMode();
+            appMode=false;
             if (appMode) {//release version
                 setDebug(false);//log
                 try {

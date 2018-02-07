@@ -36,7 +36,6 @@ import connect.activity.chat.set.PrivateSetActivity;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
-import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
@@ -244,12 +243,6 @@ public class ChatActivity extends BaseChatSendActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        updateTitleName();
-    }
-
-    @Override
     public void updateTitleName() {
         new AsyncTask<Void, Void, ConversionSettingEntity>() {
 
@@ -276,12 +269,13 @@ public class ChatActivity extends BaseChatSendActivity {
                         toolbar.setTitle(titleName);
                         break;
                     case PRIVATE:
-                        ContactEntity contactEntity = ContactHelper.getInstance().loadConversationFriend(chatIdentify);
-                        titleName = TextUtils.isEmpty(contactEntity.getName()) ? "" : contactEntity.getName();
+                        titleName = normalChat.nickName();
                         if (titleName.length() > 15) {
                             titleName = titleName.substring(0, 12);
                             titleName += "...";
                         }
+
+                        RoomSession.roomSession.setFriendAvatar(normalChat.headImg());
                         toolbar.setTitle(settingEntity.getDisturb() == 0 ? null : R.mipmap.icon_close_notify, titleName);
                         break;
                     case GROUPCHAT:

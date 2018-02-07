@@ -127,7 +127,7 @@ public abstract class BaseChatReceiveActivity extends BaseChatActvity{
                     adapterInsetItem(msgExtEntity);
                 }
                 break;
-            case GROUP_UPDATENAME://update group name
+            case UPDATENAME://update group name
                 String identify = (String) objects[0];
                 if (identify.equals(normalChat.chatKey())) {
                     updateTitleName();

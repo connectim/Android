@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import org.greenrobot.eventbus.EventBus;
 
 import connect.activity.base.BaseActivity;
+import connect.activity.base.BaseListener;
 import connect.activity.chat.adapter.ChatAdapter;
 import connect.activity.chat.bean.RoomSession;
 import connect.database.green.DaoHelper.ConversionHelper;
@@ -71,7 +72,17 @@ public abstract class BaseChatActvity extends BaseActivity {
 
         switch (chatType) {
             case PRIVATE:
-                CFriendChat cFriendChat = new CFriendChat(chatIdentify);
+                CFriendChat cFriendChat = new CFriendChat(chatIdentify, new BaseListener<String>() {
+                    @Override
+                    public void Success(String ts) {
+                        updateTitleName();
+                    }
+
+                    @Override
+                    public void fail(Object... objects) {
+
+                    }
+                });
                 normalChat = cFriendChat;
                 break;
             case GROUPCHAT:

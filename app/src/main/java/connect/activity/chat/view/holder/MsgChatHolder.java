@@ -93,7 +93,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
         switch (chatType) {
             case PRIVATE:
                 GlideUtil.loadAvatarRound(headImg, direct == MsgDirect.From ?
-                        RoomSession.getInstance().getFriendAvatar() :
+                        RoomSession.getInstance().getFriendAvatar():
                         SharedPreferenceUtil.getInstance().getUser().getAvatar());
                 headImg.setUserUid(direct == MsgDirect.From ?
                         RoomSession.getInstance().getRoomKey() :

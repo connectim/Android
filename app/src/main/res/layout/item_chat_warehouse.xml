@@ -24,8 +24,7 @@
             android:text="@string/Robot_New_Visitor_Apply"
             android:maxLines="1"
             android:textColor="@color/color_3081EA"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="bold" />
+            android:textSize="@dimen/sp_14" />
 
         <TextView
             android:id="@id/txt2"

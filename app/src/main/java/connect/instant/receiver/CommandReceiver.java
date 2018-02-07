@@ -273,7 +273,7 @@ public class CommandReceiver implements CommandListener {
                     ConversionHelper.getInstance().updateRoomEntityName(groupKey, groupname);
                     ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
 
-                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUP_UPDATENAME, groupKey, groupname);
+                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.UPDATENAME, groupKey, groupname);
                     ContactNotice.receiverGroup();
                 }
                 break;

@@ -150,18 +150,18 @@ public class ContactHelper extends BaseDao {
             uid = "";
         }
 
-        String sql = "SELECT F.AVATAR AS FAVATAR, C.NAME AS CNAME, C.AVATAR AS CAVATAR FROM CONTACT_ENTITY F LEFT OUTER JOIN CONVERSION_ENTITY C WHERE F.UID = ? AND F.UID = C.IDENTIFIER LIMIT 1;";
-
-        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{uid});
+        String sql = "SELECT F.NAME , F.AVATAR FROM CONTACT_ENTITY F WHERE F.UID = ? UNION SELECT C.NAME, C.AVATAR FROM CONVERSION_ENTITY AS C WHERE C.IDENTIFIER = ?";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{uid, uid});
 
         ContactEntity contactEntity = new ContactEntity();
         while (cursor.moveToNext()) {
-            String userName = cursorGetString(cursor, "CNAME");
-            String userAvatar = cursorGetString(cursor, "FAVATAR");
-            String identify = uid;
-            contactEntity.setUid(uid);
-            contactEntity.setName(userName);
-            contactEntity.setAvatar(userAvatar);
+            String userName = cursorGetString(cursor, "NAME");
+            String userAvatar = cursorGetString(cursor, "AVATAR");
+            if (!(TextUtils.isEmpty(userName) || TextUtils.isEmpty(userAvatar))) {
+                contactEntity.setUid(uid);
+                contactEntity.setName(userName);
+                contactEntity.setAvatar(userAvatar);
+            }
         }
         return contactEntity;
     }

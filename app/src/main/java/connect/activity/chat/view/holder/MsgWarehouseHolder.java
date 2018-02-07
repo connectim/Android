@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import connect.activity.workbench.WarehouseActivity;
+import connect.activity.workbench.VisitorsActivity;
 import connect.activity.workbench.WarehouseDetailActivity;
 import connect.ui.activity.R;
 import connect.utils.TimeUtil;
@@ -55,7 +55,7 @@ public class MsgWarehouseHolder extends MsgBaseHolder {
                 title = context.getString(R.string.Robot_New_Visitor_Apply);
                 titleTxt.setText(title);
                 try {
-                    timeTxt.setText(TimeUtil.getMsgTime(TimeUtil.getCurrentTimeInLong(), (long) (visitorNotify.getTime() * 1000)));
+                    timeTxt.setText(TimeUtil.getRobotContentMsgTime(TimeUtil.getCurrentTimeInLong(), (long) (visitorNotify.getTime() * 1000)));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -67,7 +67,7 @@ public class MsgWarehouseHolder extends MsgBaseHolder {
                 title = context.getString(R.string.Robot_Abnormal_Remind);
                 titleTxt.setText(title);
                 try {
-                    timeTxt.setText(TimeUtil.getMsgTime(TimeUtil.getCurrentTimeInLong(), (long) (unRegisterNotify.getTime() * 1000)));
+                    timeTxt.setText(TimeUtil.getRobotContentMsgTime(TimeUtil.getCurrentTimeInLong(), (long) (unRegisterNotify.getTime() * 1000)));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -82,7 +82,7 @@ public class MsgWarehouseHolder extends MsgBaseHolder {
                 Activity activity = (Activity) context;
                 switch (wareType) {
                     case 20:
-                        WarehouseActivity.lunchActivity(activity);
+                        VisitorsActivity.lunchActivity(activity);
                         break;
                     case 21:
                         long id = unRegisterNotify.getId();

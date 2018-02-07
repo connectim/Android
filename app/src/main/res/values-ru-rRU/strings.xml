@@ -762,6 +762,7 @@
     <string name="Link_View_Detail">Подробнее</string>
     <string name="Robot_New_Visitor_Apply">Новое приложение для посетителей!</string>
     <string name="Robot_Abnormal_Remind">Аномальный склад напоминает!</string>
-    <string name="Robot_Visiting_Purpose">Цель посещения: (%1$s)</string>
+    <string name="Robot_Visiting_Purpose">Цель посещения: %1$s</string>
     <string name="Robot_WareHouse_Warn">%1$s Обнаружен незнакомый человек</string>
+    <string name="Link_Today">сегодня</string>
 </resources>

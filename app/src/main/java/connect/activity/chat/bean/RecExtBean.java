@@ -49,7 +49,7 @@ public class RecExtBean extends BaseEvent {
         VOICE_COMPLETE,//Audio message natural finish
         VOICE_RELEASE,//Audio message forced to stop
         BURNSTATE,//burn message update state
-        GROUP_UPDATENAME,//update group name
+        UPDATENAME,//update group name
         GROUP_UPDATEMYNAME,//update nick in group
         MAP_LOCATION,
         LUCKPACKET_RECEIVE,//receive a lucky packet
