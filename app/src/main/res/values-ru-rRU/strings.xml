@@ -376,6 +376,7 @@
     <string name="Login_Send_failed">Сбой при отправке</string>
     <string name="Login_Take_Photo">Сделать фото</string>
     <string name="Login_Update_successful">Успешное завершение обновления</string>
+    <string name="Login_Review_successful">Успешно аудита</string>
     <string name="Login_Updated_failed">Обновление не удалось</string>
     <string name="Login_User_avatar_is_illegal">Аватарка пользователя является незаконной</string>
     <string name="Login_Verification_code_error">Ошибка кода подтверждения</string>
@@ -413,6 +414,7 @@
         раз
     </string>
     <string name="Set_About">Относительно</string>
+    <string name="Set_Version_checking">Контроль версий</string>
     <string name="Set_Account_security">Аккаунт и безопасность</string>
     <string name="Set_Add_mobile">Привязать номер телефона</string>
     <string name="Set_Auto">Автоматичекая оплата</string>
@@ -425,7 +427,7 @@
     <string name="Set_Change_Pattern">Изменить рисунок</string>
     <string name="Set_Open_password">Открытие пароль проверки</string>
     <string name="Set_Close_password">Закрытие пароль проверки</string>
-    <string name="Set_Check_Update">Проверка обновлений</string>
+    <string name="Set_Check_Update">Проверка новой версии</string>
     <string name="Set_Copied">Скопировано</string>
     <string name="Set_Currency">Монеты</string>
     <string name="Set_Did_not_receive_the_verification_code">Не получил код подтверждения?отправить
@@ -733,7 +735,6 @@
     <string name="Work_Service_Search">Поиск приложений</string>
     <string name="Work_Search">поиск</string>
     <string name="Work_Entering_the_warehouse">Склад положение:%1$s</string>
-    <string name="Work_Left_the_warehouse">Из склад</string>
     <string name="Link_exit_the_group">%sыход из  группы</string>
 
     <string name="Link_Group_Create">создать группу</string>

@@ -313,6 +313,7 @@
     <string name="Login_Send_failed">发送失败</string>
     <string name="Login_Take_Photo">拍照</string>
     <string name="Login_Update_successful">更新成功</string>
+    <string name="Login_Review_successful">审核成功</string>
     <string name="Login_Updated_failed">更新失败</string>
     <string name="Login_User_avatar_is_illegal">用户头像不合法</string>
     <string name="Login_Verification_code_error">验证码错误</string>
@@ -339,6 +340,7 @@
     <string name="Set_CONNECT_ID_regular">CONNECT ID 必须是以字母开头的6-20位字母、数字、下划线的组合</string>
     <string name="Set_A_phone_number_can_only_grab_once">一个手机号只能抢一次</string>
     <string name="Set_About">关于</string>
+    <string name="Set_Version_checking">版本检查</string>
     <string name="Set_Account_security">账号与安全</string>
     <string name="Set_Add_mobile">绑定手机号</string>
     <string name="Set_Auto">自动付费</string>
@@ -349,7 +351,7 @@
     <string name="Set_Change_Pattern">修改手势</string>
     <string name="Set_Open_password">开启密码验证</string>
     <string name="Set_Close_password">关闭密码验证</string>
-    <string name="Set_Check_Update">检查更新</string>
+    <string name="Set_Check_Update">检查新版本</string>
     <string name="Set_Copied">已复制</string>
     <string name="Set_Currency">货币</string>
     <string name="Set_Did_not_receive_the_verification_code">未收到验证码？发送语音验证</string>
@@ -602,7 +604,6 @@
     <string name="Work_Service_Search">搜索应用</string>
     <string name="Work_Search">搜索</string>
     <string name="Work_Entering_the_warehouse">仓库位置：%1$s</string>
-    <string name="Work_Left_the_warehouse">离开仓库</string>
 
     <string name="Link_exit_the_group">%s离开了群聊</string>
     <string name="Link_Group_Create">创建群组</string>
