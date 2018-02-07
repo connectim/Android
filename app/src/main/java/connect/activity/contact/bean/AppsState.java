@@ -12,8 +12,7 @@ public class AppsState {
 
     private AppsState.AppsEnum appsEnum;
 
-    public AppsState() {
-    }
+    public AppsState() {}
 
     public AppsState(AppsEnum appsEnum) {
         this.appsEnum = appsEnum;

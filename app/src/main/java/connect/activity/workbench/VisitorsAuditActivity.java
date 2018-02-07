@@ -9,10 +9,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.workbench.bean.UpdateState;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.StringUtil;
@@ -174,6 +177,7 @@ public class VisitorsAuditActivity extends BaseActivity {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 ToastUtil.getInstance().showToast(R.string.Login_Review_successful);
+                EventBus.getDefault().post(new UpdateState(UpdateState.StatusEnum.UPDATE_VISITOR));
                 ActivityUtil.goBack(mActivity);
             }
 

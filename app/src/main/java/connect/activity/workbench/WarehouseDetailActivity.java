@@ -7,10 +7,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.workbench.bean.UpdateState;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.BitmapUtil;
@@ -123,6 +126,7 @@ public class WarehouseDetailActivity extends BaseActivity {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
                 ToastUtil.getInstance().showToast(R.string.Wallet_Confirmed);
+                EventBus.getDefault().post(new UpdateState(UpdateState.StatusEnum.UPDATE_WAREHOUSE));
                 ActivityUtil.goBack(mActivity);
             }
 

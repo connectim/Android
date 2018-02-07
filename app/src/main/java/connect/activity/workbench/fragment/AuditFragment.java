@@ -11,14 +11,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseFragment;
+import connect.activity.contact.bean.AppsState;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.workbench.VisitorsAuditActivity;
 import connect.activity.workbench.adapter.VisitorAdapter;
+import connect.activity.workbench.bean.UpdateState;
 import connect.ui.activity.R;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
@@ -55,6 +60,7 @@ public class AuditFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_audit, container, false);
         ButterKnife.bind(this, view);
+        EventBus.getDefault().register(this);
         return view;
     }
 
@@ -85,6 +91,15 @@ public class AuditFragment extends BaseFragment {
         recyclerview.addItemDecoration(new LineDecoration(mActivity, true));
         recyclerview.setAdapter(adapter);
         initData();
+    }
+
+    @Subscribe
+    public void onEventMainThread(UpdateState updateState) {
+        switch (updateState.getStatusEnum()) {
+            case UPDATE_VISITOR:
+                initData();
+                break;
+        }
     }
 
     public void initData(){
@@ -165,5 +180,6 @@ public class AuditFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+        EventBus.getDefault().unregister(this);
     }
 }
