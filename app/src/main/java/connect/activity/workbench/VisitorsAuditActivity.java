@@ -116,7 +116,7 @@ public class VisitorsAuditActivity extends BaseActivity {
     }
 
     @OnClick(R.id.left_img)
-    void goback(View view) {
+    void goBack(View view) {
         ActivityUtil.goBack(mActivity);
     }
 
@@ -173,7 +173,7 @@ public class VisitorsAuditActivity extends BaseActivity {
         OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V3_PROXY_EXAMINE_VERIFY, examine, new ResultCall<Connect.HttpNotSignResponse>() {
             @Override
             public void onResponse(Connect.HttpNotSignResponse response) {
-                ToastUtil.getInstance().showToast(R.string.Login_Update_successful);
+                ToastUtil.getInstance().showToast(R.string.Login_Review_successful);
                 ActivityUtil.goBack(mActivity);
             }
 

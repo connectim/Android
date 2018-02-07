@@ -355,6 +355,7 @@
     <string name="Login_Send_failed">Send failed</string>
     <string name="Login_Take_Photo">Take Photo</string>
     <string name="Login_Update_successful">Update successful</string>
+    <string name="Login_Review_successful">Review the success</string>
     <string name="Login_Updated_failed">Updated failed</string>
     <string name="Login_User_avatar_is_illegal">User avatar is illegal</string>
     <string name="Login_Verification_code_error">Verification code error</string>
@@ -389,6 +390,7 @@
     </string>
     <string name="Set_A_phone_number_can_only_grab_once">A phone number can only grab once</string>
     <string name="Set_About">About</string>
+    <string name="Set_Version_checking">Version checking</string>
     <string name="Set_Account_security">Account &amp; security</string>
     <string name="Set_Add_mobile">Add mobile</string>
     <string name="Set_Auto">Auto</string>
@@ -400,7 +402,7 @@
     <string name="Set_Change_Pattern">Change Pattern</string>
     <string name="Set_Open_password">Open the password authentication</string>
     <string name="Set_Close_password">Close the password authentication</string>
-    <string name="Set_Check_Update">Check Update</string>
+    <string name="Set_Check_Update">Check the new version</string>
     <string name="Set_Copied">Copied</string>
     <string name="Set_Currency">Currency</string>
     <string name="Set_Did_not_receive_the_verification_code">Did not receive verification code
@@ -683,7 +685,6 @@
     <string name="Work_Service_Search">Search application</string>
     <string name="Work_Search">Search</string>
     <string name="Work_Entering_the_warehouse">Warehouse location:%1$s</string>
-    <string name="Work_Left_the_warehouse">Left the warehouse</string>
     <string name="Link_exit_the_group">%sexit the group</string>
     <string name="Work_Third_Party_Service">Third-party service</string>
     <string name="Link_Group_Create">Create Group</string>
