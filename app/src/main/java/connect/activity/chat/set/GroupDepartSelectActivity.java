@@ -279,7 +279,7 @@ public class GroupDepartSelectActivity extends BaseActivity {
             }
         });
 
-        requestDepartmentInfoShow(department.getId());
+        requestDepartmentInfoShow(2);
         if (isCreate && selectedUids.size() > 0) {
             requestUserInfo(selectedUids.get(0));
         }
@@ -352,8 +352,11 @@ public class GroupDepartSelectActivity extends BaseActivity {
                 nameList.remove(i);
             }
             nameLinear.notifyAddView(nameList, scrollview);
-            long id = nameList.get(position).getId();
-            requestDepartmentInfoShow(id);
+            Connect.Department department = nameList.get(position);
+            if(department!=null){
+                long id = department.getId();
+                requestDepartmentInfoShow(id);
+            }
         }
     };
 
