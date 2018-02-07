@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import connect.activity.login.contract.StartContract;
 import connect.database.SharedPreferenceUtil;
+import connect.utils.FileUtil;
 import connect.utils.RegularUtil;
 import connect.utils.scan.ResolveUrlUtil;
 import connect.utils.system.SystemDataUtil;
@@ -21,6 +22,8 @@ public class StartPagePresenter implements StartContract.Presenter {
 
     @Override
     public void start() {
+        FileUtil.deleteDirectory(FileUtil.tempPath);
+
         String languageCode = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.APP_LANGUAGE_CODE);
         SystemDataUtil.setAppLanguage(mView.getActivity(),languageCode);
 
