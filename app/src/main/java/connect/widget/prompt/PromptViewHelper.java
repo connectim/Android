@@ -83,7 +83,7 @@ public class PromptViewHelper {
         int stateBarHeight = SystemUtil.getStateBarHeight();
         int titleBarHeight = SystemUtil.dipToPx(45);
         if (location[1] < stateBarHeight + titleBarHeight) {
-            location[1] = srcViewLocation[1];
+            location[1] = stateBarHeight + titleBarHeight;
         }
 
         popupWindow.showAtLocation(srcView, Gravity.NO_GRAVITY, location[0], location[1]);
