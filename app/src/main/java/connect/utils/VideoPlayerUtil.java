@@ -42,7 +42,7 @@ public class VideoPlayerUtil implements OnPreparedListener,
 
     }
 
-    public static VideoPlayerUtil getInstance() {
+    public synchronized static VideoPlayerUtil getInstance() {
         if (null == mVideoUtil) {
             mVideoUtil = new VideoPlayerUtil();
         }

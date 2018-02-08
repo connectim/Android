@@ -363,16 +363,16 @@ public class ChatActivity extends BaseChatSendActivity {
 
         ChatMsgEntity msgExtEntity = null;
         NormalChat normalChat = null;
-        switch (roomType) {
-            case 0:
+        switch (Connect.ChatType.forNumber(roomType)) {
+            case PRIVATE:
                 normalChat = new CFriendChat(roomkey);
                 break;
-            case 1:
-            case 3:
+            case GROUPCHAT:
+            case GROUP_DISCUSSION:
                 GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(roomkey);
                 normalChat = new CGroupChat(groupEntity);
                 break;
-            case 2:
+            case CONNECT_SYSTEM:
                 normalChat = new CRobotChat();
                 break;
         }

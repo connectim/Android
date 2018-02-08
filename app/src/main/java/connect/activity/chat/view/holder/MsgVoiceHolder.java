@@ -5,7 +5,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-import connect.activity.chat.bean.RoomSession;
 import connect.activity.chat.view.VoiceImg;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.ui.activity.R;
@@ -94,7 +93,7 @@ public class MsgVoiceHolder extends MsgChatHolder {
                                 voiceImg.startPlay(msgExtEntity.getMessage_id(), localPath, new VoiceImg.VoicePlayListener() {
                                     @Override
                                     public void playFinish(String msgid, String filepath) {
-                                        if (msgExtEntity.getSnap_time() == 0 && msgExtEntity.parseDirect() == MsgDirect.From) {
+                                        if (msgExtEntity != null && (msgExtEntity.getSnap_time() == null || msgExtEntity.getSnap_time() == 0) && msgExtEntity.parseDirect() == MsgDirect.From) {
                                             msgExtEntity.setSnap_time(TimeUtil.getCurrentTimeInLong());
                                             MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
                                         }

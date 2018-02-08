@@ -704,4 +704,7 @@ public class ContactHelper extends BaseDao {
         bd.executeDeleteWithoutDetachingEntities();
     }
 
+    public long contactsCount() {
+        return contactEntityDao.count() + groupEntityDao.count();
+    }
 }

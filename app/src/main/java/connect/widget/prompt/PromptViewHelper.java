@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.PopupWindow;
 
+import connect.utils.system.SystemUtil;
+
 public class PromptViewHelper {
 
     private PromptViewManager promptViewManager;
@@ -67,6 +69,13 @@ public class PromptViewHelper {
                 }
             }
         });
+
+        int stateBarHeight = SystemUtil.getStateBarHeight();
+        int titleBarHeight = SystemUtil.dipToPx(45);
+        if (location[2] < stateBarHeight + titleBarHeight) {
+            location[2] = stateBarHeight + titleBarHeight;
+        }
+
         srcView.getLocationOnScreen(location);
         show(srcView, promptView, location);
     }
