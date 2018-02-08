@@ -61,6 +61,7 @@ public class SearchActivity extends BaseFragmentActivity {
     public void initView() {
         mActivity = this;
 
+        searchEdit.setHint(" " + getString(R.string.Link_Search));
         searchEdit.addTextChangedListener(textWatcher);
 
         searchMainFragment = SearchMainFragment.startFragment();

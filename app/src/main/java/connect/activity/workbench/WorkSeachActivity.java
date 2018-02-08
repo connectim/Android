@@ -82,7 +82,7 @@ public class WorkSeachActivity extends BaseActivity {
             toolbar.setTitle(getResources().getString(R.string.Link_Function_Manager));
         } else {
             toolbar.setRightText(getResources().getString(R.string.Work_Search));
-            toolbar.setSearchTitle(R.mipmap.department_search, getResources().getString(R.string.Work_Service_Search));
+            toolbar.setSearchTitle(R.mipmap.department_search, " " + getResources().getString(R.string.Work_Service_Search));
             toolbar.setRightListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

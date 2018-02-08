@@ -94,6 +94,7 @@ public class DepartmentActivity extends BaseActivity {
         adapter.setItemClickListener(onItemListener);
         recyclerview.setAdapter(adapter);
 
+        searchEdit.setHint(" " + getString(R.string.Link_Search));
         searchEdit.setOnKeyListener(keyListener);
         searchEdit.addTextChangedListener(textWatcher);
 
