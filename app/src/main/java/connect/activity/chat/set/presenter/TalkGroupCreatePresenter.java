@@ -81,8 +81,6 @@ public class TalkGroupCreatePresenter implements TalkGroupCreateContract.Present
                     if (ProtoBufUtil.getInstance().checkProtoBuf(groupInfo)) {
                         insertLocalData(groupInfo);
                     }
-
-                    view.setLeftEnanle(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
