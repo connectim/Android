@@ -93,7 +93,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
         switch (chatType) {
             case PRIVATE:
                 GlideUtil.loadAvatarRound(headImg, direct == MsgDirect.From ?
-                        RoomSession.getInstance().getFriendAvatar() :
+                        RoomSession.getInstance().getFriendAvatar():
                         SharedPreferenceUtil.getInstance().getUser().getAvatar());
                 headImg.setUserUid(direct == MsgDirect.From ?
                         RoomSession.getInstance().getRoomKey() :
@@ -140,7 +140,7 @@ public abstract class MsgChatHolder extends MsgBaseHolder {
                     String groupKey = msgExtEntity.getMessage_ower();
                     final String memberKey = msgExtEntity.getMessage_from();
 
-                    GroupMemberUtil.groupMemberUtil.loadGroupMember(groupKey, memberKey, new BaseListener<GroupMemberEntity>() {
+                    GroupMemberUtil.getIntance().loadGroupMember(groupKey, memberKey, new BaseListener<GroupMemberEntity>() {
                         @Override
                         public void Success(GroupMemberEntity ts) {
                             GlideUtil.loadAvatarRound(headImg, ts.getAvatar());

@@ -77,17 +77,20 @@ public class RobotChat extends NormalChat {
         return InstantSdk.instantSdk.getBaseContext().getString(R.string.app_name);
     }
 
-    public ChatMsgEntity groupReviewMsg(Connect.Reviewed reviewed) {
-        ChatMsgEntity msgExtEntity = createBaseChat(MessageType.GROUP_REVIEW);
-        msgExtEntity.setContents(reviewed.toByteArray());
+    public ChatMsgEntity wareHouseMsg(int wareType, String content) {
+        ChatMsgEntity msgExtEntity = (ChatMsgEntity) createBaseChat(MessageType.ROBOT_WAREHOSE);
+        Connect.NotifyMessage notifyMessage = Connect.NotifyMessage.newBuilder()
+                .setNotifyType(wareType)
+                .setContent(content)
+                .build();
 
+        msgExtEntity.setContents(notifyMessage.toByteArray());
         return msgExtEntity;
     }
 
     public ChatMsgEntity systemAdNotice(Connect.Announcement announcement) {
         ChatMsgEntity msgExtEntity = createBaseChat(MessageType.SYSTEM_AD);
         msgExtEntity.setContents(announcement.toByteArray());
-
         return msgExtEntity;
     }
 }

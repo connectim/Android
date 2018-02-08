@@ -2,9 +2,6 @@ package connect.utils;
 
 import android.content.Context;
 
-import connect.ui.activity.R;
-import connect.activity.base.BaseApplication;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,6 +9,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+
+import connect.activity.base.BaseApplication;
+import connect.ui.activity.R;
 
 /**
  * time tool
@@ -107,6 +107,57 @@ public class TimeUtil {
                     case 0:
                         format = DATE_FORMAT_HOUR_MIN;
                         showTime = format.format(msgTime);
+                        break;
+                    case 1:
+                        format = DATE_FORMAT_HOUR_MIN;
+                        showTime = format.format(msgTime);
+                        showTime = context.getString(R.string.Chat_Yesterday) + " " + showTime;
+                        break;
+                    case 2:
+                        format = DATE_FORMAT_HOUR_MIN;
+                        showTime = format.format(msgTime);
+                        showTime = context.getString(R.string.Chat_the_day_before_yesterday_time, " " + showTime);
+                        break;
+                    default:
+                        format = DATE_FORMAT_HOUR_MIN;
+                        showTime = format.format(msgTime);
+                        break;
+                }
+            }
+        }
+        return showTime;
+    }
+
+    public static String getRobotContentMsgTime(long lastTime,long msgTime) throws Exception {
+        Calendar msgcalendar = Calendar.getInstance();
+        msgcalendar.setTimeInMillis(lastTime);
+        Calendar curcalendar = Calendar.getInstance();
+        curcalendar.setTimeInMillis(msgTime);
+
+        SimpleDateFormat format = null;
+        String showTime = "";
+
+        int msgYear = msgcalendar.get(Calendar.YEAR);
+        int curYear = curcalendar.get(Calendar.YEAR);
+        if (curYear != msgYear) {
+            format = DATE_FORMAT_DATE;
+            showTime = format.format(msgTime);
+        } else {
+            int msgMonth = msgcalendar.get(Calendar.MONTH);
+            int curMonth = curcalendar.get(Calendar.MONTH);
+            if (msgMonth != curMonth) {
+                format = DATE_FORMAT_MONTH;
+                showTime = format.format(msgTime);
+            } else {
+                Context context = BaseApplication.getInstance().getBaseContext();
+
+                int msgDay = msgcalendar.get(Calendar.DAY_OF_MONTH);
+                int curDay = curcalendar.get(Calendar.DAY_OF_MONTH);
+                int spaceDay = Math.abs(curDay - msgDay);
+                switch (spaceDay) {
+                    case 0:
+                        format = DATE_FORMAT_HOUR_MIN;
+                        showTime = context.getString(R.string.Link_Today) + "  " + format.format(msgTime);
                         break;
                     case 1:
                         format = DATE_FORMAT_HOUR_MIN;

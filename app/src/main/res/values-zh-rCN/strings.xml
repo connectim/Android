@@ -628,4 +628,10 @@
     <string name="Chat_Private_Setting">聊天信息</string>
     <string name="Chat_Group_Setting">群聊信息(%1$d)</string>
     <string name="Link_Open_to_remind">开启提醒</string>
+    <string name="Link_View_Detail">查看详情</string>
+    <string name="Robot_New_Visitor_Apply">新的访客申请!</string>
+    <string name="Robot_Abnormal_Remind">仓库异常出入提醒!</string>
+    <string name="Robot_Visiting_Purpose">来访目的: %1$s</string>
+    <string name="Robot_WareHouse_Warn">%1$s 检测到陌生人进入</string>
+    <string name="Link_Today">今天</string>
 </resources>

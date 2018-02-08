@@ -168,6 +168,9 @@ public class HomeActivity extends BaseFragmentActivity {
                 mHandler.sendEmptyMessageDelayed(TIMEOUT_DELAYEXIT, 1000);
                 break;
             case EXIT:
+                UserOrderBean orderBean = new UserOrderBean();
+                orderBean.connectLogout();
+
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.cancel(1001);
 
@@ -211,20 +214,24 @@ public class HomeActivity extends BaseFragmentActivity {
                 break;
             case REMOTE_LOGIN:
                 String deviceName = (String) objects[0];
-                String showContent = TextUtils.isEmpty(deviceName) ?
-                        getString(R.string.Error_Device_Remote_Other_Login) :
-                        getString(R.string.Error_Device_Remote_Login, deviceName);
-                DialogUtil.showAlertTextView(activity, null,showContent , null, getString(R.string.Common_OK), true, false, new DialogUtil.OnItemClickListener() {
-                    @Override
-                    public void confirm(String value) {
-                        HomeAction.getInstance().sendEvent(HomeAction.HomeType.EXIT);
-                    }
+                orderBean = new UserOrderBean();
+                orderBean.connectLogout();
 
-                    @Override
-                    public void cancel() {
+                mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.cancel(1001);
 
+                mHandler.removeMessages(TIMEOUT_DELAYEXIT);
+                BaseApplication.getInstance().exitRegisterAccount();
+                list = BaseApplication.getInstance().getActivityList();
+                for (Activity activity1 : list) {
+                    if (!activity1.getClass().getName().equals(activity.getClass().getName())) {
+                        activity1.finish();
                     }
-                });
+                }
+                intent = new Intent(activity, LoginUserActivity.class);
+                intent.putExtra("VALUE",deviceName);
+                activity.startActivity(intent);
+                finish();
                 break;
         }
     }

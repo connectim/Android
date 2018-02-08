@@ -156,12 +156,17 @@ public class BaseGroupSelectActivity extends BaseActivity {
                 if (isCreateGroup) {
                     for (Map.Entry<String, Object> it : selectMembers.entrySet()) {
                         String key = it.getKey();
-                        selectedUid.add(key);
+                        if (!TextUtils.isEmpty(key)) {
+                            selectedUid.add(key);
+                        }
                     }
                 } else {
                     List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMemEntities(uid);
                     for (GroupMemberEntity entity : memberEntities) {
-                        selectedUid.add(entity.getUid());
+                        String uid = entity.getUid();
+                        if (!TextUtils.isEmpty(uid)) {
+                            selectedUid.add(entity.getUid());
+                        }
                     }
                 }
                 GroupDepartSelectActivity.startActivity(activity, isCreateGroup, selectedUid);

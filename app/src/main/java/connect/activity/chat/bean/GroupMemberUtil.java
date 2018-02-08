@@ -22,9 +22,9 @@ public class GroupMemberUtil {
 
     private static String TAG = "_ChatMsgUtil";
 
-    public static GroupMemberUtil groupMemberUtil = getIntance();
+    private static GroupMemberUtil groupMemberUtil;
 
-    private synchronized static GroupMemberUtil getIntance() {
+    public synchronized static GroupMemberUtil getIntance() {
         if (groupMemberUtil == null) {
             groupMemberUtil = new GroupMemberUtil();
         }
@@ -32,6 +32,13 @@ public class GroupMemberUtil {
     }
 
     private Map<String, GroupMemberEntity> memEntityMap = null;
+
+    public void clearMembersMap() {
+        if (memEntityMap == null) {
+            memEntityMap = new HashMap<>();
+        }
+        memEntityMap.clear();
+    }
 
     public void loadGroupMembersMap(String groupKey) {
         if (memEntityMap == null) {

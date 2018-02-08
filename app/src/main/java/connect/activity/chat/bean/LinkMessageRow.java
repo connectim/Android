@@ -13,6 +13,7 @@ import connect.activity.chat.view.row.MsgSysAdRow;
 import connect.activity.chat.view.row.MsgTxtRow;
 import connect.activity.chat.view.row.MsgVideoRow;
 import connect.activity.chat.view.row.MsgVoiceRow;
+import connect.activity.chat.view.row.MsgWarehouseRow;
 import connect.activity.chat.view.row.MsgWebsiteRow;
 
 /**
@@ -30,7 +31,8 @@ public enum LinkMessageRow {
     Name_Card(18, new MsgCardRow()),
     Emotion(5, new MsgEmotionRow()),
     OUTER_WEBSITE(25, new MsgWebsiteRow()),
-    SYSTEM_AD(102, new MsgSysAdRow());//system ad
+    SYSTEM_AD(102, new MsgSysAdRow()),//system ad
+    ROBOT_WAREHOSE(103, new MsgWarehouseRow());
 
     public int type;
     public MsgBaseRow msgBaseRow;

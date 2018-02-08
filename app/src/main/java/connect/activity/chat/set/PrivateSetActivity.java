@@ -122,7 +122,7 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SearchContentActivity.lunchActivity(activity, 1);
+                SearchContentActivity.lunchActivity(activity, 3);
             }
         });
     }

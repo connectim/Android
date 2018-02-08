@@ -109,7 +109,7 @@ public class DepartmentActivity extends BaseActivity {
                 .build();
         nameList.add(department);
         nameLinear.notifyAddView(nameList, scrollview);
-        requestDepartment(department.getId());
+        requestDepartment(2L);
     }
 
     @OnClick(R.id.left_img)
@@ -202,7 +202,7 @@ public class DepartmentActivity extends BaseActivity {
     };
 
     private void requestDepartment(final Long id) {
-        List<OrganizerEntity> entities = OrganizerHelper.organizerHelper.loadParamEntityByUpperId(id);
+        List<OrganizerEntity> entities = OrganizerHelper.getInstance().loadParamEntityByUpperId(id);
         adapter.setNotify(entities);
 
         final Connect.Department department = Connect.Department.newBuilder()
@@ -230,8 +230,8 @@ public class DepartmentActivity extends BaseActivity {
                     }
                     adapter.setNotify(list);
 
-                    OrganizerHelper.organizerHelper.removeOrganizerEntityByUpperId(id);
-                    OrganizerHelper.organizerHelper.insertOrganizerEntities(list);
+                    OrganizerHelper.getInstance().removeOrganizerEntityByUpperId(id);
+                    OrganizerHelper.getInstance().insertOrganizerEntities(list);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

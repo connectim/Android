@@ -10,6 +10,7 @@ import connect.database.green.DaoHelper.ParamManager;
 import connect.instant.model.CRobotChat;
 import connect.ui.activity.R;
 import connect.utils.NotificationBar;
+import connect.utils.StringUtil;
 import instant.bean.ChatMsgEntity;
 import instant.parser.inter.RobotListener;
 import instant.sender.model.RobotChat;
@@ -39,8 +40,8 @@ public class RobotReceiver implements RobotListener {
     }
 
     @Override
-    public void unRegisterMessage(Connect.UnRegisterMessage unRegisterMessage) {
-        ChatMsgEntity chatMsgEntity = RobotChat.getInstance().noticeMsg(6, unRegisterMessage.getBody(), String.valueOf(unRegisterMessage.getId()));
+    public void warehouseMessage(int wareType, byte[] message) {
+        ChatMsgEntity chatMsgEntity = RobotChat.getInstance().wareHouseMsg(wareType, StringUtil.bytesToHexString(message));
         dealRobotMessage(chatMsgEntity);
     }
 

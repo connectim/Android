@@ -20,14 +20,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.home.HomeActivity;
+import connect.activity.home.bean.HomeAction;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.dialog.DialogUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastUtil;
 import connect.utils.UriUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
 import connect.wallet.jni.AllNativeMethod;
@@ -77,6 +78,28 @@ public class LoginUserActivity extends BaseActivity {
         nameEt.addTextChangedListener(textWatcher);
         passwordEt.addTextChangedListener(textWatcher);
         relativeLogin.setEnabled(false);
+
+        String deveiceName = getIntent().getStringExtra("VALUE");
+        if (!TextUtils.isEmpty(deveiceName)) {
+            popRomteLoginDialog(deveiceName);
+        }
+    }
+
+    public void popRomteLoginDialog(String deveiceName){
+        String showContent = TextUtils.isEmpty(deveiceName) ?
+                getString(R.string.Error_Device_Remote_Other_Login) :
+                getString(R.string.Error_Device_Remote_Login, deveiceName);
+        DialogUtil.showAlertTextView(mActivity, null,showContent , null, getString(R.string.Common_OK), true, false, new DialogUtil.OnItemClickListener() {
+            @Override
+            public void confirm(String value) {
+                HomeAction.getInstance().sendEvent(HomeAction.HomeType.EXIT);
+            }
+
+            @Override
+            public void cancel() {
+
+            }
+        });
     }
 
     @OnClick(R.id.name_text)

@@ -2,6 +2,7 @@ package connect.activity.workbench;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -75,7 +76,8 @@ public class WarehouseDetailActivity extends BaseActivity {
 
     private void initData(){
         timeTv.setText(getString(R.string.Work_Time, TimeUtil.getTime(staffLog.getDateTime()*1000, TimeUtil.DEFAULT_DATE_FORMAT)));
-        typeTv.setText(getString(R.string.Work_Entering_the_warehouse, staffLog.getLocation()));
+        typeTv.setText(getString(R.string.Work_Entering_the_warehouse,
+                TextUtils.isEmpty(staffLog.getLocation()) ? staffLog.getDeviceId() : staffLog.getLocation()));
         try {
             isFaceImage.setImageBitmap(BitmapUtil.getInstance().base64ToBitmap(staffLog.getFace()));
         }catch (Exception e){

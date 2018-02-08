@@ -9,7 +9,7 @@ public interface RobotListener {
 
     void textMessage(Connect.TextMessage textMessage);
 
-    void unRegisterMessage(Connect.UnRegisterMessage unRegisterMessage);
+    void warehouseMessage(int wareType, byte[] message);
 
     void voiceMessage(Connect.VoiceMessage voiceMessage);
 

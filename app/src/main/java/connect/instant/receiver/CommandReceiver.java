@@ -11,20 +11,16 @@ import java.util.Map;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.RecExtBean;
-import connect.activity.chat.bean.Talker;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.home.bean.ConversationAction;
 import connect.activity.home.bean.GroupRecBean;
-import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.MsgNoticeBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
-import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
-import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.database.green.bean.MessageEntity;
@@ -94,6 +90,9 @@ public class CommandReceiver implements CommandListener {
     public void loadAllContacts(Connect.SyncCompany userRelationship) throws Exception {
         Connect.WorkmatesVersion relationShip = userRelationship.getWorkmatesVersion();
         List<Connect.Workmate> friendInfoList = relationShip.getListList();
+
+        ContactHelper.getInstance().clearContactEntities();
+        // ContactHelper.getInstance().removeCommonGroupEntity();
 
         Map<String, ContactEntity> contactEntityMap = new HashMap<>();
         for (Connect.Workmate friendInfo : friendInfoList) {
@@ -272,7 +271,7 @@ public class CommandReceiver implements CommandListener {
                     ConversionHelper.getInstance().updateRoomEntityName(groupKey, groupname);
                     ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
 
-                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUP_UPDATENAME, groupKey, groupname);
+                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.UPDATENAME, groupKey, groupname);
                     ContactNotice.receiverGroup();
                 }
                 break;
