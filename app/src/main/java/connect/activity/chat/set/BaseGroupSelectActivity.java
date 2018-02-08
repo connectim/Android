@@ -141,7 +141,7 @@ public class BaseGroupSelectActivity extends BaseActivity {
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(selectAdapter);
         selectAdapter.setData(contactEntities);
-        if(isCreateGroup){
+        if (isCreateGroup) {
             selectAdapter.setFriendUid(uid);
         }
         selectAdapter.setGroupSelectListener(new BaseGroupSelectAdapter.BaseGroupSelectListener() {
@@ -282,6 +282,7 @@ public class BaseGroupSelectActivity extends BaseActivity {
      * @param selectUids
      */
     public void inviteJoinGroup(final String groupIdentify, List<String> selectUids) {
+        toolbar.setLeftEnable(false);
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         Connect.GroupInviteWorkmate inviteWorkmate = Connect.GroupInviteWorkmate.newBuilder()
                 .setInviteBy(userBean.getUid())
@@ -303,6 +304,7 @@ public class BaseGroupSelectActivity extends BaseActivity {
                 ToastEUtil.makeText(activity, showHint, 1, new ToastEUtil.OnToastListener() {
                     @Override
                     public void animFinish() {
+                        toolbar.setLeftEnable(true);
                         ChatActivity.startActivity(activity, Connect.ChatType.GROUPCHAT, groupIdentify);
                     }
                 }).show();
@@ -310,6 +312,7 @@ public class BaseGroupSelectActivity extends BaseActivity {
 
             @Override
             public void onError(Connect.HttpNotSignResponse response) {
+                toolbar.setLeftEnable(true);
                 if (response.getCode() == 2430) {
                     ToastEUtil.makeText(activity, R.string.Link_Qr_code_is_invalid, ToastEUtil.TOAST_STATUS_FAILE).show();
                 } else {

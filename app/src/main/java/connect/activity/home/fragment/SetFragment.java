@@ -180,6 +180,7 @@ public class SetFragment extends BaseFragment {
                     Connect.VersionResponse versionResponse = Connect.VersionResponse.parseFrom(structData.getPlainData());
                     if (!TextUtils.isEmpty(versionResponse.getVersion())) {
                         int compareInt = StringUtil.VersionComparison(versionResponse.getVersion(), SystemDataUtil.getVersionName(mActivity));
+                        if(versionText!=null){
                         switch (compareInt) {
                             case 1:
                                 versionText.setText(mActivity.getString(R.string.Set_new_version, versionResponse.getVersion()));
@@ -189,7 +190,7 @@ public class SetFragment extends BaseFragment {
                             case -1:
                                 versionText.setText(R.string.Set_This_is_the_newest_version);
                                 break;
-                        }
+                        }}
                     }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();

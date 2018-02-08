@@ -66,7 +66,7 @@ public class GroupNameActivity extends BaseActivity implements GroupNameContract
             @Override
             public void onClick(View v) {
                 String groupName = edittxt1.getText().toString();
-                if (groupName.length() >= 4) {
+                if (groupName.length() >= 2) {
                     presenter.updateGroupName(groupName);
                 }
             }
@@ -91,7 +91,7 @@ public class GroupNameActivity extends BaseActivity implements GroupNameContract
 
         @Override
         public void afterTextChanged(Editable s) {
-            if (s.length() <4) {
+            if (s.length() <2) {
                 toolbar.setRightTextEnable(false);
                 toolbar.setRightTextColor(R.color.color_68656f);
             } else {

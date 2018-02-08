@@ -91,9 +91,6 @@ public class CommandReceiver implements CommandListener {
         Connect.WorkmatesVersion relationShip = userRelationship.getWorkmatesVersion();
         List<Connect.Workmate> friendInfoList = relationShip.getListList();
 
-        ContactHelper.getInstance().clearContactEntities();
-        // ContactHelper.getInstance().removeCommonGroupEntity();
-
         Map<String, ContactEntity> contactEntityMap = new HashMap<>();
         for (Connect.Workmate friendInfo : friendInfoList) {
             String friendUid = friendInfo.getUid();

@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 
 import java.io.Serializable;
@@ -24,6 +23,7 @@ import connect.utils.dialog.DialogUtil;
 import connect.widget.SideBar;
 import connect.widget.TopToolBar;
 import connect.widget.selefriend.adapter.ContactAdapter;
+import protos.Connect;
 
 /**
  * Select the address book contacts
@@ -110,7 +110,7 @@ public class SelectContactActivity extends BaseActivity {
                     "", "", false, new DialogUtil.OnItemClickListener() {
                         @Override
                         public void confirm(String value) {
-                            backActivity(TextUtils.isEmpty(contactBean.getUid()) ? 1 : 0, contactBean.getUid());
+                            backActivity(contactBean.getStatus() == 2 ? Connect.ChatType.GROUP_DISCUSSION_VALUE : Connect.ChatType.PRIVATE_VALUE, contactBean.getUid());
                         }
 
                         @Override
