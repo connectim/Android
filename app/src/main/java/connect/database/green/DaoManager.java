@@ -13,7 +13,6 @@ import connect.database.green.DaoHelper.ApplicationHelper;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
-import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.MigrateOpenHelper;
 import connect.database.green.DaoHelper.OrganizerHelper;
@@ -75,7 +74,6 @@ public class DaoManager {
 
             Database db = null;
             boolean appMode = ConfigUtil.getInstance().appMode();
-            appMode=false;
             if (appMode) {//release version
                 setDebug(false);//log
                 try {
@@ -151,7 +149,6 @@ public class DaoManager {
         ContactHelper.closeHelper();
         ConversionHelper.closeHelper();
         ConversionSettingHelper.closeHelper();
-        CurrencyHelper.closeHelper();
         MessageHelper.closeHelper();
         OrganizerHelper.closeHelper();
         ParamHelper.closeHelper();

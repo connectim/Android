@@ -25,7 +25,6 @@ public class DaoMaster extends AbstractDaoMaster {
         ContactEntityDao.createTable(db, ifNotExists);
         ConversionEntityDao.createTable(db, ifNotExists);
         ConversionSettingEntityDao.createTable(db, ifNotExists);
-        CurrencyAddressEntityDao.createTable(db, ifNotExists);
         CurrencyEntityDao.createTable(db, ifNotExists);
         FriendRequestEntityDao.createTable(db, ifNotExists);
         GroupEntityDao.createTable(db, ifNotExists);
@@ -42,7 +41,6 @@ public class DaoMaster extends AbstractDaoMaster {
         ContactEntityDao.dropTable(db, ifExists);
         ConversionEntityDao.dropTable(db, ifExists);
         ConversionSettingEntityDao.dropTable(db, ifExists);
-        CurrencyAddressEntityDao.dropTable(db, ifExists);
         CurrencyEntityDao.dropTable(db, ifExists);
         FriendRequestEntityDao.dropTable(db, ifExists);
         GroupEntityDao.dropTable(db, ifExists);
@@ -73,7 +71,6 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(ContactEntityDao.class);
         registerDaoClass(ConversionEntityDao.class);
         registerDaoClass(ConversionSettingEntityDao.class);
-        registerDaoClass(CurrencyAddressEntityDao.class);
         registerDaoClass(CurrencyEntityDao.class);
         registerDaoClass(FriendRequestEntityDao.class);
         registerDaoClass(GroupEntityDao.class);

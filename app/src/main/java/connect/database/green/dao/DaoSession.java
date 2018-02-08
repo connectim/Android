@@ -12,7 +12,6 @@ import connect.database.green.bean.ApplicationEntity;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.ConversionSettingEntity;
-import connect.database.green.bean.CurrencyAddressEntity;
 import connect.database.green.bean.CurrencyEntity;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.database.green.bean.GroupEntity;
@@ -26,7 +25,6 @@ import connect.database.green.dao.ApplicationEntityDao;
 import connect.database.green.dao.ContactEntityDao;
 import connect.database.green.dao.ConversionEntityDao;
 import connect.database.green.dao.ConversionSettingEntityDao;
-import connect.database.green.dao.CurrencyAddressEntityDao;
 import connect.database.green.dao.CurrencyEntityDao;
 import connect.database.green.dao.FriendRequestEntityDao;
 import connect.database.green.dao.GroupEntityDao;
@@ -49,7 +47,6 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig contactEntityDaoConfig;
     private final DaoConfig conversionEntityDaoConfig;
     private final DaoConfig conversionSettingEntityDaoConfig;
-    private final DaoConfig currencyAddressEntityDaoConfig;
     private final DaoConfig currencyEntityDaoConfig;
     private final DaoConfig friendRequestEntityDaoConfig;
     private final DaoConfig groupEntityDaoConfig;
@@ -63,7 +60,6 @@ public class DaoSession extends AbstractDaoSession {
     private final ContactEntityDao contactEntityDao;
     private final ConversionEntityDao conversionEntityDao;
     private final ConversionSettingEntityDao conversionSettingEntityDao;
-    private final CurrencyAddressEntityDao currencyAddressEntityDao;
     private final CurrencyEntityDao currencyEntityDao;
     private final FriendRequestEntityDao friendRequestEntityDao;
     private final GroupEntityDao groupEntityDao;
@@ -88,9 +84,6 @@ public class DaoSession extends AbstractDaoSession {
 
         conversionSettingEntityDaoConfig = daoConfigMap.get(ConversionSettingEntityDao.class).clone();
         conversionSettingEntityDaoConfig.initIdentityScope(type);
-
-        currencyAddressEntityDaoConfig = daoConfigMap.get(CurrencyAddressEntityDao.class).clone();
-        currencyAddressEntityDaoConfig.initIdentityScope(type);
 
         currencyEntityDaoConfig = daoConfigMap.get(CurrencyEntityDao.class).clone();
         currencyEntityDaoConfig.initIdentityScope(type);
@@ -120,7 +113,6 @@ public class DaoSession extends AbstractDaoSession {
         contactEntityDao = new ContactEntityDao(contactEntityDaoConfig, this);
         conversionEntityDao = new ConversionEntityDao(conversionEntityDaoConfig, this);
         conversionSettingEntityDao = new ConversionSettingEntityDao(conversionSettingEntityDaoConfig, this);
-        currencyAddressEntityDao = new CurrencyAddressEntityDao(currencyAddressEntityDaoConfig, this);
         currencyEntityDao = new CurrencyEntityDao(currencyEntityDaoConfig, this);
         friendRequestEntityDao = new FriendRequestEntityDao(friendRequestEntityDaoConfig, this);
         groupEntityDao = new GroupEntityDao(groupEntityDaoConfig, this);
@@ -134,7 +126,6 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(ContactEntity.class, contactEntityDao);
         registerDao(ConversionEntity.class, conversionEntityDao);
         registerDao(ConversionSettingEntity.class, conversionSettingEntityDao);
-        registerDao(CurrencyAddressEntity.class, currencyAddressEntityDao);
         registerDao(CurrencyEntity.class, currencyEntityDao);
         registerDao(FriendRequestEntity.class, friendRequestEntityDao);
         registerDao(GroupEntity.class, groupEntityDao);
@@ -150,7 +141,6 @@ public class DaoSession extends AbstractDaoSession {
         contactEntityDaoConfig.clearIdentityScope();
         conversionEntityDaoConfig.clearIdentityScope();
         conversionSettingEntityDaoConfig.clearIdentityScope();
-        currencyAddressEntityDaoConfig.clearIdentityScope();
         currencyEntityDaoConfig.clearIdentityScope();
         friendRequestEntityDaoConfig.clearIdentityScope();
         groupEntityDaoConfig.clearIdentityScope();
@@ -175,10 +165,6 @@ public class DaoSession extends AbstractDaoSession {
 
     public ConversionSettingEntityDao getConversionSettingEntityDao() {
         return conversionSettingEntityDao;
-    }
-
-    public CurrencyAddressEntityDao getCurrencyAddressEntityDao() {
-        return currencyAddressEntityDao;
     }
 
     public CurrencyEntityDao getCurrencyEntityDao() {

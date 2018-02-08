@@ -8,13 +8,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import connect.activity.base.BaseApplication;
-import connect.database.green.DaoHelper.ContactHelperTest;
-import connect.database.green.DaoHelper.ConversionHelperTest;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.ConversionSettingEntity;
-import connect.database.green.bean.CurrencyAddressEntity;
-import connect.database.green.bean.CurrencyEntity;
 import connect.database.green.bean.FriendRequestEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
@@ -79,8 +75,6 @@ public class DaoManagerTest {
         contactEntityTest();
         conversionEntityTest();
         conversionSettingEntityTest();
-        currencyAddressEntityTest();
-        currencyEntityTest();
         friendRequestEntityTest();
         groupEntityTest();
         groupMemberEntityTest();
@@ -226,34 +220,6 @@ public class DaoManagerTest {
         ConversionSettingEntity tempEntity = daoSession.getConversionSettingEntityDao().load(100001L);
         String pubkey = tempEntity.getIdentifier();
         Assert.assertSame(pubkey, "ConversionSetting");
-    }
-
-    @Test
-    public void currencyAddressEntityTest() {
-        CurrencyAddressEntity addressEntity = new CurrencyAddressEntity();
-        addressEntity.set_id(100001L);
-        addressEntity.setCurrency(0);
-        addressEntity.setAddress("Address");
-        // daoSession.getCurrencyAddressEntityDao().insert(addressEntity);
-        daoSession.getCurrencyAddressEntityDao().insert(addressEntity);
-
-        CurrencyAddressEntity tempEntity = daoSession.getCurrencyAddressEntityDao().load(100001L);
-        String pubkey = tempEntity.getAddress();
-        Assert.assertSame(pubkey, "Address");
-    }
-
-    @Test
-    public void currencyEntityTest() {
-        CurrencyEntity currencyEntity = new CurrencyEntity();
-        currencyEntity.set_id(100001L);
-        currencyEntity.setCurrency(0);
-        currencyEntity.setSalt("Salt");
-        // daoSession.getCurrencyEntityDao().insert(currencyEntity);
-        daoSession.getCurrencyEntityDao().insert(currencyEntity);
-
-        CurrencyEntity tempEntity = daoSession.getCurrencyEntityDao().load(100001L);
-        String salt = tempEntity.getSalt();
-        Assert.assertSame(salt, "Salt");
     }
 
     @Test

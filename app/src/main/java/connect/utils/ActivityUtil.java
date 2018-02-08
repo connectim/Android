@@ -38,7 +38,7 @@ public class ActivityUtil {
     public static void next(Activity curActivity, Class nextActivity, Bundle extras, int reqCode, int inAnimId,
                              int outAnimId) {
         Intent intent = new Intent(curActivity, nextActivity);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         if (null != extras) {
             intent.putExtras(extras);
         }
