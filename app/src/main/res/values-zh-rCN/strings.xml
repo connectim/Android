@@ -228,6 +228,7 @@
     <string name="Link_Search_chat_log">搜索聊天记录</string>
     <string name="Link_Search_for_specified_content">搜索指定内容</string>
     <string name="Link_Commonly_used_search">常用搜索</string>
+    <string name="Link_Scan_Result">扫描结果</string>
     <string name="Link_Search_Result">搜索结果</string>
     <string name="Link_Search_friends">搜索好友</string>
     <string name="Link_Select_new_owner">选择新群主</string>
@@ -301,6 +302,7 @@
         二次认证密码用于用户在登录时，多重保护账户，提高账户的安全性
     </string>
     <string name="Login_Password_incorrect">密码错误</string>
+    <string name="Login_User_name_or_password_error">用户名或密码错误</string>
     <string name="Login_Resend">重发</string>
     <string name="Login_Resend_Time">重发(%d)</string>
     <string name="Login_SMS_code_has_been_send">短信验证码已发送</string>
@@ -626,7 +628,7 @@
 
     <string name="Chat_Search_Txt">查找聊天内容</string>
     <string name="Chat_Private_Setting">聊天信息</string>
-    <string name="Chat_Group_Setting">群聊信息(%1$d)</string>
+    <string name="Chat_Group_Setting">群组设置(%1$d)</string>
     <string name="Link_Open_to_remind">开启提醒</string>
     <string name="Link_View_Detail">查看详情</string>
     <string name="Robot_New_Visitor_Apply">新的访客申请!</string>

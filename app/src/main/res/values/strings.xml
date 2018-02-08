@@ -263,6 +263,7 @@
     <string name="Link_Selecting__new_owner__release_your_ownership">Selecting %s as new owner will
         release your ownership
     </string>
+    <string name="Link_Scan_Result">Scan results</string>
     <string name="Link_Send">Send</string>
     <string name="Link_Dialogue">Dialogues</string>
     <string name="Link_Workbench">Workbench</string>
@@ -343,6 +344,7 @@
     <string name="Login_username">Username</string>
     <string name="Login_Confirm_password">Confirm password</string>
     <string name="Login_Password_incorrect">Password incorrect</string>
+    <string name="Login_User_name_or_password_error">User name or password error</string>
     <string name="Login_Resend">Resend</string>
     <string name="Login_Resend_Time">Resend(%d)</string>
     <string name="Login_SMS_code_has_been_send">SMS code has been sent</string>

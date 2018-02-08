@@ -66,11 +66,11 @@ public class SearchContentActivity extends BaseFragmentActivity {
         style = getIntent().getExtras().getInt("style");
 
         if(style == 1){
-            searchEdit.setHint(R.string.Link_Search_contacts);
+            searchEdit.setHint(" " + getString(R.string.Link_Search_contacts));
         }else if(style == 2){
-            searchEdit.setHint(R.string.Link_Search_group);
+            searchEdit.setHint(" " + getString(R.string.Link_Search_group));
         }else if(style == 3){
-            searchEdit.setHint(R.string.Link_Search_chat_log);
+            searchEdit.setHint(" " + getString(R.string.Link_Search_chat_log));
         }
         searchEdit.addTextChangedListener(textWatcher);
         searchContentFragment = SearchContentFragment.startFragment();

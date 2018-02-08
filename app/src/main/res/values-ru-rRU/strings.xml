@@ -274,6 +274,7 @@
         Вы добровольно должны отказаться от прав хозяина группы
     </string>
     <string name="Link_Send">Отправить</string>
+    <string name="Link_Scan_Result">Результаты сканирования</string>
     <string name="Link_Dialogue">диалог</string>
     <string name="Link_Workbench">стол</string>
     <string name="Link_Inactive">Не активировать</string>
@@ -364,6 +365,7 @@
     <string name="Login_username">Имя пользователя</string>
     <string name="Login_Confirm_password">Подтверждение пароля</string>
     <string name="Login_Password_incorrect">Неправильный пароль</string>
+    <string name="Login_User_name_or_password_error">Имя и пароль пользователя ошибки</string>
     <string name="Login_Resend">Отправить заново</string>
     <string name="Login_Resend_Time">Отправить заново (%d)</string>
     <string name="Login_SMS_code_has_been_send">SMS-код был отправлен</string>

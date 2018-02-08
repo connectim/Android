@@ -47,10 +47,11 @@ public class ScanResultActivity extends BaseActivity {
         mActivity = this;
         toolbarTop.setBlackStyle();
         toolbarTop.setLeftImg(R.mipmap.back_white);
-        toolbarTop.setTitle(null, R.string.Link_Search_Result);
+        toolbarTop.setTitle(null, R.string.Link_Scan_Result);
 
         String value = getIntent().getExtras().getString("value");
         resultText.setText(value);
+        resultText.setTextIsSelectable(true);
     }
 
     @OnClick(R.id.left_img)
