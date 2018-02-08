@@ -44,3 +44,4 @@ captures/
 
 # config.xml
 app/src/main/assets/config.xml
+keystore.properties
