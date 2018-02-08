@@ -644,6 +644,7 @@ public class ContactHelper extends BaseDao {
      */
     public void removeGroupInfos(String groupKey) {
         ConversionHelper.getInstance().deleteRoom(groupKey);
+        ConversionSettingHelper.getInstance().deleteConverstionSet(groupKey);
         MessageHelper.getInstance().clearMsgByRoomkey(groupKey);
         quitGroup(groupKey);
 

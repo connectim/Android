@@ -147,6 +147,6 @@ public class RobotReceiver implements RobotListener {
         String robotname = BaseApplication.getInstance().getString(R.string.app_name);
         String content = chatMsgEntity.showContent();
         CRobotChat.getInstance().updateRoomMsg(null, content, chatMsgEntity.getCreatetime(), 0, 1);
-        NotificationBar.notificationBar.noticeBarMsg(robotname, 2, content);
+        NotificationBar.notificationBar.noticeBarMsg(robotname, 2, robotname, content);
     }
 }
