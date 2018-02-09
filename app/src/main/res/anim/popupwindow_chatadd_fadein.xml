@@ -7,4 +7,4 @@
     android:toYScale="1.0"
     android:pivotX="100%"
     android:pivotY="10%"
-    android:duration="200" />
+    android:duration="100" />

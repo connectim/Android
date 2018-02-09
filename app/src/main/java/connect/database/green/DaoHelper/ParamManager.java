@@ -2,6 +2,7 @@ package connect.database.green.DaoHelper;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.set.bean.SystemSetBean;
@@ -28,6 +29,7 @@ public class ParamManager {
     /** The key to expand */
     public static final String GENERATE_TOKEN_SALT = "GENERATE_TOKEN_SALT";
     public static final String GENERATE_TOKEN_EXPIRED = "GENERATE_TOKEN_EXPIRED ";
+    public static final String COMMONLY_SEARCH = "commonly_search";
 
     public static ParamManager getInstance() {
         if (paramManager == null) {
@@ -119,6 +121,45 @@ public class ParamManager {
             }
             ParamHelper.getInstance().updateParamEntities(paramEntities);
         }
+    }
+
+    public void putCommonlyString(String value) {
+        ArrayList<String> list = getCommonlySearch();
+        if(list.contains(value)){
+            list.remove(value);
+        }
+        if(list.size() > 9){
+            for(int i = 0; i < list.size(); i++){
+                if(i > 9){
+                    list.remove(i);
+                }
+            }
+        }
+        list.add(0, value);
+        putCommonlySearch(list);
+    }
+
+    public void removeCommonlyString(String value) {
+        ArrayList<String> list = getCommonlySearch();
+        if(list.contains(value)){
+            list.remove(value);
+        }
+        putCommonlySearch(list);
+    }
+
+    public void putCommonlySearch(ArrayList<String> list) {
+        ParamEntity paramEntity = new ParamEntity();
+        paramEntity.setKey(COMMONLY_SEARCH);
+        paramEntity.setValue(new Gson().toJson(list));
+        ParamHelper.getInstance().insertParamEntity(paramEntity);
+    }
+
+    public ArrayList<String> getCommonlySearch() {
+        ParamEntity paramEntity = ParamHelper.getInstance().loadParamEntity(COMMONLY_SEARCH);
+        if(paramEntity == null){
+            return new ArrayList<>();
+        }
+        return new Gson().fromJson(paramEntity.getValue(), ArrayList.class);
     }
 
 }

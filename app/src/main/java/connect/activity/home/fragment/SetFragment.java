@@ -1,17 +1,18 @@
 package connect.activity.home.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.google.protobuf.InvalidProtocolBufferException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,15 +27,15 @@ import connect.activity.set.UserInfoActivity;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.ConfigUtil;
-import connect.utils.DialogUtil;
 import connect.utils.ProgressUtil;
+import connect.utils.StringUtil;
 import connect.utils.UriUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.utils.glide.GlideUtil;
-import connect.utils.okhttp.OkHttpUtil;
+import connect.utils.okhttp.HttpRequest;
 import connect.utils.okhttp.ResultCall;
+import connect.utils.system.SystemDataUtil;
 import connect.widget.TopToolBar;
-import instant.utils.SharedUtil;
 import protos.Connect;
 
 /**
@@ -66,6 +67,8 @@ public class SetFragment extends BaseFragment {
     TopToolBar toolbarTop;
     @Bind(R.id.address_scan_img)
     ImageView addressScanImg;
+    @Bind(R.id.version_text)
+    TextView versionText;
 
     private FragmentActivity mActivity;
 
@@ -103,6 +106,7 @@ public class SetFragment extends BaseFragment {
 
         tvName.setText(userBean.getName());
         tvId.setText(userBean.getO_u());
+        getVersion();
     }
 
     @OnClick(R.id.llUserMsg)
@@ -160,6 +164,46 @@ public class SetFragment extends BaseFragment {
                     }
                 });
     }
+
+    private void getVersion() {
+        Connect.VersionRequest versionRequest = Connect.VersionRequest.newBuilder()
+                .setCategory(2)
+                .setPlatform(2)
+                .setProtocolVersion(1)
+                .setVersion(SystemDataUtil.getVersionName(mActivity))
+                .build();
+        HttpRequest.getInstance().post(UriUtil.CONNECT_V1_VERSION, versionRequest, new ResultCall<Connect.HttpNotSignResponse>() {
+            @Override
+            public void onResponse(Connect.HttpNotSignResponse response) {
+                try {
+                    Connect.StructData structData = Connect.StructData.parseFrom(response.getBody().toByteArray());
+                    Connect.VersionResponse versionResponse = Connect.VersionResponse.parseFrom(structData.getPlainData());
+                    if (!TextUtils.isEmpty(versionResponse.getVersion())) {
+                        int compareInt = StringUtil.VersionComparison(versionResponse.getVersion(), SystemDataUtil.getVersionName(mActivity));
+                        if(versionText!=null){
+                        switch (compareInt) {
+                            case 1:
+                                versionText.setText(mActivity.getString(R.string.Set_new_version, versionResponse.getVersion()));
+                                break;
+                            case 0:
+                                versionText.setText(R.string.Set_This_is_the_newest_version);
+                            case -1:
+                                versionText.setText(R.string.Set_This_is_the_newest_version);
+                                break;
+                        }}
+                    }
+                } catch (InvalidProtocolBufferException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(Connect.HttpNotSignResponse response) {
+
+            }
+        });
+    }
+
 
     @Override
     public void onDestroyView() {

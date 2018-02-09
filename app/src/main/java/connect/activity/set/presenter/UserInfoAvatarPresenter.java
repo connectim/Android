@@ -14,11 +14,15 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.io.File;
+import java.util.List;
 
 import connect.activity.base.BaseApplication;
+import connect.activity.chat.bean.GroupMemberUtil;
 import connect.activity.login.bean.UserBean;
 import connect.activity.set.contract.UserInfoAvatarContract;
 import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
 import connect.utils.BitmapUtil;
 import connect.utils.FileUtil;
@@ -121,6 +125,16 @@ public class UserInfoAvatarPresenter implements UserInfoAvatarContract.Presenter
                                 SharedPreferenceUtil.getInstance().putUser(userBean);
 
                                 mView.requestAvaFinish(userAvatar.getUrl());
+
+
+                                List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMembersByUid(userBean.getUid());
+                                if (memberEntities != null && memberEntities.size() > 0) {
+                                    GroupMemberUtil.getIntance().clearMembersMap();
+                                    for (GroupMemberEntity entity : memberEntities) {
+                                        entity.setAvatar(userAvatar.getUrl());
+                                    }
+                                    ContactHelper.getInstance().inserGroupMemEntity(memberEntities);
+                                }
                             }
                         } catch (InvalidProtocolBufferException e) {
                             e.printStackTrace();

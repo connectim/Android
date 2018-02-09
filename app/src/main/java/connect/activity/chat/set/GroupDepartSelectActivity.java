@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 
@@ -140,7 +141,7 @@ public class GroupDepartSelectActivity extends BaseActivity {
 
         nameLinear.setVisibility(View.VISIBLE);
         nameList.clear();
-        final Connect.Department department = Connect.Department.newBuilder()
+        Connect.Department department = Connect.Department.newBuilder()
                 .setId(2)
                 .setName("比特大陆")
                 .build();
@@ -165,15 +166,17 @@ public class GroupDepartSelectActivity extends BaseActivity {
 
             @Override
             public void itemClick(OrganizerEntity department) {
-                requestDepartmentInfoShow(department.getId());
+                if (department != null || department.getId() != null) {
+                    requestDepartmentInfoShow(department.getId());
 
-                Connect.Department department1 = Connect.Department.newBuilder()
-                        .setId(department.getId())
-                        .setCount(department.getCount())
-                        .setName(department.getName())
-                        .build();
-                nameList.add(department1);
-                nameLinear.notifyAddView(nameList, scrollview);
+                    Connect.Department department1 = Connect.Department.newBuilder()
+                            .setId(department.getId())
+                            .setCount(department.getCount())
+                            .setName(department.getName())
+                            .build();
+                    nameList.add(department1);
+                    nameLinear.notifyAddView(nameList, scrollview);
+                }
             }
 
             @Override
@@ -277,9 +280,12 @@ public class GroupDepartSelectActivity extends BaseActivity {
             }
         });
 
-        requestDepartmentInfoShow(department.getId());
-        if (isCreate && selectedUids.size() > 0) {
-            requestUserInfo(selectedUids.get(0));
+        requestDepartmentInfoShow(2);
+        if (selectedUids != null && isCreate && selectedUids.size() > 0) {
+            String id = selectedUids.get(0);
+            if (!TextUtils.isEmpty(id)) {
+                requestUserInfo(id);
+            }
         }
     }
 
@@ -350,13 +356,16 @@ public class GroupDepartSelectActivity extends BaseActivity {
                 nameList.remove(i);
             }
             nameLinear.notifyAddView(nameList, scrollview);
-            long id = nameList.get(position).getId();
-            requestDepartmentInfoShow(id);
+            Connect.Department department = nameList.get(position);
+            if(department!=null){
+                long id = department.getId();
+                requestDepartmentInfoShow(id);
+            }
         }
     };
 
     protected void requestDepartmentInfoShow(final long id) {
-        List<OrganizerEntity> entities = OrganizerHelper.organizerHelper.loadParamEntityByUpperId(id);
+        List<OrganizerEntity> entities = OrganizerHelper.getInstance().loadParamEntityByUpperId(id);
         departSelectAdapter.notifyData(entities);
 
         requestDepartmentInfo(id, new BaseListener<Connect.SyncWorkmates>() {
@@ -384,8 +393,8 @@ public class GroupDepartSelectActivity extends BaseActivity {
                 }
                 departSelectAdapter.notifyData(departSelectBeanList);
 
-                OrganizerHelper.organizerHelper.removeOrganizerEntityByUpperId(id);
-                OrganizerHelper.organizerHelper.insertOrganizerEntities(departSelectBeanList);
+                OrganizerHelper.getInstance().removeOrganizerEntityByUpperId(id);
+                OrganizerHelper.getInstance().insertOrganizerEntities(departSelectBeanList);
             }
 
             @Override

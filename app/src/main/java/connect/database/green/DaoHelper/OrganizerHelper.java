@@ -16,7 +16,7 @@ import connect.database.green.dao.OrganizerEntityDao;
 
 public class OrganizerHelper extends BaseDao {
 
-    public static OrganizerHelper organizerHelper = getInstance();
+    private static OrganizerHelper organizerHelper;
     private OrganizerEntityDao organizerEntityDao;
 
     public OrganizerHelper() {
@@ -24,11 +24,15 @@ public class OrganizerHelper extends BaseDao {
         organizerEntityDao = daoSession.getOrganizerEntityDao();
     }
 
-    private synchronized static OrganizerHelper getInstance() {
+    public synchronized static OrganizerHelper getInstance() {
         if (organizerHelper == null) {
             organizerHelper = new OrganizerHelper();
         }
         return organizerHelper;
+    }
+
+    public static void closeHelper() {
+        organizerHelper = null;
     }
 
     public List<OrganizerEntity> loadParamEntityByUpperId(long id) {

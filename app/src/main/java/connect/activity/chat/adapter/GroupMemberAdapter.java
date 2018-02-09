@@ -133,7 +133,7 @@ public class GroupMemberAdapter extends RecyclerView.Adapter<GroupMemberAdapter.
     public int getPositionForSection(char selectchar) {
         for (int i = 0; i < groupMemEntities.size(); i++) {
             GroupMemberEntity entity = groupMemEntities.get(i);
-            String showName = TextUtils.isEmpty(entity.getNick()) ? entity.getUsername() : entity.getNick();
+            String showName = entity.getUsername();
             if (TextUtils.isEmpty(showName)) {
                 showName = "#";
             }

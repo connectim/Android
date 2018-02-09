@@ -1,38 +1,34 @@
 package connect.activity.contact;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.ChatActivity;
-import connect.activity.chat.bean.Talker;
+import connect.activity.chat.bean.GroupMemberUtil;
 import connect.activity.contact.bean.ContactNotice;
 import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.bean.ContactEntity;
+import connect.database.green.bean.ConversionEntity;
+import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
-import connect.utils.permission.PermissionUtil;
 import connect.utils.system.SystemUtil;
 import connect.widget.DepartmentAvatar;
 import connect.widget.TopToolBar;
@@ -46,8 +42,6 @@ public class ContactInfoActivity extends BaseActivity {
     TopToolBar toolbar;
     @Bind(R.id.name_text)
     TextView nameText;
-    @Bind(R.id.sign_tv)
-    TextView signTv;
     @Bind(R.id.number_tv)
     TextView numberTv;
     @Bind(R.id.department_tv)
@@ -64,11 +58,12 @@ public class ContactInfoActivity extends BaseActivity {
     ImageView genderImage;
     @Bind(R.id.avatar_imageview)
     ImageView avatarImageview;
+    @Bind(R.id.number_text)
+    TextView numberText;
 
     private ContactInfoActivity mActivity;
     private ContactEntity contactEntity;
     private String uid;
-
 
     public static void lunchActivity(Activity activity, String uid) {
         Bundle bundle = new Bundle();
@@ -100,32 +95,32 @@ public class ContactInfoActivity extends BaseActivity {
 
         uid = getIntent().getExtras().getString("uid");
         contactEntity = (ContactEntity) getIntent().getExtras().getSerializable("bean");
-        if(contactEntity != null){
+        if (contactEntity != null) {
             uid = contactEntity.getUid();
             showView();
         }
+        numberText.setText(mActivity.getString(R.string.Link_Employee_number) + ":");
         searchUser(uid);
     }
 
-    private void showView(){
+    private void showView() {
         nameText.setText(contactEntity.getName());
         if (contactEntity.getGender() == 1) {
             genderImage.setImageResource(R.mipmap.man);
         } else {
             genderImage.setImageResource(R.mipmap.woman);
         }
-        signTv.setText(contactEntity.getTips());
         numberTv.setText(contactEntity.getEmpNo());
         departmentTv.setText(contactEntity.getOu());
         phoneTv.setText(contactEntity.getMobile());
         if (contactEntity.getRegisted()) {
-            if(ContactHelper.getInstance().loadFriendByUid(contactEntity.getUid()) == null){
+            if (ContactHelper.getInstance().loadFriendByUid(contactEntity.getUid()) == null) {
                 if (contactEntity.getGender() == 1) {
                     toolbar.setRightText(R.string.Work_Pay_attention_to_him);
                 } else {
                     toolbar.setRightText(R.string.Work_Pay_attention_to_her);
                 }
-            }else{
+            } else {
                 toolbar.setRightText(R.string.Work_Cancel_the_attention);
             }
             avatarImageview.setVisibility(View.VISIBLE);
@@ -162,17 +157,12 @@ public class ContactInfoActivity extends BaseActivity {
 
     @OnClick(R.id.chat_btn)
     void chat(View view) {
-        if (contactEntity == null || TextUtils.isEmpty(contactEntity.getUid())) {
-            return;
+        if (contactEntity != null && !TextUtils.isEmpty(contactEntity.getUid())) {
+            ChatActivity.startActivity(mActivity, Connect.ChatType.PRIVATE, contactEntity.getUid());
         }
-        Talker talker = new Talker(Connect.ChatType.PRIVATE, contactEntity.getUid());
-        talker.setAvatar(contactEntity.getAvatar());
-        talker.setNickName(contactEntity.getName());
-        talker.setFriendPublicKey(contactEntity.getPublicKey());
-        ChatActivity.startActivity(mActivity, talker);
     }
 
-    private void searchUser(String uid) {
+    private void searchUser(final String uid) {
         Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
                 .setCriteria(uid)
                 .setTyp(2)
@@ -184,7 +174,7 @@ public class ContactInfoActivity extends BaseActivity {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
                     Connect.Workmates workmates = Connect.Workmates.parseFrom(structData.getPlainData());
                     Connect.Workmate workmate = workmates.getList(0);
-                    if(contactEntity == null){
+                    if (contactEntity == null) {
                         contactEntity = new ContactEntity();
                         contactEntity.setName(workmate.getName());
                         contactEntity.setAvatar(workmate.getAvatar());
@@ -197,9 +187,9 @@ public class ContactInfoActivity extends BaseActivity {
                         contactEntity.setUid(workmate.getUid());
                         contactEntity.setOu(workmate.getOU());
                         showView();
-                    }else{
+                    } else {
                         final ContactEntity contactEntityLocal = ContactHelper.getInstance().loadFriendByUid(contactEntity.getUid());
-                        if(contactEntityLocal != null){
+                        if (contactEntityLocal != null) {
                             if (!workmate.getAvatar().equals(contactEntityLocal.getAvatar())) {
                                 contactEntity.setAvatar(workmate.getAvatar());
                                 showView();
@@ -207,6 +197,23 @@ public class ContactInfoActivity extends BaseActivity {
                                 ContactNotice.receiverContact();
                             }
                         }
+                    }
+
+                    ConversionEntity conversionEntity = ConversionHelper.getInstance().loadRoomEnitity(uid);
+                    if (conversionEntity != null) {
+                        conversionEntity.setAvatar(workmate.getAvatar());
+                        conversionEntity.setName(workmate.getName());
+                        ConversionHelper.getInstance().insertRoomEntity(conversionEntity);
+                    }
+
+                    List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMembersByUid(uid);
+                    if (memberEntities != null && memberEntities.size() > 0) {
+                        GroupMemberUtil.getIntance().clearMembersMap();
+                        for (GroupMemberEntity entity : memberEntities) {
+                            entity.setUsername(workmate.getName());
+                            entity.setAvatar(workmate.getAvatar());
+                        }
+                        ContactHelper.getInstance().inserGroupMemEntity(memberEntities);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -237,12 +244,12 @@ public class ContactInfoActivity extends BaseActivity {
                 if (isAdd) {
                     contactEntity.setRegisted(true);
                     ContactHelper.getInstance().insertContact(contactEntity);
-                    ToastEUtil.makeText(mActivity, R.string.Login_Save_successful).show();
+                    ToastEUtil.makeText(mActivity, R.string.Link_Focus_successful).show();
                     ContactNotice.receiverContact();
                     toolbar.setRightText(R.string.Work_Cancel_the_attention);
                 } else {
                     ContactHelper.getInstance().deleteEntity(contactEntity.getUid());
-                    ToastEUtil.makeText(mActivity, R.string.Link_Delete_Successful).show();
+                    ToastEUtil.makeText(mActivity, R.string.Link_Focus_cancle_successful).show();
                     ContactNotice.receiverContact();
                     if (contactEntity.getGender() == 1) {
                         toolbar.setRightText(R.string.Work_Pay_attention_to_him);

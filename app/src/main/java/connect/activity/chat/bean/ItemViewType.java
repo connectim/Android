@@ -28,7 +28,9 @@ public enum ItemViewType {
     OUTERWEBSITE_FROM(-1, LinkMessageRow.OUTER_WEBSITE),
     OUTERWEBSITE_TO(1, LinkMessageRow.OUTER_WEBSITE),
     SYSTEM_AD_FROM(-1, LinkMessageRow.SYSTEM_AD),
-    SYSTEM_AD_TO(1, LinkMessageRow.SYSTEM_AD);
+    SYSTEM_AD_TO(1, LinkMessageRow.SYSTEM_AD),
+    ROBOT_WAREHOSE_FROM(-1, LinkMessageRow.ROBOT_WAREHOSE),
+    ROBOT_WAREHOSE_TO(1, LinkMessageRow.ROBOT_WAREHOSE);
 
 
     public int direct;

@@ -16,7 +16,8 @@
         <APP_MODE>test</APP_MODE>
         <HTTP_MODE>false</HTTP_MODE>
         <SERVER_ADDRESS>http://192.168.40.4:10086</SERVER_ADDRESS>
-        <VISITOR_ADDRESS>http://10.31.36.143:10020</VISITOR_ADDRESS>
+        <VISITOR_ADDRESS>http://192.168.40.4:10040</VISITOR_ADDRESS>
+        <WAREHOUSE_ADDRESS>http://192.168.40.4:10050</WAREHOUSE_ADDRESS>
         <SHARE_CARD_ADDRESS>http://cd.snowball.io:5502/share/v1/contact/</SHARE_CARD_ADDRESS>
         <SHARE_PAY_ADDRESS>http://cd.snowball.io:5502/share/v1/pay</SHARE_PAY_ADDRESS>
         <SERVER_PUBKEY>03d307e51af08983cc0c13bb11d3619758e7b0b8a374e610de3503fc4ebeedfe96</SERVER_PUBKEY>
@@ -42,6 +43,7 @@
         <HTTP_MODE>true</HTTP_MODE>
         <SERVER_ADDRESS>https://short-bm.connect.im</SERVER_ADDRESS>
         <VISITOR_ADDRESS>https://wx-kq.bitmain.com</VISITOR_ADDRESS>
+        <WAREHOUSE_ADDRESS>https://wx-kq.bitmain.com</WAREHOUSE_ADDRESS>
         <SHARE_CARD_ADDRESS>https://me.connect.im/share/v1/contact/</SHARE_CARD_ADDRESS>
         <SHARE_PAY_ADDRESS>https://transfer.connect.im/share/v1/pay</SHARE_PAY_ADDRESS>
         <SERVER_PUBKEY>038bf4f74a5aaad532179c9714e2fa6ac8342b5b2c608572e4a12e8708401e0632

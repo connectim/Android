@@ -17,6 +17,7 @@ import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
+import connect.utils.ActivityUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.RegularUtil;
 import connect.utils.TimeUtil;
@@ -54,6 +55,8 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter {
      */
     @Override
     public void createGroup(String groupName) {
+        view.setLeftEnanle(false);
+
         List<Connect.AddGroupUserInfo> groupUserInfos = new ArrayList<>();
         for (Connect.Workmate entity : contactEntities) {
             Connect.AddGroupUserInfo userInfo = Connect.AddGroupUserInfo.newBuilder()
@@ -85,6 +88,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter {
             public void onError(Connect.HttpResponse response) {
                 // - 2421 groupinfo error
                 // - 2422 group create failed
+                view.setLeftEnanle(true);
                 if (response.getCode() == 2421) {
                     ToastEUtil.makeText(activity, R.string.Link_Group_create_information_error, ToastEUtil.TOAST_STATUS_FAILE).show();
                 } else if (response.getCode() == 2422) {
@@ -122,7 +126,6 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter {
             memEntity.setIdentifier(groupKey);
             memEntity.setUid(contact.getUid());
             memEntity.setAvatar(contact.getAvatar());
-            memEntity.setNick(contact.getName());
             memEntity.setRole(0);
             memEntity.setUsername(contact.getName());
             memEntities.add(memEntity);
@@ -147,7 +150,7 @@ public class GroupCreatePresenter implements GroupCreateContract.Presenter {
         ToastEUtil.makeText(activity, activity.getString(R.string.Chat_Create_Group_Success), 1, new ToastEUtil.OnToastListener() {
             @Override
             public void animFinish() {
-                ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUP_DISCUSSION, groupKey));
+                ChatActivity.startActivity(activity, Connect.ChatType.GROUPCHAT, groupKey);
             }
         }).show();
     }

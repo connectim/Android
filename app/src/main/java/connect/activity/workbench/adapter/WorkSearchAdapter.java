@@ -14,7 +14,7 @@ import java.util.List;
 import connect.activity.workbench.data.MenuBean;
 import connect.activity.workbench.data.MenuData;
 import connect.ui.activity.R;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import protos.Connect;
 
 
@@ -46,6 +46,9 @@ public class WorkSearchAdapter extends RecyclerView.Adapter<WorkSearchAdapter.Vi
         final Connect.Application application = applications.get(position);
 
         MenuBean menuBean = MenuData.getInstance().getData(application.getCode());
+        if(menuBean == null){
+            menuBean = new MenuBean();
+        }
         holder.categortyImg.setBackgroundResource(menuBean.getIconId());
         holder.categoryTxt.setText(menuBean.getTextId());
         holder.addStateTxt.setVisibility(View.GONE);

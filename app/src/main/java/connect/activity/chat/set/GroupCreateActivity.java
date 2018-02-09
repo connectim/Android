@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 
@@ -16,7 +17,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
-import connect.activity.chat.adapter.TalkGroupCreateAdapter;
+import connect.activity.chat.adapter.GroupCreateAdapter;
 import connect.activity.chat.set.contract.GroupCreateContract;
 import connect.activity.chat.set.presenter.GroupCreatePresenter;
 import connect.activity.home.view.LineDecoration;
@@ -98,7 +99,7 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.addItemDecoration(new LineDecoration(activity));
-        TalkGroupCreateAdapter adapter = new TalkGroupCreateAdapter();
+        GroupCreateAdapter adapter = new GroupCreateAdapter();
         adapter.setData(workmates);
         recyclerview.setAdapter(adapter);
 
@@ -123,7 +124,8 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
     }
 
     @Override
-    public void leftClickEnable(boolean b) {
+    public void setLeftEnanle(boolean b) {
+        toolbar.setLeftEnable(b);
     }
 
     @Override
@@ -136,4 +138,9 @@ public class GroupCreateActivity extends BaseActivity implements GroupCreateCont
         return activity;
     }
 
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return false;
+    }
 }

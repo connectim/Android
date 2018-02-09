@@ -2,7 +2,6 @@ package connect.activity.chat.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,25 +11,26 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import connect.database.green.bean.ContactEntity;
 import connect.ui.activity.R;
 import connect.utils.glide.GlideUtil;
+import protos.Connect;
 
 /**
- * Created by Administrator on 2017/11/20.
+ * Created by PuJin on 2018/1/11.
  */
-public class GroupCreateAdapter extends RecyclerView.Adapter<GroupCreateAdapter.MemberHolder>{
 
-    private List<ContactEntity> contactEntities=new ArrayList<>();
+public class GroupCreateAdapter extends RecyclerView.Adapter<GroupCreateAdapter.MemberHolder> {
 
-    public void setData(List<ContactEntity> contactEntities){
-        this.contactEntities=contactEntities;
+    private List<Connect.Workmate> contactEntities = new ArrayList<>();
+
+    public void setData(List<Connect.Workmate> contactEntities) {
+        this.contactEntities = contactEntities;
         notifyDataSetChanged();
     }
 
     @Override
     public MemberHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context =parent.getContext();
+        Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(R.layout.item_groupcreate_list, parent, false);
         MemberHolder memberHolder = new MemberHolder(view);
         return memberHolder;
@@ -38,10 +38,10 @@ public class GroupCreateAdapter extends RecyclerView.Adapter<GroupCreateAdapter.
 
     @Override
     public void onBindViewHolder(MemberHolder holder, int position) {
-        ContactEntity entity = contactEntities.get(position);
+        Connect.Workmate entity = contactEntities.get(position);
 
         GlideUtil.loadAvatarRound(holder.avatar, entity.getAvatar());
-        String curName = TextUtils.isEmpty(entity.getRemark()) ? entity.getName() : entity.getRemark();
+        String curName = entity.getName();
         holder.name.setText(curName);
     }
 

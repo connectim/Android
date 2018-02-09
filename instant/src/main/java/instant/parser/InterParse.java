@@ -13,6 +13,7 @@ import instant.bean.SocketACK;
 import instant.bean.UserCookie;
 import instant.parser.localreceiver.CommandLocalReceiver;
 import instant.sender.SenderManager;
+import instant.ui.InstantSdk;
 import instant.utils.SharedUtil;
 import instant.utils.TimeUtil;
 import instant.utils.cryption.DecryptionUtil;
@@ -200,6 +201,10 @@ public abstract class InterParse {
         if (TextUtils.isEmpty(version)) {
             version = "0";
         }
+        if (InstantSdk.getContactsCount() == 0) {
+            version = "0";
+        }
+
         Connect.SyncRelationship syncRelationship = Connect.SyncRelationship.newBuilder()
                 .setVersion(version).build();
         commandToIMTransfer(TimeUtil.timestampToMsgid(), SocketACK.CONTACT_SYNC, syncRelationship.toByteString());

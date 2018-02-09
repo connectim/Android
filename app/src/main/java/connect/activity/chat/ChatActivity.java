@@ -31,11 +31,12 @@ import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
-import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.GroupSetActivity;
 import connect.activity.chat.set.PrivateSetActivity;
 import connect.database.green.DaoHelper.ContactHelper;
+import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
+import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.instant.inter.ConversationListener;
@@ -83,6 +84,7 @@ public class ChatActivity extends BaseChatSendActivity {
     RelativeLayout relativelayout1;
 
     private static String TAG = "_ChatActivity";
+    private String searchTxt = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,21 +96,47 @@ public class ChatActivity extends BaseChatSendActivity {
 
     /**
      * @param activity
-     * @param talker
+     * @param chattype
+     * @param identify
      */
-    public static void startActivity(Activity activity, Talker talker) {
-        RoomSession.getInstance().setRoomType(talker.getTalkType());
-        RoomSession.getInstance().setRoomKey(talker.getTalkKey());
+    public static void startActivity(Activity activity, Connect.ChatType chattype, String identify) {
+        RoomSession.getInstance().setRoomType(chattype);
+        RoomSession.getInstance().setRoomKey(identify);
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable(ROOM_TALKER, talker);
+        bundle.putSerializable("CHAT_TYPE", chattype);
+        bundle.putSerializable("CHAT_IDENTIFY", identify);
+        ActivityUtil.next(activity, ChatActivity.class, bundle);
+    }
+
+    /**
+     * @param activity
+     * @param chattype
+     * @param identify
+     * @param searchTxt
+     */
+    public static void startActivity(Activity activity, Connect.ChatType chattype, String identify, String searchTxt) {
+        RoomSession.getInstance().setRoomType(chattype);
+        RoomSession.getInstance().setRoomKey(identify);
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("CHAT_TYPE", chattype);
+        bundle.putSerializable("CHAT_IDENTIFY", identify);
+        bundle.putString("CHAT_SEARCH_TXT", searchTxt);
         ActivityUtil.next(activity, ChatActivity.class, bundle);
     }
 
     @Override
     public void initView() {
-        super.initView();
         activity = this;
+        chatType = (Connect.ChatType) getIntent().getSerializableExtra("CHAT_TYPE");
+        chatIdentify = getIntent().getStringExtra("CHAT_IDENTIFY");
+        searchTxt = getIntent().getStringExtra("CHAT_SEARCH_TXT");
+        if (!(chatType == Connect.ChatType.CONNECT_SYSTEM)) {
+            toolbar.setRightImg(R.mipmap.menu_white);
+        }
+
+        super.initView();
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
         toolbar.setLeftListener(new View.OnClickListener() {
@@ -120,32 +148,26 @@ public class ChatActivity extends BaseChatSendActivity {
         toolbar.setRightListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String talkey = talker.getTalkKey();
-                if (!TextUtils.isEmpty(talkey)) {
-                    switch (talker.getTalkType()) {
-                        case PRIVATE:
-                            PrivateSetActivity.startActivity(activity, normalChat.chatKey(),normalChat.headImg(),normalChat.nickName());
-                            break;
-                        case GROUPCHAT:
-                        case GROUP_DISCUSSION:
-                            GroupSetActivity.startActivity(activity, talkey);
-                            break;
-                    }
+                switch (chatType) {
+                    case PRIVATE:
+                        PrivateSetActivity.startActivity(activity, normalChat.chatKey(), normalChat.headImg(), normalChat.nickName());
+                        break;
+                    case GROUPCHAT:
+                    case GROUP_DISCUSSION:
+                        GroupSetActivity.startActivity(activity, chatIdentify);
+                        break;
                 }
             }
         });
         recordview.setVisibility(View.GONE);
         inputPanel.setActivity(this);
         inputPanel.setRecordView(recordview);
-        updateBurnState(0);
-
-        if (!(talker.getTalkType() == Connect.ChatType.CONNECT_SYSTEM)) {
-            toolbar.setRightImg(R.mipmap.menu_white);
-        }
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
-        linearLayoutManager.setStackFromEnd(true);
+        if (TextUtils.isEmpty(searchTxt)) {
+            linearLayoutManager.setStackFromEnd(true);
+        }
         chatAdapter = new ChatAdapter(activity, recyclerChat, linearLayoutManager);
         recyclerChat.setLayoutManager(linearLayoutManager);
         recyclerChat.setAdapter(chatAdapter);
@@ -174,7 +196,13 @@ public class ChatActivity extends BaseChatSendActivity {
 
             @Override
             protected List<ChatMsgEntity> doInBackground(Void... params) {
-                return MessageHelper.getInstance().loadMoreMsgEntities(normalChat.chatKey(), TimeUtil.getCurrentTimeInLong());
+                List<ChatMsgEntity> msgEntities = null;
+                if (TextUtils.isEmpty(searchTxt)) {
+                    msgEntities = MessageHelper.getInstance().loadMoreMsgEntities(normalChat.chatKey(), TimeUtil.getCurrentTimeInLong());
+                } else {
+                    msgEntities = MessageHelper.getInstance().loadMessageBySearchTxt(normalChat.chatKey(), searchTxt);
+                }
+                return msgEntities;
             }
 
             @Override
@@ -182,7 +210,7 @@ public class ChatActivity extends BaseChatSendActivity {
                 super.onPostExecute(entities);
                 chatAdapter.insertItems(entities);
             }
-        }.execute();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -215,38 +243,56 @@ public class ChatActivity extends BaseChatSendActivity {
     }
 
     @Override
-    public void updateBurnState(long time) {
-        String titleName = "";
-        if (time <= 0) {
-            titleName = normalChat.nickName();
-            if (titleName.length() > 15) {
-                titleName = titleName.substring(0, 12);
-                titleName += "...";
+    public void updateTitleName() {
+        new AsyncTask<Void, Void, ConversionSettingEntity>() {
+
+            @Override
+            protected ConversionSettingEntity doInBackground(Void... voids) {
+                ConversionSettingEntity settingEntity = ConversionSettingHelper.getInstance().loadSetEntity(chatIdentify);
+                if (settingEntity == null) {
+                    settingEntity = new ConversionSettingEntity();
+                    settingEntity.setIdentifier(chatIdentify);
+                    settingEntity.setDisturb(0);
+                }
+                return settingEntity;
             }
-            if (normalChat.chatType() == Connect.ChatType.PRIVATE_VALUE || normalChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
-                toolbar.setTitle(titleName);
-            } else {
-                List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(normalChat.chatKey());
-                toolbar.setTitle(titleName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
-            }
-        } else {
-            String name = normalChat.nickName();
-            StringBuffer indexName = new StringBuffer();
-            indexName.append(name.charAt(0));
-            if (name.length() > 2) {
-                for (int i = 1; (i < name.length() - 1) && (i < 8); i++) {
-                    indexName.append("*");
+
+            @Override
+            protected void onPostExecute(ConversionSettingEntity settingEntity) {
+                super.onPostExecute(settingEntity);
+
+
+                String titleName = "";
+                switch (chatType) {
+                    case CONNECT_SYSTEM:
+                        titleName =getString(R.string.app_name);
+                        toolbar.setTitle(titleName);
+                        break;
+                    case PRIVATE:
+                        titleName = normalChat.nickName();
+                        if (titleName.length() > 15) {
+                            titleName = titleName.substring(0, 12);
+                            titleName += "...";
+                        }
+
+                        RoomSession.roomSession.setFriendAvatar(normalChat.headImg());
+                        toolbar.setTitle(settingEntity.getDisturb() == 0 ? null : R.mipmap.icon_close_notify, titleName);
+                        break;
+                    case GROUPCHAT:
+                    case GROUP_DISCUSSION:
+                        GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(chatIdentify);
+                        titleName = TextUtils.isEmpty(groupEntity.getName()) ? "" : groupEntity.getName();
+                        if (titleName.length() > 15) {
+                            titleName = titleName.substring(0, 12);
+                            titleName += "...";
+                        }
+
+                        List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(chatIdentify);
+                        toolbar.setTitle(settingEntity.getDisturb() == 0 ? null : R.mipmap.icon_close_notify, (titleName + String.format(Locale.ENGLISH, "(%d)", memEntities.size())));
+                        break;
                 }
             }
-            indexName.append(name.charAt(name.length() - 1));
-            if (normalChat.chatType() == Connect.ChatType.PRIVATE_VALUE || normalChat.chatType() == Connect.ChatType.CONNECT_SYSTEM_VALUE) {
-                toolbar.setTitle(R.mipmap.message_privacy_grey2x, null);
-                toolbar.setTitle(indexName.toString());
-            } else {
-                List<GroupMemberEntity> memEntities = ContactHelper.getInstance().loadGroupMemEntities(normalChat.chatKey());
-                toolbar.setTitle(indexName + String.format(Locale.ENGLISH, "(%d)", memEntities.size()));
-            }
-        }
+        }.execute();
     }
 
     /**
@@ -317,16 +363,16 @@ public class ChatActivity extends BaseChatSendActivity {
 
         ChatMsgEntity msgExtEntity = null;
         NormalChat normalChat = null;
-        switch (roomType) {
-            case 0:
+        switch (Connect.ChatType.forNumber(roomType)) {
+            case PRIVATE:
                 normalChat = new CFriendChat(roomkey);
                 break;
-            case 1:
-            case 3:
+            case GROUPCHAT:
+            case GROUP_DISCUSSION:
                 GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(roomkey);
                 normalChat = new CGroupChat(groupEntity);
                 break;
-            case 2:
+            case CONNECT_SYSTEM:
                 normalChat = new CRobotChat();
                 break;
         }
@@ -390,8 +436,9 @@ public class ChatActivity extends BaseChatSendActivity {
         long sendtime = 0;
         String draft = InputBottomLayout.bottomLayout.getDraft();
 
+        ChatMsgEntity lastExtEntity =null;
         if (chatAdapter.getMsgEntities().size() != 0) {
-            ChatMsgEntity lastExtEntity = chatAdapter.getMsgEntities().get(chatAdapter.getItemCount() - 1);
+            lastExtEntity = chatAdapter.getMsgEntities().get(chatAdapter.getItemCount() - 1);
             if (lastExtEntity != null) {
                 if (lastExtEntity.getMessageType() != -500) {
                     showtxt = lastExtEntity.showContent();
@@ -400,7 +447,7 @@ public class ChatActivity extends BaseChatSendActivity {
             }
         }
 
-        switch (talker.getTalkType()) {
+        switch (chatType) {
             case CONNECT_SYSTEM:
                 CRobotChat.getInstance().updateRoomMsg(draft, showtxt, sendtime);
                 break;
@@ -409,6 +456,14 @@ public class ChatActivity extends BaseChatSendActivity {
                 break;
             case GROUPCHAT:
             case GROUP_DISCUSSION:
+                if (lastExtEntity != null) {
+                    GroupMemberEntity memberEntity = ContactHelper.getInstance().loadGroupMemberEntity(chatIdentify, lastExtEntity.getMessage_from());
+                    if (memberEntity != null) {
+                        String memberName = memberEntity.getUsername();
+                        showtxt = memberName + ": " + showtxt;
+                    }
+                }
+
                 ((CGroupChat) normalChat).updateRoomMsg(draft, showtxt, sendtime);
                 break;
         }

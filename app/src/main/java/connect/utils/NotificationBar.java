@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.NotificationCompat;
-import android.text.TextUtils;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.ChatActivity;
@@ -55,22 +54,24 @@ public class NotificationBar {
             Bundle bundle = msg.getData();
             int type = bundle.getInt("TYPE");
             String identify = bundle.getString("KEY");
+            String title = bundle.getString("TITLE");
             String content = bundle.getString("CONTENT");
-            showNotification(identify, type, content);
+            showNotification(identify, type, title, content);
 
             ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
         }
     };
 
     /*** Refresh a message time recently */
-    public void noticeBarMsg(String identify, int chattype, String content) {
+    public void noticeBarMsg(String identify, int chattype, String title,String content) {
         mHandler.removeMessages(MSG_NOTICE);
 
         android.os.Message message = mHandler.obtainMessage(MSG_NOTICE);
         Bundle bundle = new Bundle();
         bundle.putString("KEY", identify);
         bundle.putInt("TYPE", chattype);
-        bundle.putSerializable("CONTENT", content);
+        bundle.putString("TITLE", title);
+        bundle.putString("CONTENT", content);
         message.setData(bundle);
 
         if (TimeUtil.getCurrentTimeInLong() - TIME_SENDNOTIFY < MSG_DELAYMILLIS) {
@@ -85,7 +86,7 @@ public class NotificationBar {
      *
      * @param roomkey friend pubkey/group pubkey
      */
-    private void showNotification(String roomkey, int type, String content) {
+    private void showNotification(String roomkey, int type, String title ,String content) {
         String runAcy = ActivityUtil.getRunningActivityName();
         String chatname = ChatActivity.class.getName();
 
@@ -102,10 +103,10 @@ public class NotificationBar {
         }
 
         if (SystemUtil.isRunBackGround()) {
-            notiticationBar(roomkey, type, content);
+            notiticationBar(roomkey, type, title, content);
         } else {
             if (!chatname.equals(runAcy)) {
-                notiticationBar(roomkey, type, content);
+                notiticationBar(roomkey, type, title, content);
             }
         }
     }
@@ -117,52 +118,48 @@ public class NotificationBar {
      * @param type
      * @param content
      */
-    private void notiticationBar(String roomid, int type, String content) {
+    private void notiticationBar(String roomid, int type, String title ,String content) {
         Context context = BaseApplication.getInstance();
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         Intent intent = new Intent();
 
-        String tickerTitle = "Connnect";
-        Talker talker = null;
+        String tickerTitle = context.getString(R.string.app_name);
+        String titcketContent = "";
 
         Connect.ChatType chatType = Connect.ChatType.forNumber(type);
         switch (chatType) {
             case PRIVATE:
-                ContactEntity friend = ContactHelper.getInstance().loadFriendEntity(roomid);
-                if (friend != null) {
-                    talker = new Talker(Connect.ChatType.PRIVATE,roomid);
-                    tickerTitle = TextUtils.isEmpty(friend.getRemark()) ? friend.getName() : friend.getRemark();
-                }
-                break;
             case GROUPCHAT:
-                GroupEntity group = ContactHelper.getInstance().loadGroupEntity(roomid);
-                if (group != null) {
-                    talker = new Talker(Connect.ChatType.GROUPCHAT,roomid);
-                    tickerTitle = group.getName();
-                }
+                tickerTitle = title;
+                titcketContent = content;
+                break;
+            case GROUP_DISCUSSION:
+                tickerTitle = title;
+                titcketContent = content;
                 break;
             case CONNECT_SYSTEM:
-                talker = new Talker(Connect.ChatType.CONNECT_SYSTEM, BaseApplication.getInstance().getString(R.string.app_name));
+                titcketContent = content;
                 break;
         }
 
         intent.setClass(context, NotificationBroadcastReceiver.class);
         intent.setAction("com.notification");
-        intent.putExtra("ROOM_TALKER", talker);
+        intent.putExtra("ROOM_TYPE", chatType.getNumber());
+        intent.putExtra("ROOM_IDENTIFY",roomid);
 
-        content = GlobalLanguageUtil.getInstance().translateValue(content);
+        titcketContent = GlobalLanguageUtil.getInstance().translateValue(titcketContent);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setContentTitle(tickerTitle);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mBuilder.setContentText(content);
+            mBuilder.setContentText(titcketContent);
             // mBuilder..setFullScreenIntent(pendingIntent, true);//
             mBuilder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
             mBuilder.setSmallIcon(R.mipmap.connect_logo);
         } else {
             mBuilder.setSmallIcon(R.mipmap.connect_logo);
-            mBuilder.setContentText(content);
+            mBuilder.setContentText(titcketContent);
         }
         mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.connect_logo));
         mBuilder.setTicker(tickerTitle);

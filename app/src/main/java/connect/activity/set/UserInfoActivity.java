@@ -16,7 +16,6 @@ import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.ToastEUtil;
 import connect.utils.glide.GlideUtil;
 import connect.widget.TopToolBar;
 
@@ -35,10 +34,8 @@ public class UserInfoActivity extends BaseActivity {
     LinearLayout nameLl;
     @Bind(R.id.avatar_iv)
     ImageView avatarIv;
-    @Bind(R.id.id_tv)
-    TextView idTv;
-    @Bind(R.id.id_ll)
-    RelativeLayout idLl;
+    @Bind(R.id.employee_number_tv)
+    TextView employeeNumberTv;
 
     private UserInfoActivity mActivity;
     private UserBean userBean;
@@ -72,6 +69,7 @@ public class UserInfoActivity extends BaseActivity {
 
         nameTv.setText(userBean.getName());
         //idTv.setText(userBean.getConnectId());
+        employeeNumberTv.setText(userBean.getEmp_no());
     }
 
     @OnClick(R.id.left_img)
@@ -84,18 +82,18 @@ public class UserInfoActivity extends BaseActivity {
         UserInfoAvatarActivity.startActivity(mActivity);
     }
 
-    @OnClick(R.id.name_ll)
+    /*@OnClick(R.id.name_ll)
     void goName(View view) {
-        //UserInfoNameActivity.startActivity(mActivity);
-    }
+        UserInfoNameActivity.startActivity(mActivity);
+    }*/
 
-    @OnClick(R.id.id_ll)
+    /*@OnClick(R.id.id_ll)
     void goNumber(View view) {
-        /*if (!userBean.isUpdateConnectId()) {
+        if (!userBean.isUpdateConnectId()) {
             UserInfoConnectIdActivity.startActivity(mActivity);
         } else {
             ToastEUtil.makeText(mActivity, R.string.Set_CONNECT_ID_can_only_be_set_once, ToastEUtil.TOAST_STATUS_FAILE).show();
-        }*/
-    }
+        }
+    }*/
 
 }

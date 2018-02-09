@@ -29,13 +29,15 @@ import connect.activity.chat.exts.OuterWebsiteActivity;
 import connect.activity.contact.bean.AppsState;
 import connect.activity.home.adapter.WorkbenchMenuAdapter;
 import connect.activity.workbench.VisitorsActivity;
+import connect.activity.workbench.WarehouseActivity;
 import connect.activity.workbench.WorkSeachActivity;
 import connect.activity.workbench.data.MenuBean;
 import connect.activity.workbench.data.MenuData;
 import connect.database.green.DaoHelper.ApplicationHelper;
 import connect.database.green.bean.ApplicationEntity;
 import connect.ui.activity.R;
-import connect.utils.DialogUtil;
+import connect.utils.ActivityUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -163,6 +165,8 @@ public class WorkbenchFragment extends BaseFragment {
                 VisitorsActivity.lunchActivity(activity);
             }else if (item.getCode().equals("add")){
                 WorkSeachActivity.startActivity(activity,2);
+            }else if(item.getCode().equals("warehouse")){
+                ActivityUtil.next(activity, WarehouseActivity.class);
             }else {
                 DialogUtil.showAlertTextView(activity, getString(R.string.Set_tip_title),
                         getString(R.string.Link_Function_Under_Development),

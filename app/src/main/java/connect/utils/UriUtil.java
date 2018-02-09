@@ -41,12 +41,12 @@ public class UriUtil {
     /** Query the user information 1: name(en)  2:uid  3:name(zh)*/
     public static String CONNECT_V3_WORKMATE_SEARCH = "/connect/v3/workmate/search";
     public static String CONNECT_V3_USERS_FOLLOW = "/connect/v3/users/follow";
-    public static String CONNECT_V3_PROXY_TOKEN = "/attendance/v3/proxy/token";
+    public static String CONNECT_V3_PROXY_TOKEN = "/visitors/v1/staff/token";
     public static String CONNECT_V3_API_BANNERS = "/connect/v3/api/banners";
     public static String CONNECT_V3_API_APPLICATIONS = "/connect/v3/api/applications";
-    public static String CONNECT_V3_PROXY_VISITOR_RECORDS = "/attendance/v3/proxy/visitor/records";
-    public static String CONNECT_V3_PROXY_EXAMINE_VERIFY = "/attendance/v3/proxy/examine/verify";
-    public static String CONNECT_V3_PROXY_RECORDS_HISTORY = "/attendance/v3/proxy/visitor/records/history";
+    public static String CONNECT_V3_PROXY_VISITOR_RECORDS = "/visitors/v1/staff/records";
+    public static String CONNECT_V3_PROXY_EXAMINE_VERIFY = "/visitors/v1/staff/records/examine/verify";
+    public static String CONNECT_V3_PROXY_RECORDS_HISTORY = "/visitors/v1/staff/records/history";
 
     public static String CONNECT_V3_API_APPLICATIONS_ADD = "/connect/v3/api/applications/add";
     public static String CONNECT_V3_API_APPLICATIONS_DEL = "/connect/v3/api/applications/del";
@@ -55,6 +55,12 @@ public class UriUtil {
     public static String CONNECT_V3_DEPAERTMENT_WORKMATES = "/connect/v3/department/workmates";
     /** 群成员邀请入群 */
     public static String CONNECT_V3_GROUP_INVITE = "/connect/v3/group/invite";
+    /** 获取仓库列表 */
+    public static String STORES_V1_IWORK_LOGS = "/stores/v1/iwork/logs";
+    /** 确认陌生人信息 */
+    public static String STORES_V1_IWORK_LOG_COMFIRM = "/stores/v1/iwork/log/confirm";
+    /** 查询陌生人信息详情 */
+    public static String STORES_V1_IWORK_LOGS_DETAIL = "/stores/v1/iwork/logs/detail";
 
     /**======================================================================================
      *                                Login successfully initialized

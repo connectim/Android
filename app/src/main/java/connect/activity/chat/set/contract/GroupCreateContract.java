@@ -13,9 +13,10 @@ import protos.Connect;
 public interface GroupCreateContract {
 
     interface BView extends BaseView<GroupCreateContract.Presenter> {
+
         List<Connect.Workmate> groupMemberList();
 
-        void leftClickEnable(boolean b);
+        void setLeftEnanle(boolean b);
     }
 
     interface Presenter extends BasePresenter {

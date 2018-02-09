@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import connect.activity.contact.ContactInfoActivity;
 import connect.activity.workbench.VisitorsActivity;
+import connect.activity.workbench.WarehouseDetailActivity;
 import connect.ui.activity.R;
 import instant.bean.ChatMsgEntity;
 import protos.Connect;
@@ -86,6 +87,23 @@ public class MsgNoticeHolder extends MsgBaseHolder {
                         public void onClick(View v) {
                             Activity activity = (Activity) context;
                             VisitorsActivity.lunchActivity(activity);
+                        }
+                    });
+                    break;
+                case 6://访客信息
+                    builder = new SpannableStringBuilder(notifyMessage.getContent());
+                    colorBuilder = new SpannableStringBuilder(context.getString(R.string.Wallet_Detail));
+                    colorSpan = new ForegroundColorSpan(Color.BLUE);
+                    colorBuilder.setSpan(colorSpan, 0, colorBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    builder.append(colorBuilder);
+
+                    notice.setText(builder);
+                    noticeLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Activity activity = (Activity) context;
+                            long id = Long.parseLong(notifyMessage.getExtion());
+                            WarehouseDetailActivity.lunchActivity(activity,id);
                         }
                     });
                     break;

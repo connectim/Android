@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <string name="Chat_Add_as_a_friend_to_chat">Add as a friend to chat</string>
     <string name="Chat_Agree">agree</string>
     <string name="Chat_Album_Permission_Get">Lack of reading system album permissions, please click
@@ -165,6 +165,8 @@
         please check the contact access in the settings of your phone
     </string>
     <string name="Link_Accept">Accept</string>
+    <string name="Link_Contains">Contains:%s</string>
+    <string name="Link_Relevant_record">%s relevant record</string>
     <string name="Link_Add">Add</string>
     <string name="Link_Add_Failed">Add Failed</string>
     <string name="Link_Add_focus">Set to pay special attention to</string>
@@ -180,6 +182,8 @@
     <string name="Link_Clear_All_Chat_History">Clear All Chat History</string>
     <string name="Link_Clear_Chat_History">Clear Chat History</string>
     <string name="Link_Contacts">Contacts</string>
+    <string name="Link_My_group">My group</string>
+    <string name="Link_Chat_record">Chat record</string>
     <string name="Link_Delete">Delete</string>
     <string name="Link_Delete_Failed">Delete Failed</string>
     <string name="Link_Delete_Successful">Delete Successful</string>
@@ -245,7 +249,13 @@
     <string name="Link_Remove_Member_Failed">Remove Member Failed</string>
     <string name="Link_Save_to_Contacts">Save to Contacts</string>
     <string name="Link_Scan">Scan</string>
+    <string name="Link_Close_to_remind">Close to remind</string>
     <string name="Link_Search">Search</string>
+    <string name="Link_Search_contacts">Search contacts</string>
+    <string name="Link_Search_chat_log">Search chat log</string>
+    <string name="Link_Search_group">Search group</string>
+    <string name="Link_Search_for_specified_content">Search for specified content</string>
+    <string name="Link_Commonly_used_search">Commonly used search</string>
     <string name="Link_Search_Result">Search Result</string>
     <string name="Link_Search_friends">Search</string>
     <string name="Link_Select_new_owner">Select new owner</string>
@@ -253,6 +263,7 @@
     <string name="Link_Selecting__new_owner__release_your_ownership">Selecting %s as new owner will
         release your ownership
     </string>
+    <string name="Link_Scan_Result">Scan results</string>
     <string name="Link_Send">Send</string>
     <string name="Link_Dialogue">Dialogues</string>
     <string name="Link_Workbench">Workbench</string>
@@ -298,7 +309,7 @@
     <string name="Link_enter_the_group">%s join the group</string>
     <string name="Link_group_count">%d group</string>
     <string name="Link_My_application">My applications</string>
-    <string name="Link_Employee_number">Employee number:</string>
+    <string name="Link_Employee_number">Employee number</string>
     <string name="Link_Subordinate_departments">Subordinate departments:</string>
     <string name="Link_Contact_number">Contact number:</string>
     <string name="Link_have_joined_the_group">You\'ve joined in the group</string>
@@ -333,16 +344,20 @@
     <string name="Login_username">Username</string>
     <string name="Login_Confirm_password">Confirm password</string>
     <string name="Login_Password_incorrect">Password incorrect</string>
+    <string name="Login_User_name_or_password_error">User name or password error</string>
     <string name="Login_Resend">Resend</string>
     <string name="Login_Resend_Time">Resend(%d)</string>
     <string name="Login_SMS_code_has_been_send">SMS code has been sent</string>
     <string name="Login_SMS_code_sent_failure">SMS code sent failure</string>
     <string name="Login_Save_successful">Save successful</string>
+    <string name="Link_Focus_successful">Focus on success</string>
+    <string name="Link_Focus_cancle_successful">Abolish attention to success</string>
     <string name="Login_Select_Country">Select Country</string>
     <string name="Login_Select_form_album">Choose from Photos</string>
     <string name="Login_Send_failed">Send failed</string>
     <string name="Login_Take_Photo">Take Photo</string>
     <string name="Login_Update_successful">Update successful</string>
+    <string name="Login_Review_successful">Review the success</string>
     <string name="Login_Updated_failed">Updated failed</string>
     <string name="Login_User_avatar_is_illegal">User avatar is illegal</string>
     <string name="Login_Verification_code_error">Verification code error</string>
@@ -377,6 +392,7 @@
     </string>
     <string name="Set_A_phone_number_can_only_grab_once">A phone number can only grab once</string>
     <string name="Set_About">About</string>
+    <string name="Set_Version_checking">Version checking</string>
     <string name="Set_Account_security">Account &amp; security</string>
     <string name="Set_Add_mobile">Add mobile</string>
     <string name="Set_Auto">Auto</string>
@@ -388,7 +404,7 @@
     <string name="Set_Change_Pattern">Change Pattern</string>
     <string name="Set_Open_password">Open the password authentication</string>
     <string name="Set_Close_password">Close the password authentication</string>
-    <string name="Set_Check_Update">Check Update</string>
+    <string name="Set_Check_Update">Check the new version</string>
     <string name="Set_Copied">Copied</string>
     <string name="Set_Currency">Currency</string>
     <string name="Set_Did_not_receive_the_verification_code">Did not receive verification code
@@ -406,8 +422,9 @@
     </string>
     <string name="Set_FeedBack">FeedBack</string>
     <string name="Set_Found_new_version">New version</string>
-    <string name="Set_General">General</string>
+    <string name="Set_General">General Settings</string>
     <string name="Set_Help_and_feedback">Help and feedback</string>
+    <string name="Set_Feedback">Feedback</string>
     <string name="Set_ID">ID</string>
     <string name="Set_Installed">Installed</string>
     <string name="Set_Language">Language</string>
@@ -459,14 +476,14 @@
     <string name="Set_Set_success">Edit successfully</string>
     <string name="Set_Setting">Setting</string>
     <string name="Set_Setting_Faied">Setting Failed</string>
-    <string name="Set_Sound">Sound</string>
+    <string name="Set_Sound">Voice remind</string>
     <string name="Set_Start_encrypted_messaging">You are starting an encrypt chat</string>
     <string name="Set_This_is_the_newest_version">This is the newest version</string>
     <string name="Set_Two_Patterns_do_not_match">Two Patterns do not match</string>
     <string name="Set_Use_Login_Password">Use Login Password</string>
     <string name="Set_Verify_Phone">Verify Phone</string>
     <string name="Set_Versions_number">Version: %s</string>
-    <string name="Set_Vibrate">Vibrate</string>
+    <string name="Set_Vibrate">Vibrate alert</string>
     <string name="Set_Your_Phone">Your Phone</string>
     <string name="Set_miner_fee_explain">A transaction fee is included to transactions so that
         miners will include your transaction in the next block.The higher the fee, the faster
@@ -628,10 +645,13 @@
     <string name="Work_The_contract">Contract</string>
     <string name="Work_Wage">Salary</string>
     <string name="Work_Visitors">Visitors</string>
+    <string name="Work_Warehouse">Warehouse security</string>
+    <string name="Work_Warehouse_abnormal_records">Warehouse abnormal entry and exit records</string>
     <string name="Work_Visitors_info">Visitor informations</string>
     <string name="Work_Visitors_reason">Purpose of this visit:%1$s</string>
     <string name="Work_Visitors_phone">Contact information:</string>
     <string name="Work_Visitors_time">Visit time:%1$s</string>
+    <string name="Work_Time">Recording time:%1$s</string>
     <string name="Work_Visitors_share">Share invitation qr code</string>
     <string name="Work_Visitors_Facial_information">Facial information:</string>
     <string name="Work_Visitors_Left_face">Left face</string>
@@ -647,6 +667,8 @@
     <string name="Work_Pay_attention_to_him">Follow</string>
     <string name="Work_Pay_attention_to_her">Follow</string>
     <string name="Work_Cancel_the_attention">Unfollow</string>
+    <string name="Work_Security_record_information">Security record information:</string>
+    <string name="Work_Exception_type">Exception type: unrecognized personnel enter the warehouse.</string>
 
     <string name="Chat_Refreshing">Refreshing...</string>
     <string name="Link_Join_Group_Success">Join the group chat successfully</string>
@@ -664,6 +686,7 @@
     <string name="Work_No_More_Results">No more search results</string>
     <string name="Work_Service_Search">Search application</string>
     <string name="Work_Search">Search</string>
+    <string name="Work_Entering_the_warehouse">Warehouse location:%1$s</string>
     <string name="Link_exit_the_group">%sexit the group</string>
     <string name="Work_Third_Party_Service">Third-party service</string>
     <string name="Link_Group_Create">Create Group</string>
@@ -675,4 +698,23 @@
     <string name="Link_Function_Manager">Application Management</string>
     <string name="Error_Device_Remote_Other_Login">Your account is already signed in on other device!</string>
     <string name="Link_Group_Launch">New chat</string>
+
+    <string name="Chat_There_Are_News_Mentions_You">There are %1$d messages mentioning you</string>
+    <string name="Chat_There_Are_News_Attention_You">There are %1$d follow-up messages</string>
+
+    <string name="Chat_Message_Top">Message top</string>
+    <string name="Chat_Message_Top_Remove">Cancel the top</string>
+    <string name="Chat_Conversation_Del">Delete the conversation</string>
+    <string name="Chat_Tip_Attention">[My Focus]</string>
+
+    <string name="Chat_Search_Txt">Find chat content</string>
+    <string name="Chat_Private_Setting">Setting</string>
+    <string name="Chat_Group_Setting">Group Setting(%1$d)</string>
+    <string name="Link_Open_to_remind">Turn on reminder</string>
+    <string name="Link_View_Detail">View Detail</string>
+    <string name="Robot_New_Visitor_Apply">New visitor apply!</string>
+    <string name="Robot_Abnormal_Remind">Abnormal warehouse remind!</string>
+    <string name="Robot_Visiting_Purpose">Visiting purpose: %1$s</string>
+    <string name="Robot_WareHouse_Warn">%1$s Detected stranger to enter</string>
+    <string name="Link_Today">Today</string>
 </resources>

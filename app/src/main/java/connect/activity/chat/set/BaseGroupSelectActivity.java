@@ -22,7 +22,6 @@ import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.adapter.BaseGroupSelectAdapter;
-import connect.activity.chat.bean.Talker;
 import connect.activity.home.bean.GroupRecBean;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
@@ -142,7 +141,7 @@ public class BaseGroupSelectActivity extends BaseActivity {
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(selectAdapter);
         selectAdapter.setData(contactEntities);
-        if(isCreateGroup){
+        if (isCreateGroup) {
             selectAdapter.setFriendUid(uid);
         }
         selectAdapter.setGroupSelectListener(new BaseGroupSelectAdapter.BaseGroupSelectListener() {
@@ -157,12 +156,17 @@ public class BaseGroupSelectActivity extends BaseActivity {
                 if (isCreateGroup) {
                     for (Map.Entry<String, Object> it : selectMembers.entrySet()) {
                         String key = it.getKey();
-                        selectedUid.add(key);
+                        if (!TextUtils.isEmpty(key)) {
+                            selectedUid.add(key);
+                        }
                     }
                 } else {
                     List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMemEntities(uid);
                     for (GroupMemberEntity entity : memberEntities) {
-                        selectedUid.add(entity.getUid());
+                        String uid = entity.getUid();
+                        if (!TextUtils.isEmpty(uid)) {
+                            selectedUid.add(entity.getUid());
+                        }
                     }
                 }
                 GroupDepartSelectActivity.startActivity(activity, isCreateGroup, selectedUid);
@@ -278,6 +282,7 @@ public class BaseGroupSelectActivity extends BaseActivity {
      * @param selectUids
      */
     public void inviteJoinGroup(final String groupIdentify, List<String> selectUids) {
+        toolbar.setLeftEnable(false);
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         Connect.GroupInviteWorkmate inviteWorkmate = Connect.GroupInviteWorkmate.newBuilder()
                 .setInviteBy(userBean.getUid())
@@ -299,13 +304,15 @@ public class BaseGroupSelectActivity extends BaseActivity {
                 ToastEUtil.makeText(activity, showHint, 1, new ToastEUtil.OnToastListener() {
                     @Override
                     public void animFinish() {
-                        ChatActivity.startActivity(activity, new Talker(Connect.ChatType.GROUP_DISCUSSION, groupIdentify));
+                        toolbar.setLeftEnable(true);
+                        ChatActivity.startActivity(activity, Connect.ChatType.GROUPCHAT, groupIdentify);
                     }
                 }).show();
             }
 
             @Override
             public void onError(Connect.HttpNotSignResponse response) {
+                toolbar.setLeftEnable(true);
                 if (response.getCode() == 2430) {
                     ToastEUtil.makeText(activity, R.string.Link_Qr_code_is_invalid, ToastEUtil.TOAST_STATUS_FAILE).show();
                 } else {

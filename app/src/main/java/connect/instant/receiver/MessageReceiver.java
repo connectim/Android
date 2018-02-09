@@ -1,28 +1,21 @@
 package connect.instant.receiver;
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-
 import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.home.bean.GroupRecBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
-import connect.database.green.DaoHelper.ConversionSettingHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
-import connect.database.green.bean.ConversionSettingEntity;
 import connect.database.green.bean.GroupEntity;
-import connect.instant.inter.ConversationListener;
 import connect.instant.model.CFriendChat;
 import connect.instant.model.CGroupChat;
 import connect.ui.activity.R;
 import connect.utils.NotificationBar;
+import connect.utils.ProtoBufUtil;
+import connect.utils.RegularUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -52,68 +45,25 @@ public class MessageReceiver implements MessageListener {
     }
 
     @Override
-    public long chatBurnTime(String publicKey) {
-        ConversionSettingEntity settingEntity = ConversionSettingHelper.getInstance().loadSetEntity(publicKey);
-        return settingEntity == null || settingEntity.getSnap_time() == null ?
-                0 : settingEntity.getSnap_time();
-    }
-
-    @Override
     public void singleChat(Connect.MessageData messageData) throws Exception {
-        final Connect.ChatMessage chatMessage = messageData.getChatMsg();
+        Connect.ChatMessage chatMessage = messageData.getChatMsg();
 
-        final String friendUid = chatMessage.getFrom();
+        String friendUid = chatMessage.getFrom();
         String friendPublicKey = messageData.getChatSession().getPubKey();
 
-        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(friendUid);
-
-        final UserCookie userCookie = Session.getInstance().getConnectCookie();
-        final String myPrivateKey = userCookie.getPrivateKey();
-        final EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;
-        final Connect.GcmData gcmData = chatMessage.getCipherData();
-        final byte[] contents = DecryptionUtil.decodeAESGCM(ecdhExts, myPrivateKey, friendPublicKey, gcmData);
+        UserCookie userCookie = Session.getInstance().getConnectCookie();
+        String myPrivateKey = userCookie.getPrivateKey();
+        EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;
+        Connect.GcmData gcmData = chatMessage.getCipherData();
+        byte[] contents = DecryptionUtil.decodeAESGCM(ecdhExts, myPrivateKey, friendPublicKey, gcmData);
         if (contents.length <= 2) {
             return;
         }
 
-        if (contactEntity == null) {
-            Connect.SearchUser searchUser = Connect.SearchUser.newBuilder()
-                    .setTyp(1)
-                    .setCriteria(friendUid)
-                    .build();
-            OkHttpUtil.getInstance().postEncrySelf(UriUtil.CONNECT_V1_USER_SEARCH, searchUser, new ResultCall<Connect.HttpNotSignResponse>() {
-                @Override
-                public void onResponse(Connect.HttpNotSignResponse response) {
-                    try {
-                        Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
-                        Connect.UsersInfo userInfo = Connect.UsersInfo.parseFrom(structData.getPlainData());
+        Connect.MessageUserInfo senderInfo = chatMessage.getSender();
+        String senderAvatar = senderInfo == null ? "" : senderInfo.getAvatar();
+        String senderName = senderInfo == null ? "" : senderInfo.getUsername();
 
-                        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(friendUid);
-                        if (contactEntity == null) {
-                            Connect.UserInfo userinfo = userInfo.getUsers(0);
-                            contactEntity = new ContactEntity();
-                            contactEntity.setPublicKey(userinfo.getPubKey());
-                            contactEntity.setAvatar(userinfo.getAvatar());
-                            contactEntity.setName(userinfo.getName());
-                            contactEntity.setUid(userinfo.getUid());
-                        }
-
-                        dealFriendChat(contactEntity, chatMessage, contents);
-                    } catch (InvalidProtocolBufferException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onError(Connect.HttpNotSignResponse response) {
-                }
-            });
-        } else {
-            dealFriendChat(contactEntity, chatMessage, contents);
-        }
-    }
-
-    public void dealFriendChat(ContactEntity contactEntity, Connect.ChatMessage chatMessage, byte[] contents) {
         chatMessage = chatMessage.toBuilder().setBody(ByteString.copyFrom(contents)).build();
         ChatMsgEntity chatMsgEntity = ChatMsgEntity.transToMessageEntity(chatMessage.getMsgId(),
                 chatMessage.getFrom(), chatMessage.getChatType().getNumber(), chatMessage.getMsgType(),
@@ -122,15 +72,15 @@ public class MessageReceiver implements MessageListener {
         MessageHelper.getInstance().insertMsgExtEntity(chatMsgEntity);
 
         long messageTime = chatMessage.getMsgTime();
+        String content = chatMsgEntity.showContent();
 
-        CFriendChat friendChat = new CFriendChat(contactEntity.getUid());
-        friendChat.setUserName(contactEntity.getName());
-        friendChat.setUserAvatar(contactEntity.getAvatar());
-        friendChat.updateRoomMsg(null, chatMsgEntity.showContent(), messageTime, -1, 1, false);
+        CFriendChat friendChat = new CFriendChat(friendUid);
+        friendChat.setUserName(senderName);
+        friendChat.setUserAvatar(senderAvatar);
+        friendChat.updateRoomMsg(null, content, messageTime, -1, 1, false);
 
         RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, chatMsgEntity.getMessage_from(), chatMsgEntity);
-        NotificationBar.notificationBar.noticeBarMsg(chatMsgEntity.getMessage_from(), Connect.ChatType.PRIVATE_VALUE, chatMsgEntity.showContent());
-
+        NotificationBar.notificationBar.noticeBarMsg(friendUid, Connect.ChatType.PRIVATE_VALUE, senderName, content);
     }
 
     @Override
@@ -138,35 +88,114 @@ public class MessageReceiver implements MessageListener {
         String groupIdentify = chatMessage.getTo();
         GroupEntity groupEntity = ContactHelper.getInstance().loadGroupEntity(groupIdentify);
 
+        // 显示文本的具体内容
+        String txtContent = "";
+        if (chatMessage.getMsgType() == MessageType.Text.type) {
+            try {
+                Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(chatMessage.getBody());
+                txtContent = textMessage.getContent();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         ChatMsgEntity msgExtEntity = MessageHelper.getInstance().insertMessageEntity(chatMessage.getMsgId(), groupIdentify,
                 chatMessage.getChatType().getNumber(), chatMessage.getMsgType(), chatMessage.getFrom(),
-                chatMessage.getTo(), chatMessage.getBody().toByteArray(), chatMessage.getMsgTime(), 1);
+                chatMessage.getTo(), chatMessage.getBody().toByteArray(), txtContent, chatMessage.getMsgTime(), 1);
         MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+
+        String content = msgExtEntity.showContent();
+        String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
+
+        // At消息
+        int isAtMe = -1;
+        if (chatMessage.getMsgType() == MessageType.Text.type) {
+            try {
+                Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(chatMessage.getBody());
+                if (textMessage.getAtUidsList().lastIndexOf(myUid) != -1) {
+                    isAtMe = 1;
+                    content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        int isMyAttention = -1;
+        ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(chatMessage.getFrom());
+        isMyAttention = contactEntity == null ? -1 : 1;
+
+        Connect.MessageUserInfo senderInfo = chatMessage.getSender();
+        String senderAvatar = senderInfo == null ? "" : senderInfo.getAvatar();
+        String senderName = senderInfo == null ? "" : senderInfo.getUsername();
+        String showContent = senderName + ": " + content;
+        final GroupUpdate groupUpdate = new GroupUpdate(groupIdentify, showContent, chatMessage.getMsgTime(), isAtMe, isMyAttention, msgExtEntity);
 
         if (groupEntity == null) {//group backup
             GroupRecBean.sendGroupRecMsg(GroupRecBean.GroupRecType.GroupInfo, groupIdentify);
-        } else {
-            ConversationListener conversationListener = new CGroupChat(groupEntity);
-            conversationListener.updateRoomMsg(null, msgExtEntity.showContent(), chatMessage.getMsgTime(), -1, 1, false);
-            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, groupIdentify, msgExtEntity);
+            Connect.GroupId groupId = Connect.GroupId.newBuilder()
+                    .setIdentifier(groupIdentify)
+                    .build();
 
-            String content = msgExtEntity.showContent();
-            String myUid = SharedPreferenceUtil.getInstance().getUser().getUid();
-            if (chatMessage.getMsgType() == MessageType.Text.type) {
-                try {
-                    Connect.TextMessage textMessage = Connect.TextMessage.parseFrom(chatMessage.getBody());
-                    if (textMessage.getAtUidsList().lastIndexOf(myUid) != -1) {
-                        content = BaseApplication.getInstance().getBaseContext().getString(R.string.Chat_Someone_note_me);
+            OkHttpUtil.getInstance().postEncrySelf(UriUtil.GROUP_PULLINFO, groupId, new ResultCall<Connect.HttpResponse>() {
+                @Override
+                public void onResponse(Connect.HttpResponse response) {
+                    try {
+                        Connect.StructData structData = Connect.StructData.parseFrom(response.getBody());
+                        Connect.GroupInfo groupInfo = Connect.GroupInfo.parseFrom(structData.getPlainData());
+                        if (ProtoBufUtil.getInstance().checkProtoBuf(groupInfo)) {
+                            Connect.Group group = groupInfo.getGroup();
+                            String groupIdentifier = group.getIdentifier();
+
+                            GroupEntity groupEntity = new GroupEntity();
+                            groupEntity.setIdentifier(groupIdentifier);
+                            String groupname = group.getName();
+                            groupEntity.setCategory(group.getCategory());
+                            groupEntity.setName(groupname);
+                            groupEntity.setAvatar(RegularUtil.groupAvatar(group.getIdentifier()));
+
+                            groupUpdate.updateRoomMessage(groupEntity);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-            }
-            NotificationBar.notificationBar.noticeBarMsg(groupIdentify, Connect.ChatType.GROUPCHAT_VALUE, content);
+
+                @Override
+                public void onError(Connect.HttpResponse response) {
+
+                }
+            });
+        } else {
+            groupUpdate.updateRoomMessage(groupEntity);
         }
     }
 
-    @Override
-    public void inviteJoinGroup(Connect.CreateGroupMessage groupMessage) {
+    private class GroupUpdate {
+
+        String identify;
+        String content;
+        long messageTime;
+        int isAtMe;
+        int isMyAttention;
+        ChatMsgEntity msgEntity;
+
+        public GroupUpdate(String identify, String content, long messageTime, int isAtMe, int isMyAttention, ChatMsgEntity msgEntity) {
+            this.identify = identify;
+            this.content = content;
+            this.messageTime = messageTime;
+            this.isAtMe = isAtMe;
+            this.isMyAttention = isMyAttention;
+            this.msgEntity = msgEntity;
+        }
+
+        void updateRoomMessage(GroupEntity groupEntity) {
+            CGroupChat cGroupChat = new CGroupChat(groupEntity);
+            cGroupChat.updateRoomMsg(null, content, messageTime, isAtMe, 1, false, isMyAttention);
+            RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, identify, msgEntity);
+
+
+            NotificationBar.notificationBar.noticeBarMsg(identify, Connect.ChatType.GROUPCHAT_VALUE, groupEntity.getName(), content);
+        }
     }
 }

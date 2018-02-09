@@ -142,6 +142,8 @@
     <string name="Link_contact_loading_failed_check_the_contact_pression">获取联系人失败，请到手机设置中检查联系人权限
     </string>
     <string name="Link_Accept">接受</string>
+    <string name="Link_Contains">包含：%s</string>
+    <string name="Link_Relevant_record">%s 条相关记录</string>
     <string name="Link_Add">添加</string>
     <string name="Link_Add_Failed">添加失败</string>
     <string name="Link_Add_focus">设置为特别关注</string>
@@ -155,7 +157,7 @@
     <string name="Link_Black_List">黑名单</string>
     <string name="Link_Block">加入黑名单</string>
     <string name="Link_Clear_All_Chat_History">清除聊天记录</string>
-    <string name="Link_Clear_Chat_History">清空历史记录</string>
+    <string name="Link_Clear_Chat_History">清空聊天记录</string>
     <string name="Link_Delete">删除</string>
     <string name="Link_Delete_Failed">删除失败</string>
     <string name="Link_Delete_Successful">删除成功</string>
@@ -219,13 +221,22 @@
     <string name="Link_Remove_Member_Failed">移除成员失败</string>
     <string name="Link_Save_to_Contacts">保存到通讯录</string>
     <string name="Link_Scan">扫一扫</string>
+    <string name="Link_Close_to_remind">关闭提醒</string>
     <string name="Link_Search">搜索</string>
+    <string name="Link_Search_contacts">搜索联系人</string>
+    <string name="Link_Search_group">搜索群组</string>
+    <string name="Link_Search_chat_log">搜索聊天记录</string>
+    <string name="Link_Search_for_specified_content">搜索指定内容</string>
+    <string name="Link_Commonly_used_search">常用搜索</string>
+    <string name="Link_Scan_Result">扫描结果</string>
     <string name="Link_Search_Result">搜索结果</string>
     <string name="Link_Search_friends">搜索好友</string>
     <string name="Link_Select_new_owner">选择新群主</string>
     <string name="Link_Selecting__new_owner__release_your_ownership">确定 %s 作为群主, 你将主动放弃群主身份</string>
     <string name="Link_Send">发送</string>
     <string name="Link_Contacts">联系人</string>
+    <string name="Link_My_group">我的群组</string>
+    <string name="Link_Chat_record">聊天记录</string>
     <string name="Link_Dialogue">对话</string>
     <string name="Link_Workbench">工作台</string>
     <string name="Link_Inactive">未激活</string>
@@ -260,7 +271,7 @@
     <string name="Link_contact_count_group_count">%1$d位联系人 %2$d个群组</string>
     <string name="Link_enter_the_group">%s加入群聊</string>
     <string name="Link_group_count">%d个群组</string>
-    <string name="Link_Employee_number">员工编号：</string>
+    <string name="Link_Employee_number">员工编号</string>
     <string name="Link_My_application">我的应用</string>
     <string name="Link_Subordinate_departments">所属部门：</string>
     <string name="Link_Contact_number">联系号码：</string>
@@ -291,16 +302,20 @@
         二次认证密码用于用户在登录时，多重保护账户，提高账户的安全性
     </string>
     <string name="Login_Password_incorrect">密码错误</string>
+    <string name="Login_User_name_or_password_error">用户名或密码错误</string>
     <string name="Login_Resend">重发</string>
     <string name="Login_Resend_Time">重发(%d)</string>
     <string name="Login_SMS_code_has_been_send">短信验证码已发送</string>
     <string name="Login_SMS_code_sent_failure">短信验证码发送失败</string>
     <string name="Login_Save_successful">保存成功</string>
+    <string name="Link_Focus_successful">关注成功</string>
+    <string name="Link_Focus_cancle_successful">取消关注成功</string>
     <string name="Login_Select_Country">选择国家</string>
     <string name="Login_Select_form_album">从相册选择</string>
     <string name="Login_Send_failed">发送失败</string>
     <string name="Login_Take_Photo">拍照</string>
     <string name="Login_Update_successful">更新成功</string>
+    <string name="Login_Review_successful">审核成功</string>
     <string name="Login_Updated_failed">更新失败</string>
     <string name="Login_User_avatar_is_illegal">用户头像不合法</string>
     <string name="Login_Verification_code_error">验证码错误</string>
@@ -327,6 +342,7 @@
     <string name="Set_CONNECT_ID_regular">CONNECT ID 必须是以字母开头的6-20位字母、数字、下划线的组合</string>
     <string name="Set_A_phone_number_can_only_grab_once">一个手机号只能抢一次</string>
     <string name="Set_About">关于</string>
+    <string name="Set_Version_checking">版本检查</string>
     <string name="Set_Account_security">账号与安全</string>
     <string name="Set_Add_mobile">绑定手机号</string>
     <string name="Set_Auto">自动付费</string>
@@ -337,7 +353,7 @@
     <string name="Set_Change_Pattern">修改手势</string>
     <string name="Set_Open_password">开启密码验证</string>
     <string name="Set_Close_password">关闭密码验证</string>
-    <string name="Set_Check_Update">检查更新</string>
+    <string name="Set_Check_Update">检查新版本</string>
     <string name="Set_Copied">已复制</string>
     <string name="Set_Currency">货币</string>
     <string name="Set_Did_not_receive_the_verification_code">未收到验证码？发送语音验证</string>
@@ -350,14 +366,15 @@
     <string name="Set_Enter_correct_please_enter_a_new_gesture">输入正确，请输入新的手势</string>
     <string name="Set_FeedBack">反馈</string>
     <string name="Set_Found_new_version">新版本</string>
-    <string name="Set_General">通用</string>
+    <string name="Set_General">通用设置</string>
     <string name="Set_Help_and_feedback">帮助与反馈</string>
+    <string name="Set_Feedback">意见反馈</string>
     <string name="Set_ID">ID</string>
     <string name="Set_Installed">已安装</string>
     <string name="Set_Language">多语言</string>
     <string name="Set_Link_Mobile">绑定手机</string>
     <string name="Set_Load_failed_please_try_again_later">加载失败，请稍候再试</string>
-    <string name="Set_Log_Out">退出</string>
+    <string name="Set_Log_Out">退出登录</string>
     <string name="Set_Delete_account">删除账户</string>
     <string name="Set_Logging_out">正在退出...</string>
     <string name="Set_Logout_delete_login_data_still_log">退出后不会删除任何历史数据,下次登录依然可以使用本帐号</string>
@@ -396,14 +413,14 @@
     <string name="Set_Set_success">修改成功</string>
     <string name="Set_Setting">设置</string>
     <string name="Set_Setting_Faied">设置失败</string>
-    <string name="Set_Sound">声音</string>
+    <string name="Set_Sound">声音提醒</string>
     <string name="Set_Start_encrypted_messaging">开始加密聊天</string>
     <string name="Set_This_is_the_newest_version">已是最新版本</string>
     <string name="Set_Two_Patterns_do_not_match">两次手势输入不一致</string>
     <string name="Set_Use_Login_Password">通过登录密码</string>
     <string name="Set_Verify_Phone">验证手机</string>
     <string name="Set_Versions_number">版本号: %s</string>
-    <string name="Set_Vibrate">震动</string>
+    <string name="Set_Vibrate">震动提示</string>
     <string name="Set_Your_Phone">您的手机</string>
     <string name="Set_miner_fee_explain">网络手续费用于支付比特币矿工费用,更高的手续费意味着交易有可能更快被区块链确认.</string>
     <string name="Set_new_version">新版本:%s</string>
@@ -545,10 +562,13 @@
     <string name="Work_The_contract">合同</string>
     <string name="Work_Wage">工资</string>
     <string name="Work_Visitors">访客</string>
+    <string name="Work_Warehouse">仓库安防</string>
+    <string name="Work_Warehouse_abnormal_records">仓库异常出入记录</string>
     <string name="Work_Visitors_info">访客信息</string>
     <string name="Work_Visitors_reason">访客目的：%1$s</string>
     <string name="Work_Visitors_phone">联系方式：</string>
     <string name="Work_Visitors_time">访问时间：%1$s</string>
+    <string name="Work_Time">记录时间：%1$s</string>
     <string name="Work_Visitors_share">分享邀请二维码</string>
     <string name="Work_Visitors_Facial_information">脸部信息：</string>
     <string name="Work_Visitors_Left_face">左脸</string>
@@ -564,6 +584,8 @@
     <string name="Work_Pay_attention_to_him">关注他</string>
     <string name="Work_Pay_attention_to_her">关注她</string>
     <string name="Work_Cancel_the_attention">取消关注</string>
+    <string name="Work_Security_record_information">安防记录信息：</string>
+    <string name="Work_Exception_type">异常类型：未识别人员进入仓库</string>
 
     <string name="Chat_Refreshing">正在更新...</string>
     <string name="Link_Join_Group_Success">成功加入群聊</string>
@@ -583,6 +605,7 @@
     <string name="Work_Third_Party_Service">第三方服务</string>
     <string name="Work_Service_Search">搜索应用</string>
     <string name="Work_Search">搜索</string>
+    <string name="Work_Entering_the_warehouse">仓库位置：%1$s</string>
 
     <string name="Link_exit_the_group">%s离开了群聊</string>
     <string name="Link_Group_Create">创建群组</string>
@@ -594,4 +617,23 @@
     <string name="Link_Function_Manager">应用管理</string>
     <string name="Error_Device_Remote_Other_Login">你的账号已经在其他设备上登录</string>
     <string name="Link_Group_Launch">发起群聊</string>
+
+    <string name="Chat_There_Are_News_Mentions_You">有%1$d条消息提到了你</string>
+    <string name="Chat_There_Are_News_Attention_You">有%1$d条新的关注消息</string>
+
+    <string name="Chat_Message_Top">消息置顶</string>
+    <string name="Chat_Message_Top_Remove">取消置顶</string>
+    <string name="Chat_Conversation_Del">删除会话</string>
+    <string name="Chat_Tip_Attention">[我的关注]</string>
+
+    <string name="Chat_Search_Txt">查找聊天内容</string>
+    <string name="Chat_Private_Setting">聊天信息</string>
+    <string name="Chat_Group_Setting">群组设置(%1$d)</string>
+    <string name="Link_Open_to_remind">开启提醒</string>
+    <string name="Link_View_Detail">查看详情</string>
+    <string name="Robot_New_Visitor_Apply">新的访客申请!</string>
+    <string name="Robot_Abnormal_Remind">仓库异常出入提醒!</string>
+    <string name="Robot_Visiting_Purpose">来访目的: %1$s</string>
+    <string name="Robot_WareHouse_Warn">%1$s 检测到陌生人进入</string>
+    <string name="Link_Today">今天</string>
 </resources>

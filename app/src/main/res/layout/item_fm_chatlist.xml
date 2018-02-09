@@ -1,23 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<connect.widget.SideScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-                                 android:layout_width="match_parent"
-                                 android:layout_height="wrap_content">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/relative_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_white"
+    android:gravity="center_vertical">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:id="@id/framelayout"
+        android:layout_width="@dimen/dp_62"
+        android:layout_height="@dimen/dp_62"
+        android:layout_centerVertical="true">
 
-        <include
-            android:id="@id/bottom_layout"
-            layout="@layout/part_chat_bottom"
+        <ImageView
+            android:id="@id/roundimg_head"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_14"
+            android:scaleType="centerCrop" />
+
+        <connect.widget.MaterialBadgeTextView
+            android:id="@id/badgetv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/content_layout"/>
-
-        <include
-            android:id="@id/content_layout"
-            layout="@layout/part_chat_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_alignEnd="@id/roundimg_head"
+            android:layout_alignRight="@id/roundimg_head"
+            android:layout_marginRight="@dimen/dp__8"
+            android:layout_marginTop="@dimen/dp_2"
+            android:background="@color/color_red"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp_6" />
     </RelativeLayout>
-</connect.widget.SideScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_62"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_toRightOf="@id/framelayout"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@id/usernameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/color_393939"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold" />
+
+        <connect.activity.home.view.ShowTextView
+            android:id="@id/directTxtView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_7"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/color_8E8E8E"
+            android:textSize="@dimen/sp_12" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_62"
+        android:layout_alignParentRight="true"
+        android:gravity="right"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_14">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@id/top"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:contentDescription="@string/app_name"
+                android:src="@mipmap/message_stick_on_top2x"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@id/notify"
+                android:layout_width="@dimen/dp_11"
+                android:layout_height="@dimen/dp_11"
+                android:layout_marginLeft="@dimen/dp_3"
+                android:layout_marginTop="@dimen/dp_2"
+                android:contentDescription="@string/app_name"
+                android:src="@mipmap/icon_close_notify"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@id/txt1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_b3b5bc"
+            android:textSize="@dimen/sp_12" />
+    </LinearLayout>
+</RelativeLayout>

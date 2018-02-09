@@ -13,8 +13,6 @@ public abstract class BaseChat<T> implements Serializable {
 
     private static String TAG = "BaseChat";
 
-    protected boolean isStranger = false;
-
     /**
      * 发送文本
      * @param string 消息文本
@@ -88,6 +86,7 @@ public abstract class BaseChat<T> implements Serializable {
      *                   3:lucky packet
      *                   4:stranger
      *                   5:审核信息
+     *                   6:访客信息
      * @param content show text
      * @param ext ext
      * @return
@@ -152,14 +151,6 @@ public abstract class BaseChat<T> implements Serializable {
     public abstract String headImg();
 
     public abstract String nickName();
-
-    public boolean isStranger() {
-        return isStranger;
-    }
-
-    public void setStranger(boolean stranger) {
-        isStranger = stranger;
-    }
 
     public abstract String friendPublicKey();
 }

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/top_line"
+        style="@style/BaseViewLine.eeeeee"
+        android:layout_height="@dimen/dp_15"
+        android:background="@color/color_F6F6F6"/>
+
+    <TextView
+        android:id="@+id/title_text"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_56"
+        android:background="@color/color_ffffff"
+        android:paddingLeft="@dimen/dp_15"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/sp_14"
+        android:textColor="@color/color_cecece"
+        android:text="@string/app_name"/>
+
+    <View
+        style="@style/BaseViewLine.eeeeee"
+        android:background="@color/color_FBFBFB"
+        android:layout_height="@dimen/dp_1"/>
+
+    <LinearLayout
+        android:id="@+id/content_linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/selector_list_item_bg">
+        <RelativeLayout
+            android:id="@+id/avatar_rela"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_15"
+            android:paddingRight="@dimen/dp_15"
+            android:paddingTop="@dimen/dp_9"
+            android:paddingBottom="@dimen/dp_9"
+            android:background="@color/color_FBFBFB">
+            <ImageView
+                android:id="@+id/avatar_image"
+                android:layout_width="@dimen/dp_38"
+                android:layout_height="@dimen/dp_38"
+                android:scaleType="fitXY"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
+            android:layout_toRightOf="@+id/avatar_rela"
+            android:layout_toLeftOf="@+id/status_btn"
+            android:layout_centerInParent="true">
+            <TextView
+                android:id="@+id/nickname_tv"
+                style="@style/BaseTextStyle.14"
+                android:lines="1"
+                android:ellipsize="middle"
+                android:text="aaa" />
+            <TextView
+                android:id="@+id/hint_tv"
+                style="@style/BaseTextStyle"
+                android:lines="1"
+                android:text="aaaaa"
+                android:textColor="@color/color_858998"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+</LinearLayout>

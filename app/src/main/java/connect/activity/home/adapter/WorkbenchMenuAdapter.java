@@ -30,8 +30,10 @@ public class WorkbenchMenuAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.workbench_menu_item, null);
-        return new WalletMenuItem(view);
+        LayoutInflater inflater = LayoutInflater.from(mActivity);
+        View view = inflater.inflate(R.layout.workbench_menu_item, parent, false);
+        WalletMenuItem holder = new WalletMenuItem(view);
+        return holder;
     }
 
     @Override
@@ -40,8 +42,11 @@ public class WorkbenchMenuAdapter extends RecyclerView.Adapter {
         final MenuBean menuBean = mDates.get(position);
 
         viewHolder.iconImg.setImageResource(menuBean.getIconId());
-        viewHolder.nameTv.setText(menuBean.getTextId());
-
+        try {
+            viewHolder.nameTv.setText(menuBean.getTextId());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         viewHolder.contentLinear.setLayoutParams(new RecyclerView.LayoutParams(SystemDataUtil.getScreenWidth()/4, SystemDataUtil.getScreenWidth()/4));
         viewHolder.contentLinear.setOnClickListener(new View.OnClickListener() {
             @Override

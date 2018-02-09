@@ -75,16 +75,16 @@ public abstract class BaseChatReceiveActivity extends BaseChatActvity{
                 CameraTakeActivity.startActivity(activity, CODE_TAKEPHOTO);
                 break;
             case CLEAR_HISTORY:
-                if (talker.getTalkKey().equals(objects[0])) {
+                if (chatIdentify.equals(objects[0])) {
                     chatAdapter.clearHistory();
-                    MessageHelper.getInstance().deleteRoomMsg(talker.getTalkKey());
+                    MessageHelper.getInstance().deleteRoomMsg(chatIdentify);
                 }
                 break;
             case NAMECARD:
-                ContactCardActivity.startActivity(activity,talker.getTalkKey());
+                ContactCardActivity.startActivity(activity,chatIdentify);
                 break;
             case MSGSTATE://message send state 0:sending 1:send success 2:send fail 3:send refuse
-                if (talker.getTalkKey().equals(objects[0])) {
+                if (chatIdentify.equals(objects[0])) {
                     String msgid = (String) objects[1];
                     int state = (int) objects[2];
 
@@ -127,12 +127,10 @@ public abstract class BaseChatReceiveActivity extends BaseChatActvity{
                     adapterInsetItem(msgExtEntity);
                 }
                 break;
-            case GROUP_UPDATENAME://update group name
+            case UPDATENAME://update group name
                 String identify = (String) objects[0];
                 if (identify.equals(normalChat.chatKey())) {
-                    String groupName = (String) objects[1];
-                    ((GroupChat) normalChat).setNickName(groupName);
-                    updateBurnState(0);
+                    updateTitleName();
                 }
                 break;
             case GROUP_UPDATEMYNAME://update my nick in group
@@ -161,7 +159,7 @@ public abstract class BaseChatReceiveActivity extends BaseChatActvity{
                 GroupAtActivity.startActivity(activity, normalChat.chatKey());
                 break;
             case MESSAGE_RECEIVE:
-                if (objects[0].equals(talker.getTalkKey())) {
+                if (objects[0].equals(chatIdentify)) {
                     msgExtEntity = (ChatMsgEntity) objects[1];
                     adapterInsetItem(msgExtEntity);
                 }

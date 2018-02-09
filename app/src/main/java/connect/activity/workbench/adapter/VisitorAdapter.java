@@ -48,15 +48,15 @@ public class VisitorAdapter extends RecyclerView.Adapter<VisitorAdapter.ViewHold
         holder.reasonTv.setText(activity.getString(R.string.Work_Visitors_reason, visitorRecord.getReason()));
 
         holder.phoneTv.setText(StringUtil.getFormatPhone(visitorRecord.getGuestPhone()));
-        String time = TimeUtil.getTime(visitorRecord.getStartTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR) + "——" +
-                TimeUtil.getTime(visitorRecord.getEndTime(), TimeUtil.DATE_FORMAT_MONTH_HOUR);
+        String time = TimeUtil.getTime(visitorRecord.getStartTime()*1000, TimeUtil.DATE_FORMAT_MONTH_HOUR) + "——" +
+                TimeUtil.getTime(visitorRecord.getEndTime()*1000, TimeUtil.DATE_FORMAT_MONTH_HOUR);
         holder.timeTv.setText(activity.getString(R.string.Work_Visitors_time, time));
 
         if(style == 1){
             holder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_868686));
             holder.statusTv.setText("(" + activity.getResources().getString(R.string.Work_Visitors_to_audit) + ")");
         }else{
-            if(visitorRecord.getStatus()){
+            if(visitorRecord.getPass()){
                 holder.statusTv.setTextColor(activity.getResources().getColor(R.color.color_3081EA));
                 holder.statusTv.setText("(" + activity.getResources().getString(R.string.Chat_Have_agreed) + ")");
             }else{

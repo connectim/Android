@@ -5,8 +5,9 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import connect.ui.activity.R;
+
 import connect.activity.base.BaseApplication;
+import connect.ui.activity.R;
 
 public class ActivityUtil {
 

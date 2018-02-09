@@ -103,6 +103,16 @@
         <item name="android:background">@drawable/select_btn_stroke_white</item>
     </style>
 
+    <style name="ButtonLongStyle_Red" parent="Base.Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/sp_16</item>
+        <item name="android:layout_marginLeft">@dimen/dp_20</item>
+        <item name="android:layout_marginRight">@dimen/dp_20</item>
+        <item name="android:textColor">@color/color_ffffff</item>
+        <item name="android:background">@drawable/select_btn_red_stroke</item>
+    </style>
+
     <style name="ButtonShortStyle" parent="Base.Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">@dimen/dp_60</item>
         <item name="android:layout_height">@dimen/dp_30</item>

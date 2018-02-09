@@ -8,10 +8,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
 import connect.activity.home.HomeActivity;
-import connect.activity.login.bean.UserBean;
 import connect.activity.login.contract.StartContract;
 import connect.activity.login.presenter.StartPagePresenter;
-import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.permission.PermissionUtil;
@@ -55,10 +53,6 @@ public class StartPageActivity extends BaseActivity implements StartContract.Vie
     @Override
     public void goIntoLoginForPhone() {
         LoginUserActivity.startActivity(mActivity);
-//        UserBean userBean1 = new UserBean("111", "", "dsfseqwerffqwff",
-//                "963", "asdfasfsdfsdf", "asdfasdfsdf", "dasdasda");
-//        SharedPreferenceUtil.getInstance().putUser(userBean1);
-//        HomeActivity.startActivity(mActivity);
     }
 
     @Override

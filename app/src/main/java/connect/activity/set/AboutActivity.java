@@ -17,7 +17,8 @@ import connect.activity.base.BaseActivity;
 import connect.service.UpdateAppService;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
+import connect.utils.ToastUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.utils.StringUtil;
 import connect.utils.UriUtil;
 import connect.utils.okhttp.HttpRequest;
@@ -38,8 +39,6 @@ public class AboutActivity extends BaseActivity {
     TextView appVersion;
     @Bind(R.id.llRate)
     LinearLayout llRate;
-    @Bind(R.id.tvNewVersion)
-    TextView tvNewVersion;
     @Bind(R.id.llUpdate)
     LinearLayout llUpdate;
 
@@ -67,7 +66,6 @@ public class AboutActivity extends BaseActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Set_About);
         appVersion.setText(getString(R.string.Set_Versions_number, SystemDataUtil.getVersionName(mActivity)));
-        requestAppUpdate();
     }
 
     @OnClick(R.id.left_img)
@@ -77,21 +75,10 @@ public class AboutActivity extends BaseActivity {
 
     @OnClick(R.id.llUpdate)
     void goUpdate(View view){
-        if(compareInt == 1){
-            DialogUtil.showAlertTextView(mActivity, getString(R.string.Set_Found_new_version),
-                    versionResponse.getRemark(), "", getString(R.string.Set_Now_update_app),
-                    false, false, new DialogUtil.OnItemClickListener() {
-                        @Override
-                        public void confirm(String value) {
-                            if(!TextUtils.isEmpty(versionResponse.getUpgradeUrl())){
-                                downLoadPath = versionResponse.getUpgradeUrl();
-                                PermissionUtil.getInstance().requestPermission(mActivity,new String[]{PermissionUtil.PERMISSION_STORAGE},permissionCallBack);
-                            }
-                        }
+        requestAppUpdate();
 
-                        @Override
-                        public void cancel() {}
-                    });
+        if(compareInt == 1){
+
         }
     }
 
@@ -129,16 +116,24 @@ public class AboutActivity extends BaseActivity {
                     Connect.StructData structData = Connect.StructData.parseFrom(response.getBody().toByteArray());
                     versionResponse = Connect.VersionResponse.parseFrom(structData.getPlainData());
                     if(!TextUtils.isEmpty(versionResponse.getVersion())){
-                        compareInt = StringUtil.VersionComparison(versionResponse.getVersion(),SystemDataUtil.getVersionName(mActivity));
-                        switch (compareInt){
-                            case 1:
-                                tvNewVersion.setText(mActivity.getString(R.string.Set_new_version,versionResponse.getVersion()));
-                                break;
-                            case 0:
-                                tvNewVersion.setText(R.string.Set_This_is_the_newest_version);
-                            case -1:
-                                tvNewVersion.setText(R.string.Set_This_is_the_newest_version);
-                                break;
+                        int compareInt = StringUtil.VersionComparison(versionResponse.getVersion(),SystemDataUtil.getVersionName(mActivity));
+                        if(compareInt == 1){
+                            DialogUtil.showAlertTextView(mActivity, getString(R.string.Set_Found_new_version),
+                                    versionResponse.getRemark(), "", getString(R.string.Set_Now_update_app),
+                                    false, false, new DialogUtil.OnItemClickListener() {
+                                        @Override
+                                        public void confirm(String value) {
+                                            if(!TextUtils.isEmpty(versionResponse.getUpgradeUrl())){
+                                                downLoadPath = versionResponse.getUpgradeUrl();
+                                                PermissionUtil.getInstance().requestPermission(mActivity,new String[]{PermissionUtil.PERMISSION_STORAGE},permissionCallBack);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void cancel() {}
+                                    });
+                        }else{
+                            ToastUtil.getInstance().showToast(R.string.Set_This_is_the_newest_version);
                         }
                     }
                 } catch (InvalidProtocolBufferException e) {

@@ -119,7 +119,6 @@ public class GroupService extends Service {
                             memEntity.setIdentifier(groupIdentifier);
                             memEntity.setUid(member.getUid());
                             memEntity.setAvatar(member.getAvatar());
-                            memEntity.setNick(member.getNick());
                             memEntity.setUsername(member.getName());
                             memEntity.setRole(member.getRole());
                             memberEntityMap.put(member.getUid(), memEntity);
@@ -130,25 +129,25 @@ public class GroupService extends Service {
 
                         String content = service.getResources().getString(R.string.Chat_Notice_New_Message);
                         long messageTime = TimeUtil.getCurrentTimeInLong();
-                        CGroupChat cGroupChat = new CGroupChat(groupEntity);
-                        MessageEntity messageEntity = MessageHelper.getInstance().loadMsgLastOne(groupIdentifier);
-                        if (messageEntity != null) {
-                            content = messageEntity.messageToChatEntity().showContent();
-                            messageTime = messageEntity.getCreatetime();
-                        }
-                        cGroupChat.updateRoomMsg("", content, messageTime);
-
-                        Map<String, Object> failMaps = FailMsgsManager.getInstance().receiveFailMsgs(pubkey);
-                        if (!failMaps.isEmpty()) {
-                            for (Object obj : failMaps.values()) {
-                                if (obj instanceof String) {
-                                    ChatMsgEntity msgExtEntity = cGroupChat.noticeMsg(0, (String) obj, "");
-                                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-
-                                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgExtEntity);
-                                }
-                            }
-                        }
+//                        CGroupChat cGroupChat = new CGroupChat(groupEntity);
+//                        MessageEntity messageEntity = MessageHelper.getInstance().loadMsgLastOne(groupIdentifier);
+//                        if (messageEntity != null) {
+//                            content = messageEntity.messageToChatEntity().showContent();
+//                            messageTime = messageEntity.getCreatetime();
+//                        }
+//                        cGroupChat.updateRoomMsg("", content, messageTime, -1, 0, true, -1);
+//
+//                        Map<String, Object> failMaps = FailMsgsManager.getInstance().receiveFailMsgs(pubkey);
+//                        if (!failMaps.isEmpty()) {
+//                            for (Object obj : failMaps.values()) {
+//                                if (obj instanceof String) {
+//                                    ChatMsgEntity msgExtEntity = cGroupChat.noticeMsg(0, (String) obj, "");
+//                                    MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
+//
+//                                    RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, pubkey, msgExtEntity);
+//                                }
+//                            }
+//                        }
 
                         ContactNotice.receiverGroup();
                     }

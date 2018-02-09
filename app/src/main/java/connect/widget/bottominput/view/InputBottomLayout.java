@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.ChatActivity;
-import connect.activity.chat.bean.LinkMessageRow;
 import connect.activity.chat.bean.MsgSend;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.bean.RoomSession;
@@ -212,7 +211,7 @@ public class InputBottomLayout extends LinearLayout {
             checkSendState();
 
             String string = s.toString();
-            boolean isGroupChat = RoomSession.getInstance().getRoomType() == Connect.ChatType.GROUPCHAT;
+            boolean isGroupChat = RoomSession.getInstance().getRoomType() == Connect.ChatType.GROUPCHAT || RoomSession.getInstance().getRoomType() == Connect.ChatType.GROUP_DISCUSSION;
             if (isGroupChat && count == 1 && "@".equals(string.substring(start))) {
                 RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.GROUPAT_TO);
             }

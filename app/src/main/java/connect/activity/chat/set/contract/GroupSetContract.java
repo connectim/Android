@@ -15,9 +15,11 @@ public interface GroupSetContract {
 
         String getRoomKey();
 
-        void countMember(String members);
+        void countMember(int members);
 
         void memberList(View view);
+
+        void searchGroupHistoryTxt();
 
         void groupNameClickable(boolean clickable);
 

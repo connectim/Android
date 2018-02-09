@@ -5,6 +5,7 @@ import android.content.Context;
 import connect.activity.base.BaseApplication;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
+import connect.database.green.DaoHelper.ContactHelper;
 import instant.parser.localreceiver.CommandLocalReceiver;
 import instant.parser.localreceiver.ConnectLocalReceiver;
 import instant.parser.localreceiver.ExceptionLocalReceiver;
@@ -27,11 +28,16 @@ public class ReceiverHelper {
         Context context = BaseApplication.getInstance().getBaseContext();
 
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+        long count = ContactHelper.getInstance().contactsCount();
+
         InstantSdk.instantSdk.registerUserInfo(context,
                 userBean.getUid(),
                 userBean.getPriKey(),
                 userBean.getPubKey(),
-                userBean.getToken());
+                userBean.getToken(),
+                userBean.getName(),
+                userBean.getAvatar(),
+                count);
 
         try {
             ConnectLocalReceiver.receiver.registerConnect(ConnectReceiver.receiver);

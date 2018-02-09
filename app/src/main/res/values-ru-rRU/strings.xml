@@ -179,6 +179,8 @@
     <string name="Link_Add_Successful">Успешно добавлен</string>
     <string name="Link_Add_as_a_friend">Добавить в друзья</string>
     <string name="Link_Add_to_Contacts">Добавить контакт</string>
+    <string name="Link_Contains">Содержит:%s</string>
+    <string name="Link_Relevant_record">Соответствующие статьи %s запись</string>
     <string name="Link_Added">Добавлено</string>
     <string name="Link_Not_logged_in">Не в</string>
     <string name="Link_An_error_occurred_change_nickname">Ошибка при обновлении никнейма</string>
@@ -187,6 +189,8 @@
     <string name="Link_Clear_All_Chat_History">Очистить историю переписки</string>
     <string name="Link_Clear_Chat_History">Очистить историю записи</string>
     <string name="Link_Contacts">Контактное лицо</string>
+    <string name="Link_My_group">Я группы</string>
+    <string name="Link_Chat_record">чата</string>
     <string name="Link_Delete">Удалить</string>
     <string name="Link_Delete_Failed">Ошибка при удалении</string>
     <string name="Link_Delete_Successful">Успешное удаление</string>
@@ -256,7 +260,13 @@
     <string name="Link_Remove_Member_Failed">Сбой при удалении участника</string>
     <string name="Link_Save_to_Contacts">Сохранить в контактах</string>
     <string name="Link_Scan">Сканировать</string>
+    <string name="Link_Close_to_remind">Закрытие напомнить</string>
     <string name="Link_Search">Поиск</string>
+    <string name="Link_Search_contacts">Поиск контактов</string>
+    <string name="Link_Search_chat_log">Поиск чата</string>
+    <string name="Link_Search_group">Поиск групп</string>
+    <string name="Link_Search_for_specified_content">Поиск указать содержание</string>
+    <string name="Link_Commonly_used_search">Часто поиск</string>
     <string name="Link_Search_Result">Результат поиска</string>
     <string name="Link_Search_friends">Поиск друзей</string>
     <string name="Link_Select_new_owner">Выбрать нового хозяина группы</string>
@@ -264,6 +274,7 @@
         Вы добровольно должны отказаться от прав хозяина группы
     </string>
     <string name="Link_Send">Отправить</string>
+    <string name="Link_Scan_Result">Результаты сканирования</string>
     <string name="Link_Dialogue">диалог</string>
     <string name="Link_Workbench">стол</string>
     <string name="Link_Inactive">Не активировать</string>
@@ -314,7 +325,7 @@
     <string name="Link_enter_the_group">Добавить группу %s</string>
     <string name="Link_group_count">Группа %d</string>
     <string name="Link_My_application">Я приложений</string>
-    <string name="Link_Employee_number">Номер сотрудника:</string>
+    <string name="Link_Employee_number">Номер сотрудника</string>
     <string name="Link_Subordinate_departments">Принадлежащего сектор:</string>
     <string name="Link_Contact_number">Номер:</string>
     <string name="Link_have_joined_the_group">Вы уже добавлены в эту группу</string>
@@ -354,16 +365,20 @@
     <string name="Login_username">Имя пользователя</string>
     <string name="Login_Confirm_password">Подтверждение пароля</string>
     <string name="Login_Password_incorrect">Неправильный пароль</string>
+    <string name="Login_User_name_or_password_error">Имя и пароль пользователя ошибки</string>
     <string name="Login_Resend">Отправить заново</string>
     <string name="Login_Resend_Time">Отправить заново (%d)</string>
     <string name="Login_SMS_code_has_been_send">SMS-код был отправлен</string>
     <string name="Login_SMS_code_sent_failure">Сбой при отправки кода SMS-подтверждения</string>
     <string name="Login_Save_successful">Успешно сохранено</string>
+    <string name="Link_Focus_successful">Внимание успешно</string>
+    <string name="Link_Focus_cancle_successful">отменить внимание успех</string>
     <string name="Login_Select_Country">Выбрать страну</string>
     <string name="Login_Select_form_album">Выбрать из фотогалереи</string>
     <string name="Login_Send_failed">Сбой при отправке</string>
     <string name="Login_Take_Photo">Сделать фото</string>
     <string name="Login_Update_successful">Успешное завершение обновления</string>
+    <string name="Login_Review_successful">Успешно аудита</string>
     <string name="Login_Updated_failed">Обновление не удалось</string>
     <string name="Login_User_avatar_is_illegal">Аватарка пользователя является незаконной</string>
     <string name="Login_Verification_code_error">Ошибка кода подтверждения</string>
@@ -401,6 +416,7 @@
         раз
     </string>
     <string name="Set_About">Относительно</string>
+    <string name="Set_Version_checking">Контроль версий</string>
     <string name="Set_Account_security">Аккаунт и безопасность</string>
     <string name="Set_Add_mobile">Привязать номер телефона</string>
     <string name="Set_Auto">Автоматичекая оплата</string>
@@ -413,7 +429,7 @@
     <string name="Set_Change_Pattern">Изменить рисунок</string>
     <string name="Set_Open_password">Открытие пароль проверки</string>
     <string name="Set_Close_password">Закрытие пароль проверки</string>
-    <string name="Set_Check_Update">Проверка обновлений</string>
+    <string name="Set_Check_Update">Проверка новой версии</string>
     <string name="Set_Copied">Скопировано</string>
     <string name="Set_Currency">Монеты</string>
     <string name="Set_Did_not_receive_the_verification_code">Не получил код подтверждения?отправить
@@ -432,8 +448,9 @@
     </string>
     <string name="Set_FeedBack">Отзывы</string>
     <string name="Set_Found_new_version">Новая версия программы</string>
-    <string name="Set_General">Общепринятый</string>
+    <string name="Set_General">Универсальный настройки</string>
     <string name="Set_Help_and_feedback">Справка и отзывы</string>
+    <string name="Set_Feedback">отзывы</string>
     <string name="Set_ID">ID</string>
     <string name="Set_Installed">Установлено</string>
     <string name="Set_Language">Язык</string>
@@ -486,7 +503,7 @@
     <string name="Set_Set_success">Успешное завершение исправления данных</string>
     <string name="Set_Setting">Установка</string>
     <string name="Set_Setting_Faied">Сбой установки</string>
-    <string name="Set_Sound">Громкость</string>
+    <string name="Set_Sound">Звук напоминает</string>
     <string name="Set_Start_encrypted_messaging">Начать зашифрованное общение</string>
     <string name="Set_This_is_the_newest_version">Самая последняя новая версия</string>
     <string name="Set_Two_Patterns_do_not_match">При введении 2 раза, пароль-рисунок не совпал
@@ -494,7 +511,7 @@
     <string name="Set_Use_Login_Password">Пароль для входа в систему</string>
     <string name="Set_Verify_Phone">Проверка телеофна</string>
     <string name="Set_Versions_number">Версия программы : %s</string>
-    <string name="Set_Vibrate">Вибрация</string>
+    <string name="Set_Vibrate">Толчок намек</string>
     <string name="Set_Your_Phone">Ваш телефон</string>
     <string name="Set_miner_fee_explain">Интернетный комиссионный сбор используется для оплаты
         запуска работы, т.е. чем выше комиссионый сбор, тем быстрее операционная сделка будет
@@ -677,10 +694,13 @@
     <string name="Work_The_contract">контракт</string>
     <string name="Work_Wage">зарплата</string>
     <string name="Work_Visitors">посетители</string>
+    <string name="Work_Warehouse">Склад AnFang</string>
+    <string name="Work_Warehouse_abnormal_records">Склад аномалия доступа запись</string>
     <string name="Work_Visitors_info">Посетители информации</string>
     <string name="Work_Visitors_reason">Посетители цели:%1$s</string>
     <string name="Work_Visitors_phone">Способ связи:</string>
     <string name="Work_Visitors_time">Время визита:%1$s</string>
+    <string name="Work_Time">Время записи:%1$s</string>
     <string name="Work_Visitors_share">ErWeiMa поделиться приглашение</string>
     <string name="Work_Visitors_Facial_information">Личной информации:</string>
     <string name="Work_Visitors_Left_face">налево</string>
@@ -696,6 +716,8 @@
     <string name="Work_Pay_attention_to_him">Внимание,он</string>
     <string name="Work_Pay_attention_to_her">Внимание,она</string>
     <string name="Work_Cancel_the_attention">Отмена внимание</string>
+    <string name="Work_Security_record_information">AnFang запись информации:</string>
+    <string name="Work_Exception_type">Аномалия тип: неопознанный персонал на склад</string>
 
     <string name="Chat_Refreshing">обновление ...</string>
     <string name="Link_Join_Group_Success">успех  к  групповой чат </string>
@@ -712,8 +734,9 @@
     <string name="Beijing_BitMain">Beijing BitMain Technology Co., Ltd.</string>
     <string name="Work_No_More_Results">Больше никаких  результатов поиска</string>
     <string name="Work_Third_Party_Service">услуг третьих сторон</string>
-    <string name="Work_Service_Search">Поиск  приложений</string>
+    <string name="Work_Service_Search">Поиск приложений</string>
     <string name="Work_Search">поиск</string>
+    <string name="Work_Entering_the_warehouse">Склад положение:%1$s</string>
     <string name="Link_exit_the_group">%sыход из  группы</string>
 
     <string name="Link_Group_Create">создать группу</string>
@@ -725,4 +748,23 @@
     <string name="Link_Function_Manager">Управление приложениями</string>
     <string name="Error_Device_Remote_Other_Login">Ваша учетная запись уже подписана на других устройствах</string>
     <string name="Link_Group_Launch">Групповой чат</string>
+
+    <string name="Chat_There_Are_News_Mentions_You">В сообщениях %1$d указано, что вы</string>
+    <string name="Chat_There_Are_News_Attention_You">%1$d новые последующие новости</string>
+
+    <string name="Chat_Message_Top_Remove">неприклеенный</string>
+    <string name="Chat_Message_Top">Верх страницы</string>
+    <string name="Chat_Conversation_Del">Удалить разговор</string>
+    <string name="Chat_Tip_Attention">[Моя забота]</string>
+
+    <string name="Chat_Search_Txt">Поиск содержимого чата</string>
+    <string name="Chat_Private_Setting">устанавливать</string>
+    <string name="Chat_Group_Setting">Настройки группы(%1$d)</string>
+    <string name="Link_Open_to_remind">Включить напоминания</string>
+    <string name="Link_View_Detail">Подробнее</string>
+    <string name="Robot_New_Visitor_Apply">Новое приложение для посетителей!</string>
+    <string name="Robot_Abnormal_Remind">Аномальный склад напоминает!</string>
+    <string name="Robot_Visiting_Purpose">Цель посещения: %1$s</string>
+    <string name="Robot_WareHouse_Warn">%1$s Обнаружен незнакомый человек</string>
+    <string name="Link_Today">сегодня</string>
 </resources>

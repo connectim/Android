@@ -38,7 +38,6 @@ public class FriendChat extends NormalChat {
         msgExtEntity.setMessage_to(chatKey());
         msgExtEntity.setMessageType(type.type);
         msgExtEntity.setRead_time(0L);
-        msgExtEntity.setSnap_time(0L);
         msgExtEntity.setCreatetime(TimeUtil.getCurrentTimeInLong());
         msgExtEntity.setSend_status(0);
         return msgExtEntity;
@@ -50,6 +49,12 @@ public class FriendChat extends NormalChat {
             Connect.ChatMessage.Builder chatMessageBuilder = msgExtEntity.transToChatMessageBuilder();
 
             UserCookie userCookie = Session.getInstance().getConnectCookie();
+            Connect.MessageUserInfo.Builder userInfo = Connect.MessageUserInfo.newBuilder()
+                    .setAvatar(userCookie.getUserAvatar())
+                    .setUsername(userCookie.getUserName())
+                    .setUid(userCookie.getUid());
+            chatMessageBuilder.setSender(userInfo);
+
             String userPrivate = userCookie.getPrivateKey();
             String userPublicKey = userCookie.getPublicKey();
             EncryptionUtil.ExtendedECDH ecdhExts = EncryptionUtil.ExtendedECDH.EMPTY;
@@ -62,7 +67,7 @@ public class FriendChat extends NormalChat {
                     .build();
             Connect.MessageData messageData = Connect.MessageData.newBuilder()
                     .setChatSession(chatSession)
-                    .setChatMsg(chatMessageBuilder)
+                    .setChatMsg(chatMessageBuilder.build())
                     .build();
 
             Connect.MessagePost messagePost = normalChatMessage(messageData);

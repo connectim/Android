@@ -243,4 +243,24 @@
     <item name="relative_login" type="id" />
     <item name="text_newchat" type="id" />
     <item name="search_relative" type="id" />
+
+
+    <item name="relative_item" type="id" />
+    <item name="relative_at" type="id" />
+    <item name="relative_attention" type="id" />
+    <item name="txt_count_at" type="id" />
+    <item name="txt_count_attention" type="id" />
+
+    <item name="position" type="id" />
+    <item name="roomid" type="id" />
+    <item name="roomtype" type="id" />
+    <item name="roomtop" type="id" />
+
+    <item name="private_clear_history" type="id"/>
+
+    <item name="privateset_searchhistory" type="id"/>
+    <item name="groupset_searchhistory" type="id"/>
+    <item name="groupset_clear_history" type="id"/>
+    <item name="groupset_exit_group" type="id"/>
+    <item name="popup_turn_notify" type="id"/>
 </resources>

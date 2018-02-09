@@ -44,7 +44,7 @@ public class GroupAtAdapter extends RecyclerView.Adapter<GroupAtAdapter.ViewHold
         GroupMemberEntity entity = groupMemEntities.get(position);
 
         GlideUtil.loadAvatarRound(holder.roundimg, entity.getAvatar());
-        String curName = TextUtils.isEmpty(entity.getNick()) ? entity.getUsername() : entity.getNick();
+        String curName = entity.getUsername();
         if (TextUtils.isEmpty(curName)) return;
 
         holder.name.setText(curName);
@@ -55,7 +55,7 @@ public class GroupAtAdapter extends RecyclerView.Adapter<GroupAtAdapter.ViewHold
             holder.txt.setText(curFirst);
         } else {
             GroupMemberEntity lastEntity = groupMemEntities.get(position - 1);
-            String lastName = TextUtils.isEmpty(lastEntity.getNick()) ? lastEntity.getUsername() : lastEntity.getNick();
+            String lastName = lastEntity.getUsername() ;
             String lastFirst = PinyinUtil.chatToPinyin(lastName.charAt(0));
             if (lastFirst.equals(curFirst)) {
                 holder.txt.setVisibility(View.GONE);
@@ -77,7 +77,7 @@ public class GroupAtAdapter extends RecyclerView.Adapter<GroupAtAdapter.ViewHold
     public int getPositionForSection(char selectchar) {
         for (int i = 0; i < groupMemEntities.size(); i++) {
             GroupMemberEntity entity = groupMemEntities.get(i);
-            String showName = TextUtils.isEmpty(entity.getNick()) ? entity.getUsername() : entity.getNick();
+            String showName = entity.getUsername();
             String firstChar = PinyinUtil.chatToPinyin(showName.charAt(0));
             if (firstChar.charAt(0) >= selectchar) {
                 return i;

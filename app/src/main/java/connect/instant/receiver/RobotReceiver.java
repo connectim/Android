@@ -10,6 +10,7 @@ import connect.database.green.DaoHelper.ParamManager;
 import connect.instant.model.CRobotChat;
 import connect.ui.activity.R;
 import connect.utils.NotificationBar;
+import connect.utils.StringUtil;
 import instant.bean.ChatMsgEntity;
 import instant.parser.inter.RobotListener;
 import instant.sender.model.RobotChat;
@@ -35,6 +36,12 @@ public class RobotReceiver implements RobotListener {
     @Override
     public void textMessage(Connect.TextMessage textMessage) {
         ChatMsgEntity chatMsgEntity = RobotChat.getInstance().txtMsg(textMessage.getContent());
+        dealRobotMessage(chatMsgEntity);
+    }
+
+    @Override
+    public void warehouseMessage(int wareType, byte[] message) {
+        ChatMsgEntity chatMsgEntity = RobotChat.getInstance().wareHouseMsg(wareType, StringUtil.bytesToHexString(message));
         dealRobotMessage(chatMsgEntity);
     }
 
@@ -139,7 +146,7 @@ public class RobotReceiver implements RobotListener {
 
         String robotname = BaseApplication.getInstance().getString(R.string.app_name);
         String content = chatMsgEntity.showContent();
-        CRobotChat.getInstance().updateRoomMsg(null, content, chatMsgEntity.getCreatetime(), -1, 1);
-        NotificationBar.notificationBar.noticeBarMsg(robotname, 2, content);
+        CRobotChat.getInstance().updateRoomMsg(null, content, chatMsgEntity.getCreatetime(), 0, 1);
+        NotificationBar.notificationBar.noticeBarMsg(robotname, 2, robotname, content);
     }
 }

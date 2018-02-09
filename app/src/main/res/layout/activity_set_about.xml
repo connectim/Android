@@ -15,9 +15,9 @@
         android:contentDescription="@string/app_name"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
-        android:src="@mipmap/connect_logo"
+        android:src="@mipmap/icon_logo_circle"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_68"/>
+        android:layout_marginTop="@dimen/dp_30"/>
 
     <TextView
         android:id="@+id/appVersion"
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp_20"
-        android:textSize="@dimen/sp_14"
+        android:textSize="@dimen/sp_16"
         android:textColor="@color/color_6d6e75"
         android:text="@string/Set_Versions_number"/>
 
@@ -57,31 +57,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_50"
-        android:background="@drawable/selector_list_item_bg"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_15"
+        android:background="@drawable/selector_item_bg_8px_ffffff"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/dp_15"
-        android:paddingRight="@dimen/dp_15">
+        android:paddingRight="@dimen/dp_15"
+        android:gravity="center">
         <TextView
             style="@style/BaseTextStyle.14"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_52"
-            android:layout_weight="1"
             android:background="@color/transparent"
             android:gravity="center_vertical"
             android:text="@string/Set_Check_Update"/>
-        <TextView
-            android:id="@+id/tvNewVersion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/color_007aff"
-            android:textSize="@dimen/sp_12"
-            android:layout_gravity="center_vertical"/>
-        <ImageView
-            android:contentDescription="@string/app_name"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@mipmap/group_item_arrow"
-            android:layout_marginLeft="@dimen/dp_10"/>
     </LinearLayout>
 
     <!--<TextView

@@ -3,14 +3,20 @@ package connect.activity.workbench;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
+import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
@@ -23,12 +29,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseFragmentActivity;
+import connect.activity.login.bean.UserBean;
 import connect.activity.workbench.fragment.ApprovedFragment;
 import connect.activity.workbench.fragment.AuditFragment;
-import connect.ui.activity.R;
-import connect.utils.ActivityUtil;
-import connect.utils.BitmapUtil;
-import connect.service.UpdateAppService;
+import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
 import connect.utils.FileUtil;
@@ -38,6 +42,8 @@ import connect.utils.UriUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
 import connect.utils.permission.PermissionUtil;
+import connect.utils.system.SystemDataUtil;
+import connect.utils.system.SystemUtil;
 import connect.widget.TopToolBar;
 import connect.widget.zxing.utils.CreateScan;
 import protos.Connect;
@@ -61,6 +67,7 @@ public class VisitorsActivity extends BaseFragmentActivity {
 
     private AuditFragment auditFragment;
     private ApprovedFragment approvedFragment;
+    private UserBean userBean;
 
     public static void lunchActivity(Activity activity) {
         ActivityUtil.next(activity, VisitorsActivity.class);
@@ -81,6 +88,7 @@ public class VisitorsActivity extends BaseFragmentActivity {
         toolbarTop.setLeftImg(R.mipmap.back_white);
         toolbarTop.setTitle(null, R.string.Work_Visitors_info);
         toolbarTop.setRightText(R.string.Link_Invite);
+        userBean = SharedPreferenceUtil.getInstance().getUser();
 
         auditFragment = AuditFragment.startFragment();
         approvedFragment = ApprovedFragment.startFragment();
@@ -107,11 +115,13 @@ public class VisitorsActivity extends BaseFragmentActivity {
                 switchFragment(0);
                 toAuditText.setSelected(true);
                 toAuditLine.setVisibility(View.VISIBLE);
+                auditFragment.initData();
                 break;
             case R.id.the_approved_text:
                 switchFragment(1);
                 theApprovedText.setSelected(true);
                 theApprovedLine.setVisibility(View.VISIBLE);
+                approvedFragment.initData();
                 break;
         }
     }
@@ -203,8 +213,9 @@ public class VisitorsActivity extends BaseFragmentActivity {
 
     public void shareMsg(String activityTitle, String msgTitle, String msgText, File file) {
         try {
-            String filepath = file.getAbsolutePath();
-            String imageUri = MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), filepath, msgTitle, msgText);
+            //通知图库更新
+            //String filepath = file.getAbsolutePath();
+            //String imageUri = MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), filepath, msgTitle, msgText);
 
             Intent intent = new Intent(Intent.ACTION_SEND);
             if (file == null) {
@@ -220,7 +231,7 @@ public class VisitorsActivity extends BaseFragmentActivity {
             }
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(Intent.createChooser(intent, activityTitle));
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -236,8 +247,8 @@ public class VisitorsActivity extends BaseFragmentActivity {
         public void granted(String[] permissions) {
             CreateScan createScan = new CreateScan();
             Bitmap bitmap = createScan.generateQRCode("https://wx-kq.bitmain.com/guest/info?token=" + staff1.getToken());
-            File file = saveBitmap(bitmap);
-            shareMsg(getResources().getString(R.string.Work_Visitors_share), "", "", file);
+            //File file = saveBitmap(bitmap);
+            shareMsg(getResources().getString(R.string.Work_Visitors_share), "", "", drawShareScan(bitmap));
         }
 
         @Override
@@ -245,21 +256,44 @@ public class VisitorsActivity extends BaseFragmentActivity {
         }
     };
 
-    /*public void shareMsg(String activityTitle, String msgTitle, String msgText, File file) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        if (file == null) {
-            intent.setType("text/plain");
-        } else {
-            if (file != null && file.exists() && file.isFile()) {
-                intent.setType("image/jpg");
-                Uri u = Uri.fromFile(file);
-                intent.putExtra(Intent.EXTRA_STREAM, u);
-            }
-        }
-        intent.putExtra(Intent.EXTRA_SUBJECT, msgTitle);
-        intent.putExtra(Intent.EXTRA_TEXT, msgText);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(Intent.createChooser(intent, activityTitle));
-    }*/
+    private File drawShareScan(Bitmap valueBitmap){
+        View view = LayoutInflater.from(mActivity).inflate(R.layout.item_visitor_share_scan,null);
+        ImageView scanImage = (ImageView)view.findViewById(R.id.scan_image);
+        scanImage.setImageBitmap(valueBitmap);
+        view.measure(View.MeasureSpec.makeMeasureSpec(256, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(256, View.MeasureSpec.EXACTLY));
+        view.layout(0, 0, SystemDataUtil.getScreenWidth(), SystemDataUtil.getScreenHeight());
+        view.setBackgroundColor(getResources().getColor(R.color.color_ffffff));
+
+        Bitmap bitmap = Bitmap.createBitmap(SystemDataUtil.getScreenWidth(), SystemDataUtil.getScreenHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int mScreenWidth = dm.widthPixels;
+        int mScreenHeight = dm.heightPixels;
+
+        //以分辨率为720*1080准，计算宽高比值
+        //解决不同屏幕字体大小不一样
+        float ratioWidth = (float) mScreenWidth / 720;
+        float ratioHeight = (float) mScreenHeight / 1080;
+        float ratioMetrics = Math.min(ratioWidth, ratioHeight);
+        int textSize = Math.round(30 * ratioMetrics);
+
+        TextPaint textPaint = new TextPaint();
+        textPaint.setColor(getResources().getColor(R.color.color_161A21));
+        textPaint.setTextSize(textSize);
+        //textPaint.setTypeface(Typeface.BOLD);
+        textPaint.setAntiAlias(true);
+        canvas.drawText("BITMAIN 访客系统", SystemUtil.dipToPx(90), SystemUtil.dipToPx(65), textPaint);
+
+        String hint = userBean.getName() + "邀请你访问公司，通过小程序录入基本信息\n和肖像，以便通过公司门禁AI人像识别设备\n二维码3小时内有效，并且只能使用一次";
+        StaticLayout myStaticLayout = new StaticLayout(hint, textPaint, canvas.getWidth(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+        canvas.translate(SystemUtil.dipToPx(20), SystemDataUtil.getScreenHeight() - SystemUtil.dipToPx(200));
+        myStaticLayout.draw(canvas);
+
+        File file = saveBitmap(bitmap);
+        return file;
+    }
 
 }

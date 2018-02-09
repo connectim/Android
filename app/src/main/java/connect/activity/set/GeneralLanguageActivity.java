@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -15,6 +16,7 @@ import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
 import connect.activity.base.BaseApplication;
 import connect.activity.home.HomeActivity;
+import connect.activity.home.view.LineDecoration;
 import connect.activity.set.adapter.CurrencyAdapter;
 import connect.utils.data.LanguageData;
 import connect.database.SharedPreferenceUtil;
@@ -73,10 +75,17 @@ public class GeneralLanguageActivity extends BaseActivity {
     private void bindingAdapter(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
+        recyclerview.addItemDecoration(new LineDecoration(mActivity));
         List<RateBean> list = LanguageData.getInstance().getLanguageData();
         adapter = new CurrencyAdapter(mActivity);
+
         String languageCode = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.APP_LANGUAGE_CODE);
+        if(TextUtils.isEmpty(languageCode)){
+            Locale myLocale = Locale.getDefault();
+            languageCode = myLocale.getLanguage();
+        }
         adapter.setSeleCurrency(languageCode);
+
         recyclerview.setAdapter(adapter);
         adapter.setDataNotify(list);
         adapter.setItemClickListener(new CurrencyAdapter.OnItemClickListener() {

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -18,6 +19,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseActivity;
+import connect.activity.chat.SearchContentActivity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.set.contract.GroupSetContract;
 import connect.activity.chat.set.presenter.GroupSetPresenter;
@@ -29,19 +31,17 @@ import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.bean.ConversionEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.widget.TopToolBar;
 
 /**
  * group setting
  * Created by gtq on 2016/12/15.
  */
-public class GroupSetActivity extends BaseActivity implements GroupSetContract.BView{
+public class GroupSetActivity extends BaseActivity implements GroupSetContract.BView {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
-    @Bind(R.id.count)
-    TextView count;
     @Bind(R.id.linearlayout)
     LinearLayout linearlayout;
     @Bind(R.id.relativelayout_1)
@@ -72,7 +72,6 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
         activity = this;
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
-        toolbar.setTitle(getResources().getString(R.string.Link_Group));
         toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,7 +100,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
 
     @Override
     public void setPresenter(GroupSetContract.Presenter presenter) {
-        this.presenter=presenter;
+        this.presenter = presenter;
     }
 
     @Override
@@ -115,8 +114,8 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
     }
 
     @Override
-    public void countMember(String members) {
-        count.setText(members);
+    public void countMember(int members) {
+        toolbar.setTitle(getResources().getString(R.string.Chat_Group_Setting,members));
     }
 
     @Override
@@ -141,14 +140,28 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
     }
 
     @Override
+    public void searchGroupHistoryTxt() {
+        View view = findViewById(R.id.groupset_searchhistory);
+
+        TextView searchTxt = (TextView) view.findViewById(R.id.txt1);
+        ImageView imageView = (ImageView) view.findViewById(R.id.img1);
+
+        searchTxt.setText(getResources().getString(R.string.Chat_Search_Txt));
+        imageView.setImageResource(R.mipmap.group_item_arrow);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SearchContentActivity.lunchActivity(activity, 3);
+            }
+        });
+    }
+
+    @Override
     public void groupName(String groupname) {
         View view = findViewById(R.id.groupset_groupname);
-        ImageView img1 = (ImageView) view.findViewById(R.id.img1);
         TextView txt1 = (TextView) view.findViewById(R.id.txt1);
         TextView txt2 = (TextView) view.findViewById(R.id.txt2);
-        ImageView img2 = (ImageView) view.findViewById(R.id.img2);
 
-        img1.setBackgroundResource(R.mipmap.message_groupchat_name2x);
         txt1.setText(getString(R.string.Link_Group_Name));
         if (!TextUtils.isEmpty(groupname)) {
             if (groupname.length() > 10) {
@@ -157,7 +170,6 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
             txt2.setText(groupname);
         }
 
-        img2.setImageResource(R.mipmap.group_item_arrow);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -216,7 +228,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
 
     @Override
     public void commonSwtich(boolean common) {
-        View view=findViewById(R.id.save);
+        View view = findViewById(R.id.save);
         TextView txt = (TextView) view.findViewById(R.id.txt);
         txt.setText(getResources().getString(R.string.Link_Save_to_Contacts));
 
@@ -234,10 +246,9 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
 
     @Override
     public void clearHistory() {
-        View view=findViewById(R.id.clear);
+        View view = findViewById(R.id.clear);
         ImageView img = (ImageView) view.findViewById(R.id.img);
-        img.setBackgroundResource(R.mipmap.message_clear_history2x);
-        TextView txt = (TextView) view.findViewById(R.id.txt);
+        TextView txt = (TextView) view.findViewById(R.id.groupset_clear_history);
         txt.setText(getResources().getString(R.string.Link_Clear_Chat_History));
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -248,7 +259,7 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
                     @Override
                     public void confirm(int position) {
                         ConversionHelper.getInstance().deleteRoom(groupKey);
-                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.CLEAR_HISTORY,groupKey);
+                        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.CLEAR_HISTORY, groupKey);
                     }
                 });
             }
@@ -257,11 +268,8 @@ public class GroupSetActivity extends BaseActivity implements GroupSetContract.B
 
     @Override
     public void exitGroup() {
-        View view=findViewById(R.id.delete);
-        ImageView img = (ImageView) view.findViewById(R.id.img);
-        img.setBackgroundResource( R.mipmap.message_group_leave2x);
-        TextView txt = (TextView) view.findViewById(R.id.txt);
-        txt.setText(getResources().getString(R.string.Link_Delete_and_Leave));
+        Button view = (Button) findViewById(R.id.groupset_exit_group);
+        view.setText(getResources().getString(R.string.Link_Delete_and_Leave));
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

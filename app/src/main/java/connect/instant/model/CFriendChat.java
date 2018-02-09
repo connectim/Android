@@ -7,6 +7,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.util.List;
 
 import connect.activity.base.BaseApplication;
+import connect.activity.base.BaseListener;
 import connect.activity.home.bean.ConversationAction;
 import connect.activity.home.bean.RoomAttrBean;
 import connect.database.SharedPreferenceUtil;
@@ -34,6 +35,7 @@ public class CFriendChat extends FriendChat implements ConversationListener {
 
     private String userName;
     private String userAvatar;
+    private BaseListener<String> baseListener;
 
     public CFriendChat(String uid) {
         super(uid, "");
@@ -43,22 +45,49 @@ public class CFriendChat extends FriendChat implements ConversationListener {
             List<RoomAttrBean> roomAttrBeen = ConversionHelper.getInstance().loadRoomEntities(uid);
             if (roomAttrBeen.size() == 0) {
                 List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMemEntitiesWithOutGroupKey(uid);
-                if (memberEntities.size() > 0) {
+                if (memberEntities.size() == 0) {
+                    ConversionEntity conversionEntity =  ConversionHelper.getInstance().loadRoomEnitity(uid);
+                    if (conversionEntity != null) {
+                        userName = conversionEntity.getName();
+                        userAvatar = conversionEntity.getAvatar();
+
+                        if (baseListener != null) {
+                            baseListener.Success("");
+                        }
+                    }
+                }else{
                     GroupMemberEntity memberEntity = memberEntities.get(0);
                     userName = memberEntity.getUsername();
                     userAvatar = memberEntity.getAvatar();
+
+                    if (baseListener != null) {
+                        baseListener.Success("");
+                    }
                 }
             } else {
                 RoomAttrBean attrBean = roomAttrBeen.get(0);
                 userName = attrBean.getName();
                 userAvatar = attrBean.getAvatar();
+
+                if(baseListener!=null){
+                    baseListener.Success("");
+                }
             }
         } else {
             userName = contactEntity.getName();
             userAvatar = contactEntity.getAvatar();
             setFriendPublicKey(contactEntity.getPublicKey());
+
+            if(baseListener!=null){
+                baseListener.Success("");
+            }
         }
         requestFriendInfo(uid);
+    }
+
+    public CFriendChat(String uid, BaseListener<String> listener) {
+        this(uid);
+        this.baseListener = listener;
     }
 
     public void requestFriendInfo(final String frienduid) {
@@ -79,6 +108,10 @@ public class CFriendChat extends FriendChat implements ConversationListener {
                     userAvatar = userinfo.getAvatar();
                     setFriendPublicKey(userinfo.getPubKey());
                     friendUid = userinfo.getUid();
+
+                    if (baseListener != null) {
+                        baseListener.Success("");
+                    }
                 } catch (InvalidProtocolBufferException e) {
                     e.printStackTrace();
                 }
@@ -134,7 +167,7 @@ public class CFriendChat extends FriendChat implements ConversationListener {
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime) {
-        updateRoomMsg(draft, showText, msgtime, -1);
+        updateRoomMsg(draft, showText, msgtime, 0);
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime, int at) {
@@ -146,6 +179,11 @@ public class CFriendChat extends FriendChat implements ConversationListener {
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg, boolean broad) {
+        updateRoomMsg(draft, showText, msgtime, at, newmsg, true, 0);
+    }
+
+    @Override
+    public void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg, boolean broad, int attention) {
         if (TextUtils.isEmpty(chatKey())) {
             return;
         }
@@ -158,10 +196,8 @@ public class CFriendChat extends FriendChat implements ConversationListener {
             conversionEntity.setAvatar(headImg());
             conversionEntity.setType(chatType());
             conversionEntity.setContent(TextUtils.isEmpty(showText) ? "" : showText);
-            conversionEntity.setStranger(isStranger ? 1 : 0);
             conversionEntity.setUnread_count(newmsg == 0 ? 0 : 1);
             conversionEntity.setDraft(TextUtils.isEmpty(draft) ? "" : draft);
-            conversionEntity.setIsAt(at);
             conversionEntity.setLast_time((msgtime < 0 ? 0 : msgtime));
             ConversionHelper.getInstance().insertRoomEntity(conversionEntity);
         } else {
@@ -173,9 +209,9 @@ public class CFriendChat extends FriendChat implements ConversationListener {
                         TextUtils.isEmpty(draft) ? "" : draft,
                         TextUtils.isEmpty(showText) ? "" : showText,
                         (newmsg == 0 ? 0 : 1 + attrBean.getUnread()),
-                        at,
-                        (isStranger ? 1 : 0),
-                        (msgtime <= 0 ? 0 : msgtime)
+                        0,
+                        (msgtime <= 0 ? 0 : msgtime),
+                        0
                 );
             }
         }

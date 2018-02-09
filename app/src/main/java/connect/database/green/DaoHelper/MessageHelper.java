@@ -43,6 +43,51 @@ public class MessageHelper extends BaseDao {
     }
 
     /********************************* select ***********************************/
+    public List<ChatMsgEntity> loadMessageBySearchTxt(String message_ower, String searchTxt) {
+        daoSession.clear();
+
+        if (TextUtils.isEmpty(message_ower)) {
+            message_ower = "";
+        }
+
+        String sql = "SELECT M.* FROM MESSAGE_ENTITY M,(SELECT * FROM MESSAGE_ENTITY TEMP WHERE TEMP.TXT_CONTENT LIKE ? ORDER BY TEMP._id ASC LIMIT 1) AS LAST  WHERE M.MESSAGE_OWER = ? AND M.CREATETIME >= LAST.CREATETIME;";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{"%" + searchTxt + "%", message_ower});
+
+        ChatMsgEntity msgEntity = null;
+        List<ChatMsgEntity> msgEntities = new ArrayList();
+
+        while (cursor.moveToNext()) {
+            msgEntity = new ChatMsgEntity();
+            msgEntity.set_id(cursorGetLong(cursor, "_id"));
+            msgEntity.setMessage_ower(cursorGetString(cursor, "MESSAGE_OWER"));
+            msgEntity.setMessage_id(cursorGetString(cursor, "MESSAGE_ID"));
+            msgEntity.setChatType(cursorGetInt(cursor, "CHAT_TYPE"));
+            msgEntity.setMessage_from(cursorGetString(cursor, "MESSAGE_FROM"));
+            msgEntity.setMessage_to(cursorGetString(cursor, "MESSAGE_TO"));
+            msgEntity.setMessageType(cursorGetInt(cursor, "MESSAGE_TYPE"));
+            msgEntity.setContent(cursorGetString(cursor, "CONTENT"));
+            msgEntity.setSend_status(cursorGetInt(cursor, "SEND_STATUS"));
+            msgEntity.setRead_time(cursorGetLong(cursor, "READ_TIME"));
+            msgEntity.setCreatetime(cursorGetLong(cursor, "CREATETIME"));
+
+            msgEntity.setTransStatus(cursorGetInt(cursor, "TRANS_STATUS"));
+            msgEntity.setHashid(cursorGetString(cursor, "HASHID"));
+            msgEntity.setPayCount(cursorGetInt(cursor, "PAY_COUNT"));
+            msgEntity.setCrowdCount(cursorGetInt(cursor, "CROWD_COUNT"));
+
+            String content = msgEntity.getContent();
+            if (!TextUtils.isEmpty(content)) {
+                msgEntity.setContents(StringUtil.hexStringToBytes(content));
+            }
+            msgEntities.add(msgEntity);
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return msgEntities;
+    }
+
+
     public List<ChatMsgEntity> loadMoreMsgEntities(String message_ower, long firsttime) {
         daoSession.clear();
 
@@ -68,7 +113,6 @@ public class MessageHelper extends BaseDao {
             msgEntity.setMessage_to(cursorGetString(cursor, "MESSAGE_TO"));
             msgEntity.setMessageType(cursorGetInt(cursor, "MESSAGE_TYPE"));
             msgEntity.setContent(cursorGetString(cursor, "CONTENT"));
-            msgEntity.setSnap_time(cursorGetLong(cursor, "SNAP_TIME"));
             msgEntity.setSend_status(cursorGetInt(cursor, "SEND_STATUS"));
             msgEntity.setRead_time(cursorGetLong(cursor, "READ_TIME"));
             msgEntity.setCreatetime(cursorGetLong(cursor, "CREATETIME"));
@@ -137,19 +181,9 @@ public class MessageHelper extends BaseDao {
     /********************************* add ***********************************/
     public void insertMessageEntity(MessageEntity msgEntity) {
         messageEntityDao.insertOrReplaceInTx(msgEntity);
-
-        //        daoSession.clear();
-//        String sql = "INSERT INTO MESSAGE_ENTITY (MESSAGE_OWER, MESSAGE_ID, CHAT_TYPE, MESSAGE_FROM ,MESSAGE_TO, MESSAGE_TYPE, CONTENT," +
-//                "READ_TIME,SEND_STATUS,SNAP_TIME,CREATETIME) VALUES (?,?,?,?,?,?,?,?,?,?,?);";
-//
-//        Object[] objects = new Object[]{msgEntity.getMessage_ower(), msgEntity.getMessage_id(), msgEntity.getChatType(), msgEntity.getMessage_from(),
-//                msgEntity.getMessage_to(), msgEntity.getMessageType(), msgEntity.getContent(),
-//                msgEntity.getRead_time(), msgEntity.getSend_status(), msgEntity.getSnap_time(), msgEntity.getCreatetime()
-//        };
-//        daoSession.getDatabase().execSQL(sql, objects);
     }
 
-    public ChatMsgEntity insertMessageEntity(String messageid, String messageowner, int chattype, int messagetype, String from, String to, byte[] contents, long createtime, int sendstate) {
+    public ChatMsgEntity insertMessageEntity(String messageid, String messageowner, int chattype, int messagetype, String from, String to, byte[] contents,String  txtcontent,long createtime, int sendstate) {
         MessageEntity messageEntity = new MessageEntity();
         messageEntity.setMessage_id(messageid);
         messageEntity.setMessage_ower(messageowner);
@@ -158,10 +192,10 @@ public class MessageHelper extends BaseDao {
         messageEntity.setMessage_from(from);
         messageEntity.setMessage_to(to);
         messageEntity.setContent(StringUtil.bytesToHexString(contents));
+        messageEntity.setTxtContent(txtcontent);
         messageEntity.setCreatetime(createtime);
         messageEntity.setSend_status(sendstate);
         messageEntity.setRead_time(0L);
-        messageEntity.setSnap_time(0L);
 
         ChatMsgEntity msgExtEntity = messageEntity.messageToChatEntity();
         msgExtEntity.setContents(contents);
@@ -203,15 +237,5 @@ public class MessageHelper extends BaseDao {
 
     public void updateMsg(List<MessageEntity> msgEntities) {
         messageEntityDao.updateInTx(msgEntities);
-    }
-
-    public void updateBurnMsg(String msgid, long time) {
-        QueryBuilder<MessageEntity> queryBuilder = messageEntityDao.queryBuilder();
-        queryBuilder.where(MessageEntityDao.Properties.Message_id.eq(msgid)).build();
-        List<MessageEntity> detailEntities = queryBuilder.list();
-        for (MessageEntity entity : detailEntities) {
-            entity.setSnap_time(time);
-        }
-        messageEntityDao.updateInTx(detailEntities);
     }
 }

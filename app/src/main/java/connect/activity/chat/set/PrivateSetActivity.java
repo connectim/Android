@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
+import connect.activity.chat.SearchContentActivity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.set.contract.PrivateSetContract;
 import connect.activity.chat.set.presenter.PrivateSetPresenter;
@@ -26,7 +27,7 @@ import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.ConversionSettingEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.widget.TopToolBar;
 
 /**
@@ -70,7 +71,7 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
         activity = this;
         toolbar.setBlackStyle();
         toolbar.setLeftImg(R.mipmap.back_white);
-        toolbar.setTitle(getResources().getString(R.string.Wallet_Detail));
+        toolbar.setTitle(getResources().getString(R.string.Chat_Private_Setting));
         toolbar.setLeftListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,6 +108,23 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public void searchHistoryTxt() {
+        View view = findViewById(R.id.privateset_searchhistory);
+
+        TextView searchTxt = (TextView) view.findViewById(R.id.txt1);
+        ImageView imageView = (ImageView) view.findViewById(R.id.img1);
+
+        searchTxt.setText(getResources().getString(R.string.Chat_Search_Txt));
+        imageView.setImageResource(R.mipmap.group_item_arrow);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SearchContentActivity.lunchActivity(activity, 3);
+            }
+        });
     }
 
     @Override
@@ -169,11 +187,9 @@ public class PrivateSetActivity extends BaseActivity implements PrivateSetContra
     public void clearMessage() {
         View view = findViewById(R.id.clear);
         String str = getResources().getString(R.string.Link_Clear_Chat_History);
-        TextView txt = (TextView) view.findViewById(R.id.txt);
+        TextView txt = (TextView) view.findViewById(R.id.private_clear_history);
         txt.setText(str);
 
-        ImageView img = (ImageView) view.findViewById(R.id.img);
-        img.setBackgroundResource(R.mipmap.message_clear_history2x);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

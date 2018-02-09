@@ -43,7 +43,6 @@ public class GroupChat extends NormalChat {
         msgExtEntity.setMessage_to(chatKey());
         msgExtEntity.setMessageType(type.type);
         msgExtEntity.setRead_time(0L);
-        msgExtEntity.setSnap_time(0L);
         msgExtEntity.setCreatetime(TimeUtil.getCurrentTimeInLong());
         msgExtEntity.setSend_status(0);
         return msgExtEntity;
@@ -53,6 +52,14 @@ public class GroupChat extends NormalChat {
     public void sendPushMsg(ChatMsgEntity msgExtEntity) {
         Connect.ChatMessage.Builder chatMessageBuilder = msgExtEntity.transToChatMessageBuilder();
         chatMessageBuilder.setBody(ByteString.copyFrom(msgExtEntity.getContents()));
+
+        UserCookie userCookie = Session.getInstance().getConnectCookie();
+        Connect.MessageUserInfo userInfo = Connect.MessageUserInfo.newBuilder()
+                .setAvatar(userCookie.getUserAvatar())
+                .setUsername(userCookie.getUserName())
+                .setUid(userCookie.getUid())
+                .build();
+        chatMessageBuilder.setSender(userInfo);
 
         Connect.MessageData messageData = Connect.MessageData.newBuilder()
                 .setChatMsg(chatMessageBuilder)
@@ -86,7 +93,7 @@ public class GroupChat extends NormalChat {
     }
 
     public void setNickName(String name) {
-        this.myGroupName = name;
+        this.groupName = name;
     }
 
     public ChatMsgEntity groupTxtMsg(String string, List<String> address) {

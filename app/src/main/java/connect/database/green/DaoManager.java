@@ -13,9 +13,9 @@ import connect.database.green.DaoHelper.ApplicationHelper;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
 import connect.database.green.DaoHelper.ConversionSettingHelper;
-import connect.database.green.DaoHelper.CurrencyHelper;
 import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.DaoHelper.MigrateOpenHelper;
+import connect.database.green.DaoHelper.OrganizerHelper;
 import connect.database.green.DaoHelper.ParamHelper;
 import connect.database.green.DaoHelper.TransactionHelper;
 import connect.database.green.dao.DaoMaster;
@@ -61,7 +61,7 @@ public class DaoManager {
             } else {
                 String uid = userBean.getUid();
                 DB_NAME = "connect_" + StringUtil.bytesToHexString(StringUtil.digest(StringUtil.MD5,
-                        StringUtil.hexStringToBytes(uid)));
+                        StringUtil.hexStringToBytes(uid))) + ".db";
                 DB_PWD = "connect_" + StringUtil.bytesToHexString(StringUtil.digest(StringUtil.SHA_256,
                         StringUtil.hexStringToBytes(uid)));
             }
@@ -145,14 +145,13 @@ public class DaoManager {
             mHelper = null;
         }
 
-        MessageHelper.closeHelper();
+        ApplicationHelper.closeHelper();
+        ContactHelper.closeHelper();
         ConversionHelper.closeHelper();
         ConversionSettingHelper.closeHelper();
-        ContactHelper.closeHelper();
+        MessageHelper.closeHelper();
+        OrganizerHelper.closeHelper();
         ParamHelper.closeHelper();
         TransactionHelper.closeHelper();
-        CurrencyHelper.closeHelper();
-        ApplicationHelper.closeHelper();
     }
-
 }

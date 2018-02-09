@@ -12,6 +12,7 @@ import java.util.List;
 
 import connect.activity.base.BaseApplication;
 import connect.activity.chat.bean.Talker;
+import connect.activity.chat.fragment.bean.SearchBean;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.bean.ConversationAction;
 import connect.database.green.BaseDao;
@@ -65,7 +66,7 @@ public class ContactHelper extends BaseDao {
     }
 
     public void insertContacts(List<ContactEntity> entities) {
-        contactEntityDao.insertInTx(entities);
+        contactEntityDao.insertOrReplaceInTx(entities);
     }
 
     public List<ContactEntity> loadAll() {
@@ -144,33 +145,25 @@ public class ContactHelper extends BaseDao {
         return chatType;
     }
 
-    public Talker loadTalkerFriend(String uid) {
+    public ContactEntity loadConversationFriend(String uid) {
         if (TextUtils.isEmpty(uid)) {
             uid = "";
         }
 
-        String sql = "SELECT F.REMARK AS FREMARK, F.AVATAR AS FAVATAR, C.NAME AS CNAME, C.AVATAR AS CAVATAR FROM CONTACT_ENTITY F LEFT OUTER JOIN CONVERSION_ENTITY C WHERE F.UID = ? AND F.UID = C.IDENTIFIER LIMIT 1;";
+        String sql = "SELECT F.NAME , F.AVATAR FROM CONTACT_ENTITY F WHERE F.UID = ? UNION SELECT C.NAME, C.AVATAR FROM CONVERSION_ENTITY AS C WHERE C.IDENTIFIER = ?";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{uid, uid});
 
-        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{uid});
-
-        Talker talker = new Talker(Connect.ChatType.PRIVATE, uid);
+        ContactEntity contactEntity = new ContactEntity();
         while (cursor.moveToNext()) {
-            String userName = cursorGetString(cursor, "CNAME");
-            String userRemark = cursorGetString(cursor, "FREMARK");
-            String userAvatar = cursorGetString(cursor, "FAVATAR");
-
-            boolean stranger = TextUtils.isEmpty(userName);
-            talker.setStranger(stranger);
-            if (stranger) {
-                userName = cursorGetString(cursor, "CNAME");
-                userAvatar = cursorGetString(cursor, "CAVATAR");
+            String userName = cursorGetString(cursor, "NAME");
+            String userAvatar = cursorGetString(cursor, "AVATAR");
+            if (!(TextUtils.isEmpty(userName) || TextUtils.isEmpty(userAvatar))) {
+                contactEntity.setUid(uid);
+                contactEntity.setName(userName);
+                contactEntity.setAvatar(userAvatar);
             }
-
-            userName = TextUtils.isEmpty(userRemark) ? userName : userRemark;
-            talker.setNickName(userName);
-            talker.setAvatar(userAvatar);
         }
-        return talker;
+        return contactEntity;
     }
 
     public Talker loadTalkerGroup(String identify) {
@@ -223,7 +216,7 @@ public class ContactHelper extends BaseDao {
      */
     public List<ContactEntity> loadFriendEntityFromText(String text) {
         QueryBuilder<ContactEntity> queryBuilder = contactEntityDao.queryBuilder();
-        queryBuilder.where(ContactEntityDao.Properties.Name.like(text + "%")).limit(1).build();
+        queryBuilder.where(ContactEntityDao.Properties.Name.like("%" + text + "%")).limit(1).build();
         List<ContactEntity> friendEntities = queryBuilder.list();
         return friendEntities;
     }
@@ -299,7 +292,7 @@ public class ContactHelper extends BaseDao {
         if (TextUtils.isEmpty(pukkey)) {
             pukkey = "";
         }
-        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.UID = F.UID " +
+        String sql = "SELECT M.*  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.UID = F.UID " +
                 "WHERE M.IDENTIFIER = ? GROUP BY M.IDENTIFIER ,M.UID ORDER BY M.ROLE DESC;";
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{pukkey});
 
@@ -310,15 +303,9 @@ public class ContactHelper extends BaseDao {
             groupMemEntity.set_id(cursorGetLong(cursor, "_ID"));
             groupMemEntity.setIdentifier(cursorGetString(cursor, "IDENTIFIER"));
             groupMemEntity.setUid(cursorGetString(cursor, "UID"));
-            groupMemEntity.setNick(cursorGetString(cursor, "NICK"));
             groupMemEntity.setUsername(cursorGetString(cursor, "USERNAME"));
             groupMemEntity.setRole(cursorGetInt(cursor, "ROLE"));
             groupMemEntity.setAvatar(cursorGetString(cursor, "AVATAR"));
-
-            String remark = cursorGetString(cursor, "REMARK");
-            if (!TextUtils.isEmpty(remark)) {
-                groupMemEntity.setNick(remark);
-            }
             groupMemEntities.add(groupMemEntity);
         }
         if (cursor != null) {
@@ -334,7 +321,7 @@ public class ContactHelper extends BaseDao {
      * @return
      */
     public List<GroupMemberEntity> loadGroupMemEntitiesWithOutGroupKey(String memberkey) {
-        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.UID = F.UID " +
+        String sql = "SELECT M.*  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.UID = F.UID " +
                 "WHERE M.UID ==? GROUP BY M.UID ORDER BY M.ROLE DESC;";
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{memberkey});
 
@@ -345,15 +332,9 @@ public class ContactHelper extends BaseDao {
             groupMemEntity.set_id(cursorGetLong(cursor, "_ID"));
             groupMemEntity.setIdentifier(cursorGetString(cursor, "IDENTIFIER"));
             groupMemEntity.setUid(cursorGetString(cursor, "UID"));
-            groupMemEntity.setNick(cursorGetString(cursor, "NICK"));//friend mark
             groupMemEntity.setUsername(cursorGetString(cursor, "USERNAME"));
             groupMemEntity.setRole(cursorGetInt(cursor, "ROLE"));
             groupMemEntity.setAvatar(cursorGetString(cursor, "AVATAR"));
-
-            String remark = cursorGetString(cursor, "REMARK");
-            if (!TextUtils.isEmpty(remark)) {
-                groupMemEntity.setNick(remark);
-            }
             groupMemEntities.add(groupMemEntity);
         }
         if (cursor != null) {
@@ -370,7 +351,7 @@ public class ContactHelper extends BaseDao {
      * @return
      */
     public List<GroupMemberEntity> loadGroupMemEntities(String identify, String memberkey) {
-        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.UID = F.UID " +
+        String sql = "SELECT M.* FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.UID = F.UID " +
                 "WHERE M.IDENTIFIER = ? AND M.UID ==? GROUP BY M.UID ORDER BY M.ROLE DESC;";
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{identify, memberkey});
 
@@ -381,21 +362,22 @@ public class ContactHelper extends BaseDao {
             groupMemEntity.set_id(cursorGetLong(cursor, "_ID"));
             groupMemEntity.setIdentifier(cursorGetString(cursor, "IDENTIFIER"));
             groupMemEntity.setUid(cursorGetString(cursor, "UID"));
-            groupMemEntity.setNick(cursorGetString(cursor, "NICK"));//friend mark
             groupMemEntity.setUsername(cursorGetString(cursor, "USERNAME"));
             groupMemEntity.setRole(cursorGetInt(cursor, "ROLE"));
             groupMemEntity.setAvatar(cursorGetString(cursor, "AVATAR"));
-
-            String remark = cursorGetString(cursor, "REMARK");
-            if (!TextUtils.isEmpty(remark)) {
-                groupMemEntity.setNick(remark);
-            }
             groupMemEntities.add(groupMemEntity);
         }
         if (cursor != null) {
             cursor.close();
         }
         return groupMemEntities;
+    }
+
+    public List<GroupMemberEntity> loadGroupMembersByUid(String uid) {
+        QueryBuilder<GroupMemberEntity> queryBuilder = groupMemberEntityDao.queryBuilder();
+        queryBuilder.where(GroupMemberEntityDao.Properties.Uid.eq(uid)).build();
+        List<GroupMemberEntity> memberEntities = queryBuilder.list();
+        return (memberEntities == null || memberEntities.size() == 0) ? null : memberEntities;
     }
 
     public GroupMemberEntity loadGroupMemberEntity(String identify, String publickey) {
@@ -410,7 +392,7 @@ public class ContactHelper extends BaseDao {
      * @return
      */
     public List<GroupMemberEntity> loadGroupMemberEntities(String identify) {
-        String sql = "SELECT M.* , F.REMARK AS REMARK  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.UID = F.UID " +
+        String sql = "SELECT M.*  FROM GROUP_MEMBER_ENTITY M LEFT OUTER JOIN CONTACT_ENTITY F ON M.UID = F.UID " +
                 "WHERE M.IDENTIFIER = ? GROUP BY M.UID ORDER BY M.ROLE DESC;";
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{identify});
 
@@ -421,15 +403,10 @@ public class ContactHelper extends BaseDao {
             groupMemEntity.set_id(cursorGetLong(cursor, "_ID"));
             groupMemEntity.setIdentifier(cursorGetString(cursor, "IDENTIFIER"));
             groupMemEntity.setUid(cursorGetString(cursor, "UID"));
-            groupMemEntity.setNick(cursorGetString(cursor, "NICK"));//friend mark
             groupMemEntity.setUsername(cursorGetString(cursor, "USERNAME"));
             groupMemEntity.setRole(cursorGetInt(cursor, "ROLE"));
             groupMemEntity.setAvatar(cursorGetString(cursor, "AVATAR"));
 
-            String remark = cursorGetString(cursor, "REMARK");
-            if (!TextUtils.isEmpty(remark)) {
-                groupMemEntity.setNick(remark);
-            }
             groupMemEntities.add(groupMemEntity);
         }
         if (cursor != null) {
@@ -437,6 +414,73 @@ public class ContactHelper extends BaseDao {
         }
         return groupMemEntities;
     }
+
+
+    public List<SearchBean> loadGroupByMemberName(String membername) {
+        String sql = "SELECT G.IDENTIFIER AS GIDENTIFIER, G.NAME AS GNAME,G.AVATAR AS GAVATAR FROM GROUP_ENTITY G,(SELECT * FROM GROUP_MEMBER_ENTITY) AS M WHERE G.IDENTIFIER = M.IDENTIFIER AND (G.NAME LIKE ? OR M.USERNAME LIKE ?) GROUP BY G.IDENTIFIER";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{"%" + membername + "%", "%" + membername + "%"});
+
+        List<SearchBean> groupEntities = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            SearchBean searchBean = new SearchBean();
+            searchBean.setUid(cursorGetString(cursor, "GIDENTIFIER"));
+            searchBean.setName(cursorGetString(cursor, "GNAME"));
+            searchBean.setAvatar(cursorGetString(cursor, "GAVATAR"));
+            searchBean.setSearchStr(membername);
+            searchBean.setStyle(2);
+            groupEntities.add(searchBean);
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return groupEntities;
+    }
+
+
+    public List<SearchBean> loadGroupByMessages(String message) {
+        String sql = "SELECT * FROM GROUP_ENTITY G,(SELECT M.MESSAGE_OWER ,COUNT() AS COUNTS FROM MESSAGE_ENTITY M WHERE M.TXT_CONTENT LIKE ? GROUP BY M.MESSAGE_OWER) AS MSG WHERE G.IDENTIFIER = MSG.MESSAGE_OWER";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{"%"+message+"%"});
+
+        List<SearchBean> groupEntities = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            SearchBean searchBean = new SearchBean();
+            searchBean.setUid(cursorGetString(cursor, "IDENTIFIER"));
+            searchBean.setName(cursorGetString(cursor, "NAME"));
+            searchBean.setAvatar(cursorGetString(cursor, "AVATAR"));
+            searchBean.setHinit(cursorGetString(cursor, "COUNTS"));
+            searchBean.setSearchStr(message);
+            searchBean.setStyle(3);
+            searchBean.setStatus(2);
+            groupEntities.add(searchBean);
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return groupEntities;
+    }
+
+    public List<SearchBean> loadChatByMessages(String message) {
+        String sql = "SELECT * FROM CONTACT_ENTITY G,(SELECT M.MESSAGE_OWER ,COUNT() AS COUNTS FROM MESSAGE_ENTITY M WHERE M.TXT_CONTENT LIKE ? GROUP BY M.MESSAGE_OWER) AS MSG WHERE G.UID = MSG.MESSAGE_OWER";
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, new String[]{"%"+message+"%"});
+
+        List<SearchBean> groupEntities = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            SearchBean searchBean = new SearchBean();
+            searchBean.setUid(cursorGetString(cursor, "UID"));
+            searchBean.setName(cursorGetString(cursor, "NAME"));
+            searchBean.setAvatar(cursorGetString(cursor, "AVATAR"));
+            searchBean.setHinit(cursorGetString(cursor, "COUNTS"));
+            searchBean.setSearchStr(message);
+            searchBean.setStyle(3);
+            searchBean.setStatus(1);
+            groupEntities.add(searchBean);
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return groupEntities;
+    }
+
     /*********************************  update ***********************************/
 
     /**
@@ -568,6 +612,14 @@ public class ContactHelper extends BaseDao {
         ConversationAction.conversationAction.sendEvent(ConversationAction.ConverType.LOAD_MESSAGE);
     }
 
+    public void clearContactEntities() {
+        contactEntityDao.deleteAll();
+    }
+
+    public void clearGroupEntities() {
+        groupEntityDao.deleteAll();
+    }
+
     public void deleteEntity(String uid) {
         QueryBuilder<ContactEntity> qb = contactEntityDao.queryBuilder();
         DeleteQuery<ContactEntity> bd = qb.where(ContactEntityDao.Properties.Uid.eq(uid))
@@ -592,6 +644,7 @@ public class ContactHelper extends BaseDao {
      */
     public void removeGroupInfos(String groupKey) {
         ConversionHelper.getInstance().deleteRoom(groupKey);
+        ConversionSettingHelper.getInstance().deleteConverstionSet(groupKey);
         MessageHelper.getInstance().clearMsgByRoomkey(groupKey);
         quitGroup(groupKey);
 
@@ -617,6 +670,12 @@ public class ContactHelper extends BaseDao {
     public void removeGroupEntity(String groupkey) {
         QueryBuilder<GroupEntity> qb = groupEntityDao.queryBuilder();
         DeleteQuery<GroupEntity> bd = qb.where(GroupEntityDao.Properties.Identifier.eq(groupkey)).buildDelete();
+        bd.executeDeleteWithoutDetachingEntities();
+    }
+
+    public void removeCommonGroupEntity() {
+        QueryBuilder<GroupEntity> qb = groupEntityDao.queryBuilder();
+        DeleteQuery<GroupEntity> bd = qb.where(GroupEntityDao.Properties.Common.eq(1)).buildDelete();
         bd.executeDeleteWithoutDetachingEntities();
     }
 
@@ -646,4 +705,7 @@ public class ContactHelper extends BaseDao {
         bd.executeDeleteWithoutDetachingEntities();
     }
 
+    public long contactsCount() {
+        return contactEntityDao.count() + groupEntityDao.count();
+    }
 }

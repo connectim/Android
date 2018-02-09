@@ -192,4 +192,16 @@ public class SystemUtil {
         return networkInfo.isConnected();
     }
 
+    public static int getStateBarHeight() {
+        int statusBarHeight1 = -1;
+        Context context = BaseApplication.getInstance().getBaseContext();
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            //根据资源ID获取响应的尺寸值
+            statusBarHeight1 = context.getResources().getDimensionPixelSize(resourceId);
+        } else {
+            statusBarHeight1 = dipToPx(50);
+        }
+        return statusBarHeight1;
+    }
 }

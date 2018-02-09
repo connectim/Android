@@ -13,6 +13,7 @@ import connect.activity.chat.bean.RecExtBean;
 import connect.activity.chat.set.contract.GroupSetContract;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.HomeActivity;
+import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
 import connect.database.green.DaoHelper.ConversionHelper;
@@ -23,10 +24,10 @@ import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.UriUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.utils.glide.GlideUtil;
 import connect.utils.okhttp.OkHttpUtil;
 import connect.utils.okhttp.ResultCall;
@@ -61,8 +62,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
         }
 
         List<GroupMemberEntity> memberEntities = ContactHelper.getInstance().loadGroupMemEntities(roomKey);
-        String countTxt = String.format(activity.getString(R.string.Link_Members), memberEntities.size());
-        view.countMember(countTxt);
+        view.countMember(memberEntities.size());
 
         int subPosi = memberEntities.size() >= 3 ? 3 : memberEntities.size();
         List<GroupMemberEntity> showMemberEntities = memberEntities.subList(0, subPosi);
@@ -77,13 +77,19 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
             ImageView adminImg = (ImageView) headerview.findViewById(R.id.img1);
             TextView name = (TextView) headerview.findViewById(R.id.name);
 
+            UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
+            if (userBean.getUid() == entity.getUid()) {
+                entity.setUsername(userBean.getName());
+                entity.setAvatar(userBean.getAvatar());
+            }
+
             if (entity.getRole() != null && entity.getRole() == 1) {
                 adminImg.setVisibility(View.VISIBLE);
             } else {
                 adminImg.setVisibility(View.GONE);
             }
 
-            String nameTxt = TextUtils.isEmpty(entity.getUsername()) ? entity.getNick() : entity.getUsername();
+            String nameTxt = entity.getUsername();
             if (TextUtils.isEmpty(nameTxt)) {
                 name.setVisibility(View.GONE);
             } else {
@@ -125,6 +131,7 @@ public class GroupSetPresenter implements GroupSetContract.Presenter{
         boolean common = Integer.valueOf(1).equals(groupEntity.getCommon());
         view.commonSwtich(common);
 
+        view.searchGroupHistoryTxt();
         view.clearHistory();
         view.exitGroup();
     }

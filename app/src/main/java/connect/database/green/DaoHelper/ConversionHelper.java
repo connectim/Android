@@ -52,6 +52,34 @@ public class ConversionHelper extends BaseDao {
         return unRead;
     }
 
+    public int countUnReadAt() {
+        String sql = "SELECT SUM(C.UNREAD_AT) AS UNREAD_AT FROM CONVERSION_ENTITY C;";
+
+        int unRead = 0;
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            unRead += cursorGetInt(cursor, "UNREAD_AT");
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return unRead;
+    }
+
+    public int countUnReadAttention() {
+        String sql = "SELECT SUM(C.UNREAD_ATTENTION) AS UNREAD_ATTENTION FROM CONVERSION_ENTITY C;";
+
+        int unRead = 0;
+        Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            unRead += cursorGetInt(cursor, "UNREAD_ATTENTION");
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return unRead;
+    }
+
     /**
      * chat message list
      *
@@ -78,15 +106,15 @@ public class ConversionHelper extends BaseDao {
             attrBean.setRoomid(cursorGetString(cursor, "IDENTIFIER"));
             attrBean.setRoomtype(cursorGetInt(cursor, "TYPE"));
             attrBean.setDisturb(cursorGetInt(cursor, "DISTURB"));
-            attrBean.setStranger(cursorGetInt(cursor, "STRANGER"));
             attrBean.setTop(cursorGetInt(cursor, "TOP"));
-            attrBean.setUnread(cursorGetInt(cursor, "UNREAD_COUNT"));
             attrBean.setTimestamp(cursorGetLong(cursor, "LAST_TIME"));
             attrBean.setDraft(cursorGetString(cursor, "DRAFT"));
             attrBean.setContent(cursorGetString(cursor, "CONTENT"));
             attrBean.setName(cursorGetString(cursor, "NAME"));
             attrBean.setAvatar(cursorGetString(cursor, "AVATAR"));
-            attrBean.setAt(cursorGetInt(cursor, "NOTICE"));
+            attrBean.setUnread(cursorGetInt(cursor, "UNREAD_COUNT"));
+            attrBean.setUnreadAt(cursorGetInt(cursor, "UNREAD_AT"));
+            attrBean.setUnreadAttention(cursorGetInt(cursor, "UNREAD_ATTENTION"));
             attrBeanList.add(attrBean);
         }
         if (cursor != null) {
@@ -103,7 +131,7 @@ public class ConversionHelper extends BaseDao {
     public List<RoomAttrBean> loadRecentRoomEntities() {
         String sql = "SELECT R.*, S.DISTURB FROM CONVERSION_ENTITY R \n" +
                 " LEFT OUTER JOIN CONVERSION_SETTING_ENTITY S ON R.IDENTIFIER = S.IDENTIFIER \n" +
-                " WHERE R.TYPE != 2 and (R.STRANGER IS NULL OR R.STRANGER = 0) ORDER BY R.TOP DESC,R.LAST_TIME DESC LIMIT 10;";
+                " WHERE R.TYPE != 2 ORDER BY R.TOP DESC,R.LAST_TIME DESC LIMIT 10;";
         Cursor cursor = daoSession.getDatabase().rawQuery(sql, null);
 
         RoomAttrBean attrBean = null;
@@ -113,15 +141,15 @@ public class ConversionHelper extends BaseDao {
             attrBean.setRoomid(cursorGetString(cursor, "IDENTIFIER"));
             attrBean.setRoomtype(cursorGetInt(cursor, "TYPE"));
             attrBean.setDisturb(cursorGetInt(cursor, "DISTURB"));
-            attrBean.setStranger(cursorGetInt(cursor, "STRANGER"));
             attrBean.setTop(cursorGetInt(cursor, "TOP"));
-            attrBean.setUnread(cursorGetInt(cursor, "UNREAD_COUNT"));
             attrBean.setTimestamp(cursorGetLong(cursor, "LAST_TIME"));
             attrBean.setDraft(cursorGetString(cursor, "DRAFT"));
             attrBean.setContent(cursorGetString(cursor, "CONTENT"));
             attrBean.setName(cursorGetString(cursor, "NAME"));
             attrBean.setAvatar(cursorGetString(cursor, "AVATAR"));
-            attrBean.setAt(cursorGetInt(cursor, "NOTICE"));
+            attrBean.setUnread(cursorGetInt(cursor, "UNREAD_COUNT"));
+            attrBean.setUnreadAt(cursorGetInt(cursor, "UNREAD_AT"));
+            attrBean.setUnreadAttention(cursorGetInt(cursor, "UNREAD_ATTENTION"));
             attrBeanList.add(attrBean);
         }
         if (cursor != null) {
@@ -148,21 +176,21 @@ public class ConversionHelper extends BaseDao {
     }
 
     public void updateRoomEntity(String identify, String draf, String content, long messagetime) {
-        updateRoomEntity(identify, draf, content, 0, 0, 0, messagetime);
+        updateRoomEntity(identify, draf, content, 0, 0, messagetime);
     }
 
-    public void updateRoomEntity(String identify, String draf, String content, int unRead, int isAt, int stranger, long messagetime) {
-        updateRoomEntity(identify, "","", draf, content, unRead, isAt, stranger, messagetime);
+    public void updateRoomEntity(String identify, String draf, String content, int unRead, int isAt, long messagetime) {
+        updateRoomEntity(identify, "","", draf, content, unRead, isAt, messagetime,0);
     }
 
-    public void updateRoomEntity(String identify, String roomName,String avatar, String draf, String content, int unRead, int isAt, int stranger, long messagetime) {
-        String sql = "UPDATE CONVERSION_ENTITY SET DRAFT = ? ,UNREAD_COUNT = ? ,IS_AT = ? ,STRANGER = ? " +
-                (TextUtils.isEmpty(avatar) ? " " : ", AVATAR = '" + avatar + "'") +
-                (TextUtils.isEmpty(content) ? " " : ", CONTENT = '" + content + "'") +
+    public void updateRoomEntity(String identify, String roomName,String avatar, String draf, String content, int unRead, int unAt, long messagetime,int isAttention) {
+        String sql = "UPDATE CONVERSION_ENTITY SET DRAFT = ? ,UNREAD_COUNT = ? ,UNREAD_AT = ? ,UNREAD_ATTENTION = ? " +
+                (TextUtils.isEmpty(avatar) ? " " : ", AVATAR = \"" + avatar + "\"") +
+                (TextUtils.isEmpty(content) ? " " : ", CONTENT = \"" + content + "\"") +
                 (messagetime == 0 ? " " : ", LAST_TIME = " + messagetime) +
-                (TextUtils.isEmpty(roomName) ? "" : ", NAME = '" + roomName + "' ") +
+                (TextUtils.isEmpty(roomName) ? "" : ", NAME = \"" + roomName + "\" ") +
                 " WHERE IDENTIFIER = ?;";
-        daoSession.getDatabase().execSQL(sql, new Object[]{draf, unRead, isAt, stranger, identify});
+        daoSession.getDatabase().execSQL(sql, new Object[]{draf, unRead, unAt,isAttention, identify});
     }
 
     public void updateRoomEntityName(String identify, String name) {

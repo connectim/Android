@@ -47,7 +47,7 @@ public class CRobotChat extends RobotChat implements ConversationListener{
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime) {
-        updateRoomMsg(draft, showText, msgtime, -1);
+        updateRoomMsg(draft, showText, msgtime, 0);
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime, int at) {
@@ -59,6 +59,11 @@ public class CRobotChat extends RobotChat implements ConversationListener{
     }
 
     public void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg, boolean broad) {
+        updateRoomMsg(draft,showText,msgtime,at,newmsg,true,0);
+    }
+
+    @Override
+    public void updateRoomMsg(String draft, String showText, long msgtime, int at, int newmsg, boolean broad, int attention) {
         if (TextUtils.isEmpty(chatKey())) {
             return;
         }
@@ -72,10 +77,8 @@ public class CRobotChat extends RobotChat implements ConversationListener{
             conversionEntity.setAvatar(headImg());
             conversionEntity.setType(chatType());
             conversionEntity.setContent(TextUtils.isEmpty(showText) ? "" : showText);
-            conversionEntity.setStranger(isStranger ? 1 : 0);
             conversionEntity.setUnread_count(newmsg == 0 ? 0 : 1);
             conversionEntity.setDraft(TextUtils.isEmpty(draft) ? "" : draft);
-            conversionEntity.setIsAt(at);
             conversionEntity.setLast_time((msgtime < 0 ? 0 : msgtime));
             ConversionHelper.getInstance().insertRoomEntity(conversionEntity);
         } else {
@@ -85,8 +88,7 @@ public class CRobotChat extends RobotChat implements ConversationListener{
                         TextUtils.isEmpty(draft) ? "" : draft,
                         TextUtils.isEmpty(showText) ? "" : showText,
                         (newmsg == 0 ? 0 : 1 + attrBean.getUnread()),
-                        at,
-                        (isStranger ? 1 : 0),
+                        0,
                         (msgtime < 0 ? 0 : msgtime)
                 );
             }

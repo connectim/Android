@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,9 +28,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseApplication;
 import connect.activity.base.BaseFragmentActivity;
-import connect.activity.chat.ChatActivity;
-import connect.activity.chat.bean.Talker;
 import connect.activity.chat.set.BaseGroupSelectActivity;
+import connect.activity.contact.ScanAddFriendActivity;
 import connect.activity.contact.bean.MsgSendBean;
 import connect.activity.home.bean.HomeAction;
 import connect.activity.home.bean.MsgNoticeBean;
@@ -41,19 +39,21 @@ import connect.activity.home.fragment.SetFragment;
 import connect.activity.home.fragment.WorkbenchFragment;
 import connect.activity.home.view.CheckUpdate;
 import connect.activity.login.LoginUserActivity;
+import connect.activity.set.SupportFeedbackActivity;
+import connect.activity.set.bean.SystemSetBean;
+import connect.database.green.DaoHelper.ParamManager;
 import connect.instant.bean.ConnectState;
 import connect.service.GroupService;
 import connect.service.UpdateInfoService;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.utils.log.LogManager;
 import connect.utils.permission.PermissionUtil;
 import connect.utils.scan.ResolveUrlUtil;
 import connect.widget.MaterialBadgeTextView;
 import instant.bean.UserOrderBean;
 import instant.utils.manager.FailMsgsManager;
-import protos.Connect;
 
 /**
  * Created by gtq on 2016/11/19.
@@ -68,8 +68,6 @@ public class HomeActivity extends BaseFragmentActivity {
     ImageView set;
     @Bind(R.id.workbench)
     ImageView workbench;
-    @Bind(R.id.home_content)
-    FrameLayout homeContent;
     @Bind(R.id.msg_rela)
     RelativeLayout msgRela;
     @Bind(R.id.contact_rela)
@@ -170,6 +168,9 @@ public class HomeActivity extends BaseFragmentActivity {
                 mHandler.sendEmptyMessageDelayed(TIMEOUT_DELAYEXIT, 1000);
                 break;
             case EXIT:
+                UserOrderBean orderBean = new UserOrderBean();
+                orderBean.connectLogout();
+
                 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.cancel(1001);
 
@@ -185,37 +186,52 @@ public class HomeActivity extends BaseFragmentActivity {
                 activity.startActivity(intent);
                 finish();
                 break;
-            case TOCHAT:
-                Talker talker = (Talker) (objects[0]);
-                if (talker.getTalkType() == Connect.ChatType.SUBSCRIBER) {
-
-                } else {
-                    ChatActivity.startActivity(activity, (Talker) (objects[0]));
-                }
-                break;
             case SWITCHFRAGMENT:
                 int fragmentCode = (Integer) objects[0];
                 switchFragment(fragmentCode);
                 break;
             case GROUP_NEWCHAT:
-                BaseGroupSelectActivity.startActivity(activity, true, "");
+                int position = (int) (objects[0]);
+                if(position == 1){
+                    BaseGroupSelectActivity.startActivity(activity, true, "");
+                }else if(position == 2){
+                    ActivityUtil.next(activity, ScanAddFriendActivity.class);
+                }else if(position == 3){
+                    SystemSetBean systemSetBean = ParamManager.getInstance().getSystemSet();
+                    boolean isVibrate = systemSetBean.isVibrate();
+                    boolean isRing = systemSetBean.isRing();
+                    if (isVibrate && isRing) {
+                        systemSetBean.setVibrate(false);
+                        systemSetBean.setRing(false);
+                    } else {
+                        systemSetBean.setVibrate(true);
+                        systemSetBean.setRing(true);
+                    }
+                    ParamManager.getInstance().putSystemSet(systemSetBean);
+                }else if(position == 4){
+                    ActivityUtil.next(activity, SupportFeedbackActivity.class);
+                }
                 break;
             case REMOTE_LOGIN:
                 String deviceName = (String) objects[0];
-                String showContent = TextUtils.isEmpty(deviceName) ?
-                        getString(R.string.Error_Device_Remote_Other_Login) :
-                        getString(R.string.Error_Device_Remote_Login, deviceName);
-                DialogUtil.showAlertTextView(activity, null,showContent , null, getString(R.string.Common_OK), true, false, new DialogUtil.OnItemClickListener() {
-                    @Override
-                    public void confirm(String value) {
-                        HomeAction.getInstance().sendEvent(HomeAction.HomeType.EXIT);
-                    }
+                orderBean = new UserOrderBean();
+                orderBean.connectLogout();
 
-                    @Override
-                    public void cancel() {
+                mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.cancel(1001);
 
+                mHandler.removeMessages(TIMEOUT_DELAYEXIT);
+                BaseApplication.getInstance().exitRegisterAccount();
+                list = BaseApplication.getInstance().getActivityList();
+                for (Activity activity1 : list) {
+                    if (!activity1.getClass().getName().equals(activity.getClass().getName())) {
+                        activity1.finish();
                     }
-                });
+                }
+                intent = new Intent(activity, LoginUserActivity.class);
+                intent.putExtra("VALUE",deviceName);
+                activity.startActivity(intent);
+                finish();
                 break;
         }
     }

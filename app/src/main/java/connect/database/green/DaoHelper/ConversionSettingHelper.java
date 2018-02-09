@@ -1,10 +1,14 @@
 package connect.database.green.DaoHelper;
 
+import org.greenrobot.greendao.query.DeleteQuery;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
+
 import connect.database.green.BaseDao;
+import connect.database.green.bean.ConversionEntity;
 import connect.database.green.bean.ConversionSettingEntity;
+import connect.database.green.dao.ConversionEntityDao;
 import connect.database.green.dao.ConversionSettingEntityDao;
 
 /**
@@ -34,6 +38,7 @@ public class ConversionSettingHelper extends BaseDao {
     /************************  select *****************************************/
     /**
      * Pub_key query friend
+     *
      * @return
      */
     public ConversionSettingEntity loadSetEntity(String pubkey) {
@@ -71,5 +76,12 @@ public class ConversionSettingHelper extends BaseDao {
         }
         setEntity.setDisturb(state);
         insertSetEntity(setEntity);
+    }
+
+
+    public void deleteConverstionSet(String roomid) {
+        QueryBuilder<ConversionSettingEntity> qb = conversionSettingEntityDao.queryBuilder();
+        DeleteQuery<ConversionSettingEntity> bd = qb.where(ConversionSettingEntityDao.Properties.Identifier.eq(roomid)).buildDelete();
+        bd.executeDeleteWithoutDetachingEntities();
     }
 }

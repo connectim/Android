@@ -24,27 +24,22 @@ public class GroupMemberEntity implements Serializable {
     private String username;
     @NotNull
     private String avatar;
-
     private Integer role;
-    private String nick;
-    private String connect_id;
 
     @Generated(hash = 1538201027)
     public GroupMemberEntity() {
     }
 
-    @Generated(hash = 2073355075)
+    @Generated(hash = 896721694)
     public GroupMemberEntity(Long _id, @NotNull String identifier,
             @NotNull String uid, @NotNull String username, @NotNull String avatar,
-            Integer role, String nick, String connect_id) {
+            Integer role) {
         this._id = _id;
         this.identifier = identifier;
         this.uid = uid;
         this.username = username;
         this.avatar = avatar;
         this.role = role;
-        this.nick = nick;
-        this.connect_id = connect_id;
     }
 
     public Long get_id() {
@@ -71,12 +66,6 @@ public class GroupMemberEntity implements Serializable {
     public void setRole(Integer role) {
         this.role = role;
     }
-    public String getNick() {
-        return this.nick;
-    }
-    public void setNick(String nick) {
-        this.nick = nick;
-    }
 
     public String getUid() {
         return uid;
@@ -84,14 +73,6 @@ public class GroupMemberEntity implements Serializable {
 
     public void setUid(String uid) {
         this.uid = uid;
-    }
-
-    public String getConnect_id() {
-        return connect_id;
-    }
-
-    public void setConnect_id(String connect_id) {
-        this.connect_id = connect_id;
     }
 
     public String getIdentifier() {

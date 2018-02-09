@@ -82,7 +82,7 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
     public void initView() {
         mActivity = this;
         toolbarTop.setLeftImg(R.mipmap.back_black);
-        toolbarTop.setTitle(R.mipmap.logo_black_middle, null);
+        toolbarTop.setTitle(R.mipmap.logo_black_middle, "");
         nicknameEt.addTextChangedListener(textWatcher);
 
         new RegisterPresenter(this).start();

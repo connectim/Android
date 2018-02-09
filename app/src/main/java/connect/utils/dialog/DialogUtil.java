@@ -1,4 +1,4 @@
-package connect.utils;
+package connect.utils.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -21,11 +21,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import connect.activity.home.view.LineDecoration;
 import connect.ui.activity.R;
+import connect.utils.dialog.adapter.DialogListAdapter;
 import connect.utils.system.SystemDataUtil;
 import connect.utils.system.SystemUtil;
 import connect.widget.FrameAnimationDrawable;
@@ -172,61 +174,6 @@ public class DialogUtil {
         dialog.setContentView(view);
         dialog.show();
         SystemUtil.showKeyBoard(edit.getContext(),edit);
-        return dialog;
-    }
-
-    /**
-     * Payment dialog
-     *
-     * @return
-     */
-    public static Dialog showConnectPay(Context context) {
-        final Dialog dialog = new Dialog(context, R.style.Dialog);
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.dialog_processpay, null);
-
-        final View dotLeft = view.findViewById(R.id.dot_left);
-        final View dotCentre = view.findViewById(R.id.dot_centre);
-        final View dotRight = view.findViewById(R.id.dot_right);
-
-        final Handler timetHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                dotLeft.setSelected(false);
-                dotCentre.setSelected(false);
-                dotRight.setSelected(false);
-                switch (msg.what) {
-                    case 0:
-                        dotLeft.setSelected(true);
-                        break;
-                    case 1:
-                        dotCentre.setSelected(true);
-                        break;
-                    case 2:
-                        dotRight.setSelected(true);
-                        break;
-                }
-            }
-        };
-
-        final Timer timer = new Timer();
-        final TimerTask timerTask = new TimerTask() {
-            int i = 0;
-            @Override
-            public void run() {
-                timetHandler.sendEmptyMessage(i % 3);
-                i++;
-                if(i > 20){
-                    timer.cancel();
-                }
-            }
-        };
-        timer.schedule(timerTask, 200, 500);
-
-        view.setMinimumWidth(SystemUtil.dipToPx(130));
-        dialog.setContentView(view);
-        dialog.show();
         return dialog;
     }
 
@@ -399,4 +346,47 @@ public class DialogUtil {
 
         void cancel();
     }
+
+
+
+
+    /**
+     * popup dialog
+     *
+     * @param mContext
+     * @param list
+     * @param itemClickListener
+     * @return
+     */
+    public static Dialog showItemListView(Context mContext, List<String> list, final DialogListItemClickListener itemClickListener) {
+        final Dialog dialog = new Dialog(mContext, R.style.Dialog);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View view = inflater.inflate(R.layout.dialog_listitem, null);
+        dialog.setContentView(view);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addItemDecoration(new LineDecoration(mContext));
+        DialogListAdapter dialogBottomAdapter = new DialogListAdapter(list);
+        recyclerView.setAdapter(dialogBottomAdapter);
+        dialogBottomAdapter.setItemClickListener(new DialogListAdapter.OnItemClickListener() {
+            @Override
+            public void itemClick(int position, String string) {
+                itemClickListener.confirm(position);
+                dialog.dismiss();
+            }
+        });
+
+        Window mWindow = dialog.getWindow();
+        WindowManager.LayoutParams lp = mWindow.getAttributes();
+        view.setMinimumWidth(SystemUtil.dipToPx(250));
+        dialog.setCanceledOnTouchOutside(true);
+        mWindow.setAttributes(lp);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+        return dialog;
+    }
+
+
 }

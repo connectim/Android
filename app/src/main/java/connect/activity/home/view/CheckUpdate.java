@@ -9,7 +9,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import connect.ui.activity.R;
 import connect.service.UpdateAppService;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.utils.ProtoBufUtil;
 import connect.utils.StringUtil;
 import connect.utils.permission.PermissionUtil;

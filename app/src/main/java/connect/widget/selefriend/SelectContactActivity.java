@@ -1,17 +1,14 @@
 package connect.widget.selefriend;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -22,10 +19,11 @@ import connect.activity.contact.model.ContactListManage;
 import connect.activity.home.bean.ContactBean;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.widget.SideBar;
 import connect.widget.TopToolBar;
 import connect.widget.selefriend.adapter.ContactAdapter;
+import protos.Connect;
 
 /**
  * Select the address book contacts
@@ -112,7 +110,7 @@ public class SelectContactActivity extends BaseActivity {
                     "", "", false, new DialogUtil.OnItemClickListener() {
                         @Override
                         public void confirm(String value) {
-                            backActivity(TextUtils.isEmpty(contactBean.getUid()) ? 1 : 0, contactBean.getUid());
+                            backActivity(contactBean.getStatus() == 2 ? Connect.ChatType.GROUP_DISCUSSION_VALUE : Connect.ChatType.PRIVATE_VALUE, contactBean.getUid());
                         }
 
                         @Override

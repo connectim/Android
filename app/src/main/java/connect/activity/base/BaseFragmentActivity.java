@@ -13,16 +13,16 @@ public abstract class BaseFragmentActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//
-//        BaseApplication.getInstance().getActivityList().add(this);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        BaseApplication.getInstance().getActivityList().add(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        BaseApplication.getInstance().getActivityList().remove(this);
+        BaseApplication.getInstance().getActivityList().remove(this);
     }
 
     public abstract void initView();

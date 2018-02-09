@@ -30,18 +30,20 @@ public class MessageEntity implements Serializable {
     private int messageType;
 
     private String content;
+    private String txtContent;
     private Long read_time;
     private Integer send_status;
-    private Long snap_time;
     private Long createtime;
 
     @Generated(hash = 1797882234)
     public MessageEntity() {
     }
 
-    @Generated(hash = 814481234)
-    public MessageEntity(Long _id, @NotNull String message_ower, @NotNull String message_id, int chatType, String message_from, String message_to, int messageType,
-            String content, Long read_time, Integer send_status, Long snap_time, Long createtime) {
+    @Generated(hash = 2048745859)
+    public MessageEntity(Long _id, @NotNull String message_ower, @NotNull String message_id,
+            int chatType, String message_from, String message_to, int messageType,
+            String content, String txtContent, Long read_time, Integer send_status,
+            Long createtime) {
         this._id = _id;
         this.message_ower = message_ower;
         this.message_id = message_id;
@@ -50,9 +52,9 @@ public class MessageEntity implements Serializable {
         this.message_to = message_to;
         this.messageType = messageType;
         this.content = content;
+        this.txtContent = txtContent;
         this.read_time = read_time;
         this.send_status = send_status;
-        this.snap_time = snap_time;
         this.createtime = createtime;
     }
 
@@ -69,7 +71,6 @@ public class MessageEntity implements Serializable {
         extEntity.setCreatetime(getCreatetime());
         extEntity.setRead_time(getRead_time());
         extEntity.setSend_status(getSend_status());
-        extEntity.setSnap_time(getSnap_time());
         return extEntity;
     }
 
@@ -89,10 +90,10 @@ public class MessageEntity implements Serializable {
         messageEntity.setMessage_from(chatMsgEntity.getMessage_from());
         messageEntity.setMessage_to(chatMsgEntity.getMessage_to());
         messageEntity.setContent(content);
+        messageEntity.setTxtContent(chatMsgEntity.showContent());
         messageEntity.setCreatetime(chatMsgEntity.getCreatetime());
         messageEntity.setRead_time(chatMsgEntity.getRead_time());
         messageEntity.setSend_status(chatMsgEntity.getSend_status());
-        messageEntity.setSnap_time(chatMsgEntity.getSnap_time());
         return messageEntity;
     }
 
@@ -176,12 +177,12 @@ public class MessageEntity implements Serializable {
         this.send_status = send_status;
     }
 
-    public Long getSnap_time() {
-        return this.snap_time;
+    public String getTxtContent() {
+        return txtContent;
     }
 
-    public void setSnap_time(Long snap_time) {
-        this.snap_time = snap_time;
+    public void setTxtContent(String txtContent) {
+        this.txtContent = txtContent;
     }
 
     public Long getCreatetime() {

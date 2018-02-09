@@ -17,11 +17,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseFragment;
 import connect.activity.chat.ChatActivity;
-import connect.activity.chat.bean.Talker;
-import connect.activity.contact.DepartmentActivity;
 import connect.activity.contact.AddFriendActivity;
 import connect.activity.contact.ContactInfoActivity;
-import connect.activity.contact.SearchFriendActivity;
+import connect.activity.contact.DepartmentActivity;
 import connect.activity.contact.bean.ContactNotice;
 import connect.activity.home.HomeActivity;
 import connect.activity.home.adapter.ContactAdapter;
@@ -75,7 +73,7 @@ public class ContactFragment extends BaseFragment {
         toolbarTop.setBlackStyle();
         toolbarTop.setTitle(null, R.string.Link_Contacts);
         //toolbarTop.setRightImg(R.mipmap.add_white3x);
-        toolbarTop.setLeftImg(R.mipmap.search3x);
+        //toolbarTop.setLeftImg(R.mipmap.search3x);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         recyclerview.setLayoutManager(linearLayoutManager);
@@ -88,10 +86,10 @@ public class ContactFragment extends BaseFragment {
         adapter.updateContact(adapter.updateTypeContact);
     }
 
-    @OnClick(R.id.left_img)
+    /*@OnClick(R.id.left_img)
     void search(View view) {
         ActivityUtil.next(mActivity, SearchFriendActivity.class, android.R.anim.fade_in, android.R.anim.fade_out);
-    }
+    }*/
 
     @OnClick(R.id.right_lin)
     void goAddFriend(View view) {
@@ -117,10 +115,10 @@ public class ContactFragment extends BaseFragment {
                     ActivityUtil.next(mActivity, AddFriendActivity.class);
                     break;
                 case 6:
-                    ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.CONNECT_SYSTEM, "Connect"));
+                    ChatActivity.startActivity(mActivity, Connect.ChatType.CONNECT_SYSTEM, "Connect");
                     break;
                 case 2:
-                    ChatActivity.startActivity(mActivity, new Talker(Connect.ChatType.GROUPCHAT,entity.getUid()));
+                    ChatActivity.startActivity(mActivity, Connect.ChatType.GROUPCHAT, entity.getUid());
                     break;
                 case 3:
                 case 4:

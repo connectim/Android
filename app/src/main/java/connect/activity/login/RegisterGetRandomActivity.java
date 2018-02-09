@@ -18,7 +18,7 @@ import connect.activity.login.contract.RegisterGetRandomContract;
 import connect.activity.login.presenter.RegisterGetRandomPresenter;
 import connect.ui.activity.R;
 import connect.utils.ActivityUtil;
-import connect.utils.DialogUtil;
+import connect.utils.dialog.DialogUtil;
 import connect.utils.StringUtil;
 import connect.utils.ToastEUtil;
 import connect.utils.permission.PermissionUtil;

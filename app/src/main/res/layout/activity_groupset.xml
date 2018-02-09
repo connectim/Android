@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/color_f0f0f6"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f0f0f6"
+    android:orientation="vertical">
 
     <connect.widget.TopToolBar
         android:id="@id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -20,18 +20,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@id/count"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_22"
-                android:gravity="center_vertical"
-                android:paddingLeft="@dimen/dp_15"
-                android:textColor="@color/color_b3b5bc"
-                android:textSize="@dimen/sp_12"/>
-
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10">
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
@@ -43,8 +35,8 @@
                         android:id="@id/linearlayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_15"
                         android:layout_marginBottom="@dimen/dp_15"
+                        android:layout_marginTop="@dimen/dp_15"
                         android:orientation="horizontal"></LinearLayout>
                 </HorizontalScrollView>
 
@@ -58,11 +50,11 @@
                     android:paddingTop="@dimen/dp_30">
 
                     <ImageView
-                        android:contentDescription="@string/app_name"
                         android:id="@id/img1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@mipmap/group_item_arrow"/>
+                        android:contentDescription="@string/app_name"
+                        android:src="@mipmap/group_item_arrow" />
                 </RelativeLayout>
             </RelativeLayout>
 
@@ -75,57 +67,30 @@
 
                 <include
                     android:id="@id/groupset_groupname"
-                    layout="@layout/include_img_txt_right_txtimg"
+                    layout="@layout/include_txt_right_txt"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_56"/>
-
-                <View
-                    style="@style/BaseViewLine.d1d5da"
-                    android:layout_marginLeft="@dimen/dp_15"/>
-
-                <include
-                    android:id="@id/groupset_myname"
-                    layout="@layout/include_img_txt_right_txtimg"
-                    android:layout_width="match_parent"
-                    android:visibility="gone"
-                    android:layout_height="@dimen/dp_56"/>
-
-                <!--<View-->
-                    <!--style="@style/BaseViewLine.d1d5da"-->
-                    <!--android:visibility="gone"-->
-                    <!--android:layout_marginLeft="@dimen/dp_15"/>-->
-
-                <!--<include-->
-                    <!--android:id="@id/groupset_qrcode"-->
-                    <!--layout="@layout/include_img_txt_right_txtimg"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:visibility="gone"-->
-                    <!--android:layout_height="@dimen/dp_56"/>-->
-
-                <!--<View-->
-                    <!--style="@style/BaseViewLine.d1d5da"-->
-                    <!--android:layout_marginLeft="@dimen/dp_15"/>-->
-
-                <!--<include-->
-                    <!--android:id="@id/groupset_manage"-->
-                    <!--layout="@layout/include_img_txt_right_txtimg"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:visibility="gone"-->
-                    <!--android:layout_height="@dimen/dp_56"/>-->
+                    android:layout_height="@dimen/dp_56" />
             </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_22"
-                android:gravity="center_vertical"
-                android:paddingLeft="@dimen/dp_16"
-                android:text="@string/Link_Group_Setting"
-                android:textColor="@color/color_b3b5bc"
-                android:textSize="@dimen/sp_12"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:visibility="gone"
+                android:background="@color/color_ffffff"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@id/groupset_searchhistory"
+                    layout="@layout/include_txt_right_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_56" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
                 android:background="@color/color_white"
                 android:orientation="vertical">
 
@@ -133,61 +98,49 @@
                     android:id="@id/top"
                     layout="@layout/include_line_toggle"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_52"/>
+                    android:layout_height="@dimen/dp_42" />
 
                 <View
                     style="@style/BaseViewLine.d1d5da"
-                    android:layout_marginLeft="@dimen/dp_15"/>
+                    android:layout_marginLeft="@dimen/dp_15" />
 
                 <include
                     android:id="@id/mute"
                     layout="@layout/include_line_toggle"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_52"/>
+                    android:layout_height="@dimen/dp_42" />
 
                 <View
                     style="@style/BaseViewLine.d1d5da"
-                    android:layout_marginLeft="@dimen/dp_15"/>
+                    android:layout_marginLeft="@dimen/dp_15" />
 
                 <include
                     android:id="@id/save"
                     layout="@layout/include_line_toggle"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_52"/>
+                    android:layout_height="@dimen/dp_42" />
             </LinearLayout>
 
-            <TextView
+            <RelativeLayout
+                android:id="@id/clear"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_22"
-                android:gravity="center_vertical"
-                android:paddingLeft="@dimen/dp_15"
-                android:text="@string/Link_Other"
-                android:textColor="@color/color_b3b5bc"
-                android:textSize="@dimen/sp_12"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_20"
+                android:layout_height="@dimen/dp_42"
+                android:layout_marginTop="@dimen/dp_10"
                 android:background="@color/color_white"
-                android:orientation="vertical">
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/dp_16">
 
-                <include
-                    android:id="@id/clear"
-                    layout="@layout/include_img_txt"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_52"/>
+                <TextView
+                    android:id="@id/groupset_clear_history"
+                    style="@style/BaseTextStyle.16"
+                    android:textColor="@color/color_black" />
+            </RelativeLayout>
 
-                <View
-                    style="@style/BaseViewLine.d1d5da"
-                    android:layout_marginLeft="@dimen/dp_15"/>
-
-                <include
-                    android:id="@id/delete"
-                    layout="@layout/include_img_txt"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_52"/>
-            </LinearLayout>
+            <Button
+                android:id="@id/groupset_exit_group"
+                style="@style/ButtonLongStyle_Red"
+                android:layout_marginTop="@dimen/dp_36"
+                android:text="@string/Link_Delete_and_Leave" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

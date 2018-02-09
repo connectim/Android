@@ -39,6 +39,8 @@ public class PrivateSetPresenter implements PrivateSetContract.Presenter {
         roomKey = view.getRoomKey();
         activity = view.getActivity();
 
+        view.searchHistoryTxt();
+
         boolean istop = false;
         ConversionEntity roomEntity = ConversionHelper.getInstance().loadRoomEnitity(roomKey);
         if (roomEntity == null) {
@@ -64,6 +66,7 @@ public class PrivateSetPresenter implements PrivateSetContract.Presenter {
         view.switchDisturb(activity.getResources().getString(R.string.Chat_Mute_Notification), isDisturb);
 
         view.clearMessage();
+        view.searchHistoryTxt();
 
         ContactEntity friendEntity = new ContactEntity();
         friendEntity.setAvatar(view.getAvatar());

@@ -96,6 +96,21 @@ public class SharedPreferenceUtil {
             }
 
             userBean = new Gson().fromJson(userStr, UserBean.class);
+        } catch (BaseException e) {
+            e.dispath().upload();
+        }
+        return userBean;
+    }
+
+    public UserBean getUserCheckExist() {
+        UserBean userBean = null;
+        try {
+            String userStr = getStringValue(USER_INFO);
+            if (TextUtils.isEmpty(userStr)) {
+                throw new BaseException(ErrorCode.USER_NOT_EXIST);
+            }
+
+            userBean = new Gson().fromJson(userStr, UserBean.class);
             if (userBean == null || TextUtils.isEmpty(userBean.getUid())) {
                 throw new BaseException(ErrorCode.USER_NOT_EXIST);
             }
@@ -133,4 +148,14 @@ public class SharedPreferenceUtil {
         return languageCode;
     }
 
+    public void clear(){
+        if (sharePre == null) {
+            getInstance();
+        }
+
+        sharePre.edit()
+                .clear()
+                .apply();
+        sharePre = null;
+    }
 }
