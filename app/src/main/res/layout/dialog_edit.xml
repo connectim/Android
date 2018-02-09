@@ -34,11 +34,12 @@
         android:layout_marginRight="@dimen/dp_15"
         android:layout_marginBottom="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_20"
-        android:paddingLeft="@dimen/dp_10"
+        android:inputType="textMultiLine"
+        android:padding="@dimen/dp_10"
+        android:gravity="left|top"
         android:background="@drawable/shape_stroke_20_ffffff"
-        android:padding="8dp"
-        android:singleLine="true"
-        android:textSize="14sp">
+        android:maxLines="3"
+        android:textSize="@dimen/sp_14">
     </EditText>
 
     <View

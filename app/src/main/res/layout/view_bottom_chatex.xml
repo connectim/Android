@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+    <include
+        android:id="@id/include_more"
+        layout="@layout/layout_more"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_180"/>
+
+
+    <include
+        android:id="@id/include_emoji"
+        layout="@layout/layout_emoji"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_180"/>
+</RelativeLayout>

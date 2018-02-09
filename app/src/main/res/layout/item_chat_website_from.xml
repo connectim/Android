@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_below="@id/showtime"
               android:orientation="horizontal">
 
-    <connect.view.ChatHeadImg
+    <connect.widget.ChatHeadImg
         android:id="@id/roundimg_head"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
@@ -56,7 +55,7 @@
 
                 <TextView
                     android:id="@id/txt3"
-                    android:layout_width="@dimen/dp_140"
+                    android:layout_width="@dimen/dp_160"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/txt2"
                     android:ellipsize="end"
@@ -64,7 +63,7 @@
                     android:textColor="@color/color_858998"
                     android:textSize="@dimen/sp_10"/>
 
-                <connect.view.roundedimageview.RoundedImageView
+                <ImageView
                     android:id="@id/roundimg1"
                     android:layout_width="@dimen/dp_40"
                     android:layout_height="@dimen/dp_40"
@@ -74,10 +73,4 @@
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
-
-    <connect.ui.activity.chat.view.BurnProBar
-        android:id="@id/burnprogressbar"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginLeft="@dimen/dp_5"/>
 </LinearLayout>

@@ -100,7 +100,17 @@
         <item name="android:layout_marginLeft">@dimen/dp_20</item>
         <item name="android:layout_marginRight">@dimen/dp_20</item>
         <item name="android:textColor">@color/color_red</item>
-        <item name="android:background">@drawable/shape_white</item>
+        <item name="android:background">@drawable/select_btn_stroke_white</item>
+    </style>
+
+    <style name="ButtonLongStyle_Red" parent="Base.Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/sp_16</item>
+        <item name="android:layout_marginLeft">@dimen/dp_20</item>
+        <item name="android:layout_marginRight">@dimen/dp_20</item>
+        <item name="android:textColor">@color/color_ffffff</item>
+        <item name="android:background">@drawable/select_btn_red_stroke</item>
     </style>
 
     <style name="ButtonShortStyle" parent="Base.Widget.AppCompat.Button.Borderless">
@@ -150,6 +160,11 @@
         <item name="android:background">@color/color_eeeeee</item>
     </style>
 
+    <style name="BaseViewLine.f1f1f1">
+        <item name="android:layout_height">@dimen/dp_1</item>
+        <item name="android:background">@color/color_FBFBFB</item>
+    </style>
+
     <style name="text_chat_msgtime_style">
         <item name="android:gravity">center</item>
         <item name="android:background">@drawable/com_notice_r8</item>
@@ -157,9 +172,25 @@
         <item name="android:textSize">@dimen/sp_12</item>
     </style>
 
-    <style name="LiveActivityStyle">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowIsTranslucent">true</item>
+    <style name="TabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabMaxWidth">@dimen/dp_264</item>
+        <item name="tabIndicatorColor">@color/color_00c400</item>
+        <item name="tabIndicatorHeight">2dp</item>
+        <item name="tabPaddingStart">12dp</item>
+        <item name="tabPaddingEnd">12dp</item>
+        <item name="tabBackground">?attr/selectableItemBackground</item>
+        <item name="tabTextAppearance">@style/TabTextAppearance</item>
+        <item name="tabSelectedTextColor">@color/color_00c400</item>
+    </style>
+
+    <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/color_a5a7ae</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
+    <style name="AnimationPreview">
+        <item name="android:windowEnterAnimation">@anim/popupwindow_chatadd_fadein</item>
+        <item name="android:windowExitAnimation">@anim/popupwindow_chatadd_fadeout</item>
     </style>
 </resources>

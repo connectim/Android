@@ -3,22 +3,14 @@ package connect.utils.scan;
 import android.app.Activity;
 import android.net.Uri;
 
-import connect.db.MemoryDataManager;
-import connect.db.SharedPreferenceUtil;
-import connect.db.green.DaoHelper.ContactHelper;
-import connect.db.green.bean.ContactEntity;
-import connect.im.msgdeal.SendMsgUtil;
+import connect.activity.contact.ContactInfoActivity;
+import connect.activity.contact.bean.MsgSendBean;
+import connect.activity.home.bean.MsgNoticeBean;
+import connect.database.SharedPreferenceUtil;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.exts.ApplyJoinGroupActivity;
-import connect.ui.activity.chat.exts.TransferToActivity;
-import connect.ui.activity.contact.FriendInfoActivity;
-import connect.ui.activity.contact.StrangerInfoActivity;
-import connect.ui.activity.contact.bean.MsgSendBean;
-import connect.ui.activity.contact.bean.SourceType;
-import connect.ui.activity.home.bean.MsgNoticeBean;
 import connect.utils.ActivityUtil;
-import connect.utils.ToastEUtil;
 import connect.utils.ToastUtil;
+import instant.bean.UserOrderBean;
 
 /**
  * Web Url parsing
@@ -33,7 +25,7 @@ public class ResolveUrlUtil {
     public static final String TYPE_WEB_GROUNP = "group";
     public static final String TYPE_OPEN_SCAN = "scan";
     public static final String TYPE_OPEN_WEB= "web";
-    public String Web_Url = "connectim://.*";
+    public static String Web_Url = "connectim://.*";
     private Activity activity;
 
     public ResolveUrlUtil(Activity activity) {
@@ -67,52 +59,59 @@ public class ResolveUrlUtil {
     public void dealResult(ScanResultBean resultBean,boolean isCloseScan){
         switch (resultBean.getType()){
             case TYPE_WEB_FRIEND:
-                if (!resultBean.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
-                    ContactEntity friendEntity = ContactHelper.getInstance().loadFriendEntity(resultBean.getAddress());
-                    if (friendEntity != null) {
-                        FriendInfoActivity.startActivity(activity, resultBean.getAddress());
-                    } else {
-                        StrangerInfoActivity.startActivity(activity, resultBean.getAddress(), SourceType.QECODE);
-                    }
-                    if(isCloseScan){
-                        ActivityUtil.goBack(activity);
-                    }
-                }
-                break;
-            case TYPE_WEB_PAY:
-                Double amount = null;
-                if (resultBean.getAmount() != null)
-                    amount = Double.valueOf(resultBean.getAmount());
-                if (!resultBean.getAddress().equals(MemoryDataManager.getInstance().getAddress())) {
-                    TransferToActivity.startActivity(activity, resultBean.getAddress(), amount);
-                    if(isCloseScan){
-                        ActivityUtil.goBack(activity);
-                    }
-                } else {
-                    ToastEUtil.makeText(activity, R.string.Wallet_Could_not_get_himself_sent_money_transfer).show();
-                }
+                dealFriend(resultBean, isCloseScan);
                 break;
             case TYPE_WEB_TRANSFER:
-                MsgSendBean transferBean = new MsgSendBean();
-                transferBean.setType(MsgSendBean.SendType.TypeOutTransfer);
-                transferBean.setTips(resultBean.getTip());
-                SendMsgUtil.outerTransfer(resultBean.getToken(), transferBean);
+                dealTransfer(resultBean);
                 break;
             case TYPE_WEB_PACKET:
-                MsgSendBean packetBean = new MsgSendBean();
-                packetBean.setType(MsgSendBean.SendType.TypeOutPacket);
-                packetBean.setTips(resultBean.getTip());
-                SendMsgUtil.outerRedPacket(resultBean.getToken(), packetBean);
+                dealPacket(resultBean);
                 break;
             case TYPE_WEB_GROUNP:
-                ApplyJoinGroupActivity.startActivity(activity, ApplyJoinGroupActivity.EApplyGroup.TOKEN, resultBean.getToken());
-                if(isCloseScan){
-                    ActivityUtil.goBack(activity);
-                }
                 break;
             default:
                 break;
         }
+    }
+
+    /**
+     * Scan user address to enter user details
+     * @param resultBean
+     * @param isCloseScan
+     */
+    private void dealFriend(ScanResultBean resultBean, boolean isCloseScan){
+        if (!resultBean.getAddress().equals(SharedPreferenceUtil.getInstance().getUser().getUid())) {
+            ContactInfoActivity.lunchActivity(activity, resultBean.getAddress());
+            if(isCloseScan){
+                ActivityUtil.goBack(activity);
+            }
+        }
+    }
+
+    /**
+     * Receive user external transfer
+     * @param resultBean
+     */
+    private void dealTransfer(ScanResultBean resultBean){
+        MsgSendBean transferBean = new MsgSendBean();
+        transferBean.setType(MsgSendBean.SendType.TypeOutTransfer);
+        transferBean.setTips(resultBean.getTip());
+
+        UserOrderBean userOrderBean = new UserOrderBean();
+        userOrderBean.outerTransfer(resultBean.getToken(), transferBean);
+    }
+
+    /**
+     * Receive user external bonus
+     * @param resultBean
+     */
+    private void dealPacket(ScanResultBean resultBean){
+        MsgSendBean packetBean = new MsgSendBean();
+        packetBean.setType(MsgSendBean.SendType.TypeOutPacket);
+        packetBean.setTips(resultBean.getTip());
+
+        UserOrderBean userOrderBean = new UserOrderBean();
+        userOrderBean.outerRedPacket(resultBean.getToken(), packetBean);
     }
 
     /**
@@ -135,29 +134,36 @@ public class ResolveUrlUtil {
                 }
                 break;
             case MSG_SEND_FAIL:
-                int errorNum = (int) objs[1];
-                if(msgSendBean.getType() == MsgSendBean.SendType.TypeOutPacket){
-                    switch (errorNum){
-                        case 1:
-                            ToastUtil.getInstance().showToast(R.string.Chat_Failed_to_get_redpact);
-                            break;
-                        case 2:
-                            ToastUtil.getInstance().showToast(R.string.Wallet_You_already_open_this_luckypacket);
-                            break;
-                    }
-                }else if(msgSendBean.getType() == MsgSendBean.SendType.TypeOutTransfer){
-                    switch (errorNum){
-                        case 1:
-                            ToastUtil.getInstance().showToast(R.string.Wallet_Transfer_Failed);
-                            break;
-                        case 2:
-                            ToastUtil.getInstance().showToast(R.string.Wallet_Transfer_Failed);
-                            break;
-                    }
-                }
+                dealFailToast(msgSendBean, objs);
                 break;
             default:
                 break;
+        }
+    }
+
+    private void dealFailToast(MsgSendBean msgSendBean, Object[] objs){
+        int errorNum = (int) objs[1];
+        if(msgSendBean.getType() == MsgSendBean.SendType.TypeOutPacket){
+            switch (errorNum){
+                case 1:
+                    ToastUtil.getInstance().showToast(R.string.Chat_Failed_to_get_redpact);
+                    break;
+                case 2:
+                    ToastUtil.getInstance().showToast(R.string.Wallet_You_already_open_this_luckypacket);
+                    break;
+                case 3:
+                    ToastUtil.getInstance().showToast(R.string.Chat_system_luckypackage_have_been_frozen);
+                    break;
+            }
+        }else if(msgSendBean.getType() == MsgSendBean.SendType.TypeOutTransfer){
+            switch (errorNum){
+                case 1:
+                    ToastUtil.getInstance().showToast(R.string.Wallet_Transfer_Failed);
+                    break;
+                case 2:
+                    ToastUtil.getInstance().showToast(R.string.Wallet_Transfer_Failed);
+                    break;
+            }
         }
     }
 

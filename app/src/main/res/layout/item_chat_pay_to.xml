@@ -13,7 +13,7 @@
         android:layout_marginRight="@dimen/dp_6"
         android:orientation="horizontal">
 
-        <connect.ui.activity.chat.view.MsgStateView
+        <connect.activity.chat.view.MsgStateView
             android:id="@id/msgstateview"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <connect.view.roundedimageview.RoundedImageView
+            <ImageView
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginLeft="@dimen/dp_12"
@@ -79,7 +79,7 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <connect.view.ChatHeadImg
+    <connect.widget.ChatHeadImg
         android:id="@id/roundimg_head"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_ffffff">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -28,25 +28,24 @@
         android:paddingBottom="@dimen/dp_10"
         android:background="@color/color_f0f0f6">
 
-        <connect.view.roundedimageview.RoundedImageView
-            android:id="@+id/avater_rimg"
+        <ImageView
+            android:id="@+id/avatar_rimg"
             android:layout_width="@dimen/dp_80"
             android:layout_height="@dimen/dp_80"
-            android:scaleType="centerCrop"
-            app:riv_corner_radius="@dimen/px_12"/>
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/name_tv"
             style="@style/BaseTextStyle.16"
             android:textStyle="bold"
-            android:layout_toRightOf="@+id/avater_rimg"
+            android:layout_toRightOf="@+id/avatar_rimg"
             android:layout_marginLeft="@dimen/dp_15"/>
         
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/avater_rimg"
-            android:layout_alignBottom="@+id/avater_rimg"
+            android:layout_toRightOf="@+id/avatar_rimg"
+            android:layout_alignBottom="@+id/avatar_rimg"
             android:layout_marginLeft="@dimen/dp_15"
             android:orientation="horizontal">
             <ImageView
@@ -59,6 +58,7 @@
                 style="@style/BaseTextStyle"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_toRightOf="@+id/left_send_img"
+                android:layout_centerVertical="true"
                 android:text="@string/Wallet_Packet_Send_User_Connect"/>
         </RelativeLayout>
     </RelativeLayout>
@@ -70,34 +70,40 @@
         android:layout_marginTop="@dimen/dp_30"
         android:text="@string/Wallet_Packet_Send_Share"/>
 
-    <ImageView
-        android:contentDescription="@string/app_name"
-        android:id="@+id/scan_img"
-        android:layout_width="@dimen/dp_150"
-        android:layout_height="@dimen/dp_150"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_10"/>
-
-    <TextView
-        style="@style/BaseTextStyle"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_10"
-        android:text="@string/Wallet_The_Countdown"/>
-
-    <TextView
-        android:id="@+id/time_tv"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/bottom_lin"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textSize="@dimen/sp_32"
-        android:textColor="@color/color_00c400"
-        android:text=""/>
+        android:orientation="vertical">
+        <ImageView
+            android:contentDescription="@string/app_name"
+            android:id="@+id/scan_img"
+            android:layout_width="@dimen/dp_150"
+            android:layout_height="@dimen/dp_150"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_10"/>
 
-    <Button
-        android:id="@+id/send_btn"
-        style="@style/ButtonLongStyle"
-        android:enabled="true"
-        android:layout_marginTop="@dimen/dp_10"
-        android:text="@string/Link_Send"/>
+        <TextView
+            style="@style/BaseTextStyle"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="@string/Wallet_The_Countdown"/>
+
+        <TextView
+            android:id="@+id/time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="@dimen/sp_32"
+            android:textColor="@color/color_00c400"
+            android:text=""/>
+
+        <Button
+            android:id="@+id/send_btn"
+            style="@style/ButtonLongStyle"
+            android:enabled="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="@string/Link_Send"/>
+    </LinearLayout>
 
 </LinearLayout>

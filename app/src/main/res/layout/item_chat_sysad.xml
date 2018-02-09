@@ -36,7 +36,7 @@
             android:textColor="@color/color_858998"
             android:textSize="@dimen/sp_12"/>
 
-        <connect.view.roundedimageview.RoundedImageView
+        <ImageView
             android:id="@id/roundimg1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_150"

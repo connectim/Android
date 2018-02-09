@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/showtime">
+
+    <LinearLayout
+        android:id="@id/linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/dp_14"
+        android:layout_marginRight="@dimen/dp_14"
+        android:background="@drawable/shape_stroke_20_ffffff"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_12">
+
+        <TextView
+            android:id="@id/txt1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:text="@string/Robot_New_Visitor_Apply"
+            android:maxLines="1"
+            android:textColor="@color/color_3081EA"
+            android:textSize="@dimen/sp_14" />
+
+        <TextView
+            android:id="@id/txt2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
+            android:textColor="@color/color_757575"
+            android:textSize="@dimen/sp_10" />
+
+        <TextView
+            android:id="@id/txt3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:textColor="@color/color_aeaeae"
+            android:textSize="@dimen/sp_12" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/px_2"
+            android:layout_marginTop="@dimen/dp_5"
+            android:background="@drawable/divider_recycler" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
+            android:text="@string/Link_View_Detail"
+            android:textColor="@color/color_858998"
+            android:textSize="@dimen/sp_12" />
+    </LinearLayout>
+</RelativeLayout>

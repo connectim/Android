@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@id/inputPanel"
+              android:background="@color/transparent"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:minHeight="@dimen/dp_40"
+              android:orientation="vertical">
+
+    <connect.widget.bottominput.view.InputBottomLayout
+        android:id="@id/layout_inputbottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <connect.widget.bottominput.view.ExBottomLayout
+        android:id="@id/layout_exbottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

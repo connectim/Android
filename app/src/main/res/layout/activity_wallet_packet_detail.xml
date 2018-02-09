@@ -16,21 +16,18 @@
             android:background="@mipmap/luckbag_backgroud3x"
             android:layout_marginBottom="@dimen/dp_25"/>
 
-        <connect.view.TopToolBar
+        <connect.widget.TopToolBar
             android:id="@id/toolbar_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <connect.view.roundedimageview.RoundedImageView
-            android:id="@+id/avater_rimg"
+        <ImageView
+            android:id="@+id/avatar_rimg"
             android:layout_width="@dimen/dp_58"
             android:layout_height="@dimen/dp_58"
             android:layout_alignParentBottom="true"
             android:scaleType="fitXY"
-            android:layout_centerHorizontal="true"
-            app:riv_corner_radius="29dp"
-            app:riv_border_width="@dimen/dp_1"
-            app:riv_border_color="@color/color_858998"/>
+            android:layout_centerHorizontal="true"/>
     </RelativeLayout>
 
     <LinearLayout
@@ -128,8 +125,8 @@
             android:textStyle="bold"
             android:textColor="@color/color_68656f"
             android:text=""/>
-        <ListView
-            android:id="@+id/list_view"
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@color/color_b3b5bc"

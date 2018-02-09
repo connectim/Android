@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -16,48 +17,61 @@ import connect.ui.activity.R;
 
 /**
  * Get the outermost content layout, add View custom Toast
- *
- * Android5.0 system to solve the problem after the notification message is not displayed
- * Created by Administrator on 2017/2/28.
  */
 public class ToastEUtil {
 
     private String TOAST_TAG = "TOAST_TAG";
-    public static final int TOAST_STATUS_SUCCESS = 1;
-    public static final int TOAST_STATUS_FAILE = 2;
-    public static final int TOAST_STATUS_SUCCESS_BACK = 3;
-    private static ToastEUtil result;
-    private final int ANIMATION_DURATION = 600;
+    private static Context mContext;
+    private View view;
     private static TextView mTextView;
     private ViewGroup container;
     private static ImageView statusImg;
-    private View v;
-    private int HIDE_DELAY = 1500;
     private LinearLayout mContainer;
+    private static ToastEUtil result;
+
     private AlphaAnimation mFadeOutAnimation;
     private AlphaAnimation mFadeInAnimation;
     private boolean isShow = false;
-    private static Context mContext;
     private Handler mHandler = new Handler();
+    private static OnToastListener onToastListener;
+
+    public static final int TOAST_STATUS_SUCCESS = 1;
+    public static final int TOAST_STATUS_FAILE = 2;
+    private final int ANIMATION_DURATION = 600;
+    private int HIDE_DELAY = 1500;
 
     private ToastEUtil(Context context) {
         mContext = context;
         container = (ViewGroup) ((Activity) context).findViewById(android.R.id.content);
         View viewWithTag = container.findViewWithTag(TOAST_TAG);
         if(viewWithTag == null){
-            v = ((Activity) context).getLayoutInflater().inflate(R.layout.item_toast, container);
-            v.setTag(TOAST_TAG);
+            view = ((Activity) context).getLayoutInflater().inflate(R.layout.item_toast, container);
+            view.setTag(TOAST_TAG);
         }else{
-            v = viewWithTag;
+            view = viewWithTag;
         }
-        mContainer = (LinearLayout) v.findViewById(R.id.mbContainer);
+        mContainer = (LinearLayout) view.findViewById(R.id.mbContainer);
         mContainer.setVisibility(View.GONE);
-        mTextView = (TextView) v.findViewById(R.id.tips_tv);
-        statusImg = (ImageView) v.findViewById(R.id.status_img);
+        mTextView = (TextView) view.findViewById(R.id.tips_tv);
+        statusImg = (ImageView) view.findViewById(R.id.status_img);
     }
 
     public static ToastEUtil makeText(Context context, String message) {
         return makeText(context,message,TOAST_STATUS_SUCCESS);
+    }
+
+    public static ToastEUtil makeText(Context context, int resId) {
+        return makeText(context,resId,TOAST_STATUS_SUCCESS);
+    }
+
+    public static ToastEUtil makeText(Context context, int resId, int stutas) {
+        String mes = "";
+        try{
+            mes = context.getResources().getString(resId);
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
+        return makeText(context,mes,stutas);
     }
 
     public static ToastEUtil makeText(Context context, String message, int stutas) {
@@ -82,19 +96,6 @@ public class ToastEUtil {
         return result;
     }
 
-    public static ToastEUtil makeText(Context context, int resId) {
-        return makeText(context,resId,TOAST_STATUS_SUCCESS);
-    }
-
-    public static ToastEUtil makeText(Context context, int resId, int stutas) {
-        String mes = "";
-        try{
-            mes = context.getResources().getString(resId);
-        } catch (Resources.NotFoundException e) {
-            e.printStackTrace();
-        }
-        return makeText(context,mes,stutas);
-    }
     public void show() {
         if(isShow){
             return;
@@ -123,9 +124,7 @@ public class ToastEUtil {
                     }
                 });
         mContainer.setVisibility(View.VISIBLE);
-
         mFadeInAnimation.setDuration(ANIMATION_DURATION);
-
         mContainer.startAnimation(mFadeInAnimation);
         mHandler.postDelayed(mHideRunnable, HIDE_DELAY);
     }
@@ -136,6 +135,7 @@ public class ToastEUtil {
             mContainer.startAnimation(mFadeOutAnimation);
         }
     };
+
     public void cancel(){
         if(isShow) {
             isShow = false;
@@ -147,19 +147,20 @@ public class ToastEUtil {
     public static void reset(){
         result = null;
     }
+
     public void setText(CharSequence s){
         if(result == null) return;
-        TextView mTextView = (TextView) v.findViewById(R.id.tips_tv);
+        TextView mTextView = (TextView) view.findViewById(R.id.tips_tv);
         if(mTextView == null) throw new RuntimeException("This Toast was not created with Toast.makeText()");
         mTextView.setText(s);
     }
+
     public void setText(int resId) {
         setText(mContext.getText(resId));
     }
 
-    private static OnToastListener onToastListener;
-
     public interface OnToastListener {
         void animFinish();
     }
+
 }

@@ -15,12 +15,11 @@
         android:paddingRight="@dimen/dp_15"
         android:paddingTop="@dimen/dp_9"
         android:background="@drawable/selector_list_item_bg">
-        <connect.view.roundedimageview.RoundedImageView
+        <ImageView
             android:id="@+id/avatar_rimg"
             android:layout_width="@dimen/dp_38"
             android:layout_height="@dimen/dp_38"
-            android:scaleType="fitXY"
-            app:riv_corner_radius="@dimen/px_6" />
+            android:scaleType="fitXY"/>
         <TextView
             android:id="@+id/nickname_tv"
             style="@style/BaseTextStyle.16"

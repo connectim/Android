@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/color_F6F6F6">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -26,7 +27,7 @@
             android:paddingLeft="@dimen/dp_15"
             android:imeOptions="actionSearch"
             android:singleLine="true"
-            android:hint="@string/Link_search_someThing"
+            android:hint="@string/Login_username"
             android:gravity="center_vertical"/>
         <ImageView
             android:contentDescription="@string/app_name"
@@ -44,14 +45,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginLeft="@dimen/dp_15"
-        android:layout_marginRight="@dimen/dp_15">
-        <LinearLayout
-            android:id="@+id/result_lin"
+        android:orientation="vertical">
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
+            android:layout_height="match_parent"
+            android:dividerHeight="@dimen/px_1"
+            android:divider="@color/color_d1d5da">
+        </android.support.v7.widget.RecyclerView>
         <TextView
             android:id="@+id/no_result_tv"
             style="@style/BaseTextStyle.16"
@@ -60,5 +61,7 @@
             android:text="@string/Wallet_No_match_user"
             android:visibility="gone"/>
     </RelativeLayout>
+
+
 
 </LinearLayout>

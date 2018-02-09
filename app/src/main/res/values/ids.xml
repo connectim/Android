@@ -25,7 +25,9 @@
     <item name="txt6" type="id"/>
     <item name="txt7" type="id"/>
     <item name="txt8" type="id"/>
+    <item name="edittxt" type="id"/>
     <item name="edittxt1" type="id"/>
+    <item name="edittxt2" type="id"/>
     <item name="img1" type="id"/>
     <item name="img2" type="id"/>
     <item name="img3" type="id"/>
@@ -54,6 +56,7 @@
     <item name="checkbox" type="id"/>
     <item name="surfaceview" type="id"/>
     <item name="upgradeview" type="id"/>
+    <item name="refreshview" type="id"/>
 
     <!-- TopToolBar -->
     <item name="left_img" type="id"/>
@@ -62,6 +65,9 @@
     <item name="right_lin" type="id"/>
     <item name="right_text" type="id"/>
     <item name="right_img" type="id"/>
+    <item name="title_linear_normal" type="id"/>
+    <item name="title_relative_edite" type="id"/>
+    <item name="title_edittext" type="id"/>
 
     <!-- System camera -->
     <item name="photo" type="id"/>
@@ -113,6 +119,7 @@
     <item name="restart_preview" type="id"/>
     <item name="return_scan_result" type="id"/>
     <item name="select_album" type="id"/>
+    <item type="id" name="auto_focus"/>
 
     <!-- LocalLoginActivity -->
     <item name="nickname_lin" type="id"/>
@@ -121,7 +128,6 @@
     <item name="contact" type="id"/>
     <item name="wallet" type="id"/>
     <item name="set" type="id"/>
-    <item name="listview" type="id"/>
 
     <item name="content_notice" type="id"/>
     <item name="content_layout" type="id"/>
@@ -137,7 +143,10 @@
     <item name="gif" type="id"/>
     <item name="roundimg" type="id"/>
     <item name="linearlayout" type="id"/>
+    <item name="linearlayout_1" type="id"/>
+    <item name="linearlayout_2" type="id"/>
     <item name="scrollview" type="id"/>
+    <item name="pickscrollview" type="id"/>
     <item name="state" type="id"/>
     <item name="imgs" type="id"/>
     <item name="txt" type="id"/>
@@ -149,6 +158,7 @@
     <item name="videomsg" type="id"/>
     <item name="emotionmsg" type="id"/>
     <item name="layout_bottom" type="id"/>
+    <item name="inputPanel" type="id"/>
     <item name="layout_inputbottom" type="id"/>
     <item name="recordview" type="id"/>
     <item name="inputmore" type="id"/>
@@ -165,6 +175,12 @@
     <item name="search" type="id"/>
     <item name="photo_library" type="id"/>
     <item name="take_photo_video" type="id"/>
+    <item name="include_more" type="id"/>
+    <item name="include_emoji" type="id"/>
+    <item name="include_1" type="id"/>
+    <item name="include_2" type="id"/>
+    <item name="include_3" type="id"/>
+    <item name="include_4" type="id"/>
 
     <item name="toggle" type="id"/>
     <item name="top" type="id"/>
@@ -182,6 +198,8 @@
     <item name="groupset_sureinvite" type="id"/>
     <item name="groupset_introdue" type="id"/>
     <item name="groupset_transferto" type="id"/>
+    <item name="groupset_category" type="id"/>
+    <item name="groupset_category_explain" type="id"/>
 
     <!-- The wallet -->
     <item name="btc" type="id"/>
@@ -198,4 +216,51 @@
     <!-- include -->
     <item name="group" type="id"/>
     <item name="friend" type="id"/>
+
+    <!-- image_watcher -->
+    <item name="image_orientation" type="id"/>
+    <item name="state_origin" type="id"/>
+    <item name="state_default" type="id"/>
+    <item name="state_current" type="id"/>
+    <item name="state_thumb" type="id"/>
+    <item name="state_temp" type="id"/>
+    <item name="state_touch_down" type="id"/>
+    <item name="state_touch_drag" type="id"/>
+    <item name="state_touch_scale_rotate" type="id"/>
+    <item name="view_image_watcher" type="id" />
+
+
+    <item name="relative_thirdpart" type="id" />
+    <item name="relative_worksearch_content" type="id" />
+    <item name="image_category" type="id" />
+    <item name="text_category" type="id" />
+    <item name="text_has_added" type="id" />
+    <item name="image_search_state" type="id" />
+    <item name="image_title_search" type="id" />
+    <item name="text_no_more_results" type="id" />
+    <item name="text_forget_password" type="id" />
+    <item name="image_loading" type="id" />
+    <item name="relative_login" type="id" />
+    <item name="text_newchat" type="id" />
+    <item name="search_relative" type="id" />
+
+
+    <item name="relative_item" type="id" />
+    <item name="relative_at" type="id" />
+    <item name="relative_attention" type="id" />
+    <item name="txt_count_at" type="id" />
+    <item name="txt_count_attention" type="id" />
+
+    <item name="position" type="id" />
+    <item name="roomid" type="id" />
+    <item name="roomtype" type="id" />
+    <item name="roomtop" type="id" />
+
+    <item name="private_clear_history" type="id"/>
+
+    <item name="privateset_searchhistory" type="id"/>
+    <item name="groupset_searchhistory" type="id"/>
+    <item name="groupset_clear_history" type="id"/>
+    <item name="groupset_exit_group" type="id"/>
+    <item name="popup_turn_notify" type="id"/>
 </resources>

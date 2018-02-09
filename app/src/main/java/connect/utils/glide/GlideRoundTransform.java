@@ -6,10 +6,10 @@ import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.util.Log;
 
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import connect.utils.system.SystemUtil;
 
 /**
  * Images rounded processor
@@ -17,14 +17,9 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 public class GlideRoundTransform extends BitmapTransformation {
     private float radius = 0f;
 
-    public GlideRoundTransform(Context context) {
-        this(context, 20);
-    }
-
-    public GlideRoundTransform(Context context, int dx) {
+    public GlideRoundTransform(Context context, int dpRound) {
         super(context);
-        this.radius = dx;
-        //this.radius = Resources.getSystem().getDisplayMetrics().density * dp;
+        this.radius = SystemUtil.dipToPx(dpRound);
     }
 
     @Override
@@ -45,7 +40,6 @@ public class GlideRoundTransform extends BitmapTransformation {
         paint.setAntiAlias(true);
         RectF rectF = new RectF(0f, 0f, source.getWidth(), source.getHeight());
         canvas.drawRoundRect(rectF, radius, radius, paint);
-        Log.e("11aa", radius + "");
         return result;
     }
 

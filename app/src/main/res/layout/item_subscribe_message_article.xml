@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/showtime">
+
+    <LinearLayout
+        android:id="@id/linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/dp_50"
+        android:layout_marginRight="@dimen/dp_50"
+        android:background="@drawable/shape_stroke_20_ffffff"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/dp_5"
+        android:paddingLeft="@dimen/dp_6"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_5">
+
+        <TextView
+            android:id="@id/txt1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/color_black"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:textSize="@dimen/sp_14"
+            android:text=""/>
+
+        <ImageView
+            android:id="@id/roundimg1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_150"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/connect_logo"/>
+
+        <TextView
+            android:id="@id/txt4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_10"
+            android:text="@string/Chat_View_Full_Text"
+            android:textColor="@color/color_858998"
+            android:textSize="@dimen/sp_12" />
+    </LinearLayout>
+</RelativeLayout>

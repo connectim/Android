@@ -7,7 +7,6 @@ import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.integration.okhttp3.OkHttpGlideModule;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.bitmap_recycle.LruBitmapPool;
-import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
 import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory;
 import com.bumptech.glide.load.engine.cache.LruResourceCache;
 
@@ -17,8 +16,10 @@ import com.bumptech.glide.load.engine.cache.LruResourceCache;
 
 public class GlideModelConfig extends OkHttpGlideModule {
 
-    int diskSize = 1024 * 1024 * 100;//Disk cache space, if not set, the default is 250 * 1024 * 1024 250MB
-    int memorySize = (int) (Runtime.getRuntime().maxMemory()) / 8; //Take 1/4 as the largest memory cache
+    /** Disk cache space, if not set, the default is 100 * 1024 * 1024 100MB */
+    int diskSize = 1024 * 1024 * 100;
+    /** Take 1/8 as the largest memory cache */
+    int memorySize = (int) (Runtime.getRuntime().maxMemory()) / 8;
 
     @Override
     public void applyOptions(Context context, GlideBuilder builder) {
@@ -31,8 +32,8 @@ public class GlideModelConfig extends OkHttpGlideModule {
         builder.setBitmapPool(new LruBitmapPool(memorySize));
 
         // Define the image format
-        builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888);
-        //builder.setDecodeFormat(DecodeFormat.PREFER_RGB_565);
+        //builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888);
+        builder.setDecodeFormat(DecodeFormat.PREFER_RGB_565);
     }
 
     @Override

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:contentDescription="@string/app_name"
+                android:id="@+id/close_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingLeft="@dimen/dp_15"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10"
+                android:src="@mipmap/close_pay3x"/>
+            <TextView
+                style="@style/BaseTextStyle.16"
+                android:layout_margin="@dimen/dp_10"
+                android:textSize="@dimen/sp_18"
+                android:layout_centerInParent="true"
+                android:text="@string/Wallet_Transaction_detail"/>
+            <TextView
+                style="@style/BaseViewLine.d1d5da"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_below="@+id/close_img"/>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/transfer_tv"
+            style="@style/BaseTextStyle.14"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            android:text="@string/Wallet_Transfer_To_User"/>
+        
+        <LinearLayout
+            android:id="@+id/detail_lin"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/fee_tv"
+            style="@style/BaseTextStyle.14"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            android:text="@string/Wallet_Fee_BTC"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/ok_btn"
+        style="@style/ButtonLongStyle"
+        android:layout_marginBottom="@dimen/dp_30"
+        android:enabled="true"
+        android:layout_alignParentBottom="true"
+        android:text="@string/Wallet_Confirm_transfer"/>
+
+</RelativeLayout>

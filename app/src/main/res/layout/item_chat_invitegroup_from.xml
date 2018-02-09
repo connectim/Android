@@ -5,7 +5,7 @@
               android:layout_below="@id/showtime"
               android:orientation="horizontal">
 
-    <connect.view.ChatHeadImg
+    <connect.widget.ChatHeadImg
         android:id="@id/roundimg_head"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
@@ -23,6 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_3"
+            android:textSize="@dimen/sp_12"
             android:layout_marginLeft="@dimen/dp_4"/>
 
         <RelativeLayout
@@ -37,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <connect.view.roundedimageview.RoundedImageView
+                <ImageView
                     android:id="@id/roundimg1"
                     android:layout_width="@dimen/dp_40"
                     android:layout_height="@dimen/dp_40"

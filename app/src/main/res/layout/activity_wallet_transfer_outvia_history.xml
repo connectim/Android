@@ -1,18 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <connect.view.pullTorefresh.XListView
-        android:id="@+id/list_view"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/no_data_lin"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:divider="@null"
-        android:dividerHeight="@dimen/dp_0"/>
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/Network_No_data"
+            android:textSize="@dimen/sp_18"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:textSize="@dimen/sp_14"
+            android:text="@string/Wallet_You_do_not_have_any_data"/>
+    </LinearLayout>
 
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@id/refreshview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:dividerHeight="@dimen/dp_0"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

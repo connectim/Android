@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/surfaceView_rela"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <connect.widget.TopToolBar
+        android:id="@id/toolbar_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:id="@+id/surface_rela"
+        android:layout_below="@+id/toolbar_top"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_350">
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_trans_80_black"
+        android:layout_below="@+id/surface_rela">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true">
+
+            <ImageView
+                android:contentDescription="@string/app_name"
+                android:id="@+id/sele_photos_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_40"
+                android:padding="@dimen/dp_10"
+                android:src="@mipmap/album3x"/>
+
+            <RelativeLayout
+                android:id="@+id/retake_rela"
+                android:layout_width="@dimen/dp_70"
+                android:layout_height="@dimen/dp_70"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_toLeftOf="@+id/takePhoto_img"
+                android:layout_centerVertical="true"
+                android:background="@drawable/shape_circular_c3c3ca"
+                android:visibility="gone">
+                <ImageView
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@mipmap/retake_photo3x"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/send_rela"
+                android:layout_width="@dimen/dp_70"
+                android:layout_height="@dimen/dp_70"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_toRightOf="@+id/takePhoto_img"
+                android:layout_centerVertical="true"
+                android:background="@drawable/shape_circular_ffffff"
+                android:visibility="gone">
+                <ImageView
+                    android:contentDescription="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@mipmap/send_photo3x"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/takePhoto_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
+
+                <ImageView
+                    android:contentDescription="@string/app_name"
+                    android:id="@+id/out_circular_img"
+                    android:layout_width="@dimen/dp_70"
+                    android:layout_height="@dimen/dp_70"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/shape_circular_c3c3ca"/>
+
+                <ImageView
+                    android:contentDescription="@string/app_name"
+                    android:id="@+id/in_circular_img"
+                    android:layout_width="@dimen/dp_50"
+                    android:layout_height="@dimen/dp_50"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/shape_circular_ffffff"/>
+            </RelativeLayout>
+
+            <ImageView
+                android:contentDescription="@string/app_name"
+                android:id="@+id/switch_photos_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dp_40"
+                android:padding="@dimen/dp_10"
+                android:src="@mipmap/switch_camera_button3x"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

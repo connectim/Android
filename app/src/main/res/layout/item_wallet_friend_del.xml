@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<connect.view.SideScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<connect.widget.SideScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -40,15 +40,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
-                <connect.view.roundedimageview.RoundedImageView
+                <ImageView
                     android:id="@+id/avater_rimg"
                     android:layout_width="@dimen/dp_38"
                     android:layout_height="@dimen/dp_38"
                     android:layout_marginLeft="@dimen/dp_15"
                     android:layout_marginTop="@dimen/dp_9"
                     android:layout_marginBottom="@dimen/dp_9"
-                    android:scaleType="fitXY"
-                    app:riv_corner_radius="@dimen/px_6"/>
+                    android:scaleType="fitXY" />
                 <TextView
                     android:id="@+id/name_tv"
                     style="@style/BaseTextStyle.16"
@@ -58,4 +57,4 @@
         </RelativeLayout>
 
     </RelativeLayout>
-</connect.view.SideScrollView>
+</connect.widget.SideScrollView>

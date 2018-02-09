@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@id/layout_first"
@@ -9,11 +9,11 @@
         android:background="@color/color_161A21">
 
         <ImageView
-            android:contentDescription="@string/app_name"
             android:id="@+id/iv_back"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_20"
             android:layout_centerVertical="true"
+            android:contentDescription="@string/app_name"
             android:paddingLeft="@dimen/dp_12"
             android:paddingRight="@dimen/dp_12"
             android:src="@mipmap/album_arrow_back2x"/>
@@ -47,18 +47,15 @@
             android:textSize="@dimen/sp_14"/>
     </RelativeLayout>
 
-    <GridView
-        android:id="@id/gridview"
-        android:layout_below="@id/layout_first"
+    <android.support.v7.widget.RecyclerView
+        android:id="@id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:horizontalSpacing="2dp"
-        android:numColumns="3"
-        android:paddingBottom="2dp"
-        android:paddingTop="2dp"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="2dp" />
+        android:layout_above="@id/relativelayout_1"
+        android:layout_below="@id/layout_first"
+        android:divider="@color/color_clear"
+        android:dividerHeight="@dimen/px_1"
+        android:listSelector="@android:color/transparent"/>
 
     <TextView
         android:id="@id/txt2"
@@ -69,6 +66,7 @@
         android:visibility="gone"/>
 
     <RelativeLayout
+        android:id="@id/relativelayout_1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
         android:layout_alignParentBottom="true"

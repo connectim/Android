@@ -12,25 +12,22 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import connect.activity.base.BaseApplication;
+import connect.activity.chat.bean.RoomSession;
 import connect.ui.activity.R;
-import connect.ui.activity.chat.bean.RoomSession;
-import connect.ui.base.BaseApplication;
 
-/**
- * Created by Administrator on 2016/8/26.
- */
 public class FileUtil {
 
     /** app */
-    private static String APP_ROOT_NAME = "connect";
+    private static String APP_ROOT_NAME = "iWork";
     /** Root path for local file */
     public static String DIR_ROOT = getExternalStorePath();
     /** Temporary folder */
-    public static final String DIR_TEMP = "temp" + File.separator;
+    public static String tempPath = Environment.getExternalStorageDirectory().getAbsolutePath() +
+            File.separator + APP_ROOT_NAME + File.separator + "temp";
 
     /**
      * Get the private file path
-     *
      * @return
      */
     public static String getExternalStorePath() {
@@ -42,23 +39,6 @@ public class FileUtil {
                     + BaseApplication.getInstance().getString(R.string.app_name);
         }
         return dir;
-    }
-
-    /**
-     * file type
-     */
-    public enum FileType {
-        IMG(".png"), VOICE(".aac"), VIDEO(".mp4");
-
-        String fileType;
-
-        FileType(String type) {
-            this.fileType = type;
-        }
-
-        public String getFileType() {
-            return fileType;
-        }
     }
 
     /**
@@ -82,8 +62,8 @@ public class FileUtil {
         String index = randomFileName();
         index = index + type.getFileType();
 
-        String contactkey = RoomSession.getInstance().getRoomKey();
-        index = TextUtils.isEmpty(contactkey) ? index : contactkey + "/" + index;
+        String contactKey = RoomSession.getInstance().getRoomKey();
+        index = TextUtils.isEmpty(contactKey) ? index : contactKey + "/" + index;
         return createNewFile(index);
     }
 
@@ -96,6 +76,14 @@ public class FileUtil {
         String index = randomFileName();
         index = index + type.getFileType();
         return createAbsNewFile(DIR_ROOT + File.separator +index);
+    }
+
+    public static File newSdcardTempFile(FileType type) {
+        String index = randomFileName();
+        index = index + type.getFileType();
+
+        //String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+        return createAbsNewFile(tempPath + File.separator +index);
     }
 
     /**
@@ -127,13 +115,13 @@ public class FileUtil {
 
     /**
      * contact file
-     * @param pubkey
+     * @param pubKey
      * @param filename
      * @param fileType
      * @return
      */
-    public static String newContactFileName(String pubkey, String filename, FileType fileType) {
-        return DIR_ROOT + File.separator + pubkey + File.separator + filename + fileType.getFileType();
+    public static String newContactFileName(String pubKey, String filename, FileType fileType) {
+        return DIR_ROOT + File.separator + pubKey + File.separator + filename + fileType.getFileType();
     }
 
     /**
@@ -141,8 +129,7 @@ public class FileUtil {
      *                              file operation
      * ==========================================================================
      */
-
-    public static boolean islocalFile(String path) {
+    public static boolean isLocalFile(String path) {
         return !RegularUtil.matches(path, RegularUtil.VERIFICATION_HTTP);
     }
 
@@ -163,7 +150,6 @@ public class FileUtil {
 
     /**
      * To determine whether the folder (with a suffix)
-     *
      * @param filename
      * @return
      */
@@ -178,8 +164,27 @@ public class FileUtil {
     }
 
     /**
-     *Get file byte array
-     *
+     * Get file
+     * @param data
+     * @param fileType
+     * @return
+     */
+    public static File byteArrayToFile(byte[] data,FileUtil.FileType fileType){
+        File imageFile = FileUtil.newTempFile(fileType);
+        if (null != imageFile) {
+            try {
+                FileOutputStream fos = new FileOutputStream(imageFile);
+                fos.write(data);
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return imageFile;
+    }
+
+    /**
+     * Get file byte array
      * @param filePath
      * @return
      */
@@ -234,6 +239,30 @@ public class FileUtil {
         return fileSize(FileSizeType.KB, path)+" KB";
     }
 
+    public static int fileSizeOf(String path) {
+        if (path == null)
+            return 0;
+        File file = new File(path);
+        if (!file.exists()) {
+            return 0;
+        }
+        return (int) file.length();
+    }
+
+    public static String fileSize(int length) {
+        String size = "";
+        FileSizeType sizeType = length < (1024 * 1024) ? FileSizeType.KB : FileSizeType.M;
+        switch (sizeType) {
+            case KB:
+                size = length / 1024 + " KB";
+                break;
+            case M:
+                size = length / 1024 / 1024 + " M";
+                break;
+        }
+        return size;
+    }
+
     public enum FileSizeType{
         KB,
         M,
@@ -250,9 +279,9 @@ public class FileUtil {
      *
      * @param pubkey
      */
-    public static void deleteContactFile(String pubkey) {
+    public static boolean deleteContactFile(String pubkey) {
         String path = DIR_ROOT + File.separator + pubkey;
-        deleteDirectory(path);
+        return deleteDirectory(path);
     }
 
     /**
@@ -285,6 +314,9 @@ public class FileUtil {
         }
         flag = true;
         File[] files = dirFile.listFiles();
+        if (files == null || files.length == 0) {
+            return true;
+        }
         for (int i = 0; i < files.length; i++) {
             if (files[i].isFile()) {
                 flag = deleteFile(files[i].getAbsolutePath());
@@ -338,4 +370,22 @@ public class FileUtil {
             }
         }
     }
+
+    /**
+     * file type
+     */
+    public enum FileType {
+        IMG(".png"), VOICE(".amr"), VIDEO(".mp4");
+
+        String fileType;
+
+        FileType(String type) {
+            this.fileType = type;
+        }
+
+        public String getFileType() {
+            return fileType;
+        }
+    }
+
 }

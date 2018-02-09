@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_F6F6F6"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:background="@color/color_161A21">
+
+        <ImageView
+            android:id="@id/left_img"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:clickable="false"
+            android:contentDescription="@string/app_name"
+            android:paddingLeft="@dimen/dp_17"
+            android:paddingRight="@dimen/dp_20"
+            android:src="@mipmap/back_white"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_28"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_toLeftOf="@+id/search_tv"
+            android:layout_toRightOf="@+id/left_img"
+            android:background="@drawable/shape_search">
+
+            <ImageView
+                android:id="@id/left_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_10"
+                android:contentDescription="@string/app_name"
+                android:src="@mipmap/department_search" />
+
+            <EditText
+                android:id="@+id/search_edit"
+                style="@style/EditStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@+id/del_tv"
+                android:layout_toRightOf="@+id/left_img"
+                android:gravity="center_vertical"
+                android:hint="@string/Link_Search"
+                android:singleLine="true"
+                android:textColor="@color/color_161A21"
+                android:textColorHint="@color/color_b3b5bc"
+                android:textSize="@dimen/sp_14" />
+
+            <ImageView
+                android:id="@+id/del_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
+                android:contentDescription="@string/app_name"
+                android:src="@mipmap/input_del"
+                android:visibility="invisible" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/search_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
+            android:paddingBottom="@dimen/dp_5"
+            android:paddingTop="@dimen/dp_5"
+            android:text="@string/Work_Search"
+            android:textColor="@color/color_ffffff"
+            android:textSize="@dimen/sp_14" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/content_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

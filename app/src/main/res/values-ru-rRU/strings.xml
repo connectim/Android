@@ -1,7 +1,9 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="Chat">Чат</string>
+    <string name="Chat_Add_as_a_friend_to_chat">Добавтьте в друзья, чтобы начать разговор</string>
     <string name="Chat_Agree">Согласие</string>
-    <string name="Chat_Album_Permission_Get">Недостаточно прав для считывания фотоальбома системы, пожалуйста щелкните на "Настройки" - "Права" для получения нужнвх прав</string>
+    <string name="Chat_Album_Permission_Get">Недостаточно прав для считывания фотоальбома системы,
+        пожалуйста щелкните на "Настройки" - "Права" для получения нужнвх прав
+    </string>
     <string name="Chat_All_Image">Все изображения</string>
     <string name="Chat_All_Image_Video">Изображения и видео</string>
     <string name="Chat_All_Video">Все видео</string>
@@ -12,320 +14,279 @@
     <string name="Chat_Have_refused">Отклонено</string>
     <string name="Chat_Loc">Местоположение</string>
     <string name="Chat_Member_Max">Члены %1$d/%2$d</string>
+    <string name="Chat_Message_Black_Friend_Notice">сообщение было опубликовано, но отклонена другой стороной
+    </string>
+    <string name="Chat_Message_Friend_Cookie_Expired_Notice">друзья не вошли в систему в течение долгого времени логин время истекло</string>
     <string name="Chat_Msg_Undefine">Сообщение не определено</string>
     <string name="Chat_No_Pictures">Нет изображения</string>
     <string name="Chat_Notice_New_Message">[Ты получил одно сообщение]</string>
     <string name="Chat_Photo_libary">галерея</string>
     <string name="Chat_Preview_Num">Предварительный просмотр (%1$d)</string>
+    <string name="Chat_Recommend_business_CARDS_to_friends">Друзьям рекомендуется визитная
+        карточка
+    </string>
+    <string name="Chat_Recommend_your_business_card">Вам рекомендовать визитная карточка</string>
     <string name="Chat_Select">Выбрать</string>
     <string name="Chat_Select_Count">Выбрать (%1$d)</string>
     <string name="Chat_Select_Count_Max">Выбрать (%1$d/%2$d)</string>
     <string name="Chat_Send_Mulphoto">Отправить %1$d изображение</string>
     <string name="Chat_Sharelink">[Поделиться ссылкой]</string>
     <string name="Chat_Source_QR">Поделиться QR-кодом группы</string>
-    <string name="Chat_Transfer_Detail">Подробности перевода </string>
-    <string name="Chat_Accept_success">Успешное получение</string>
-    <string name="Chat_Add_as_a_friend_to_chat">Добавтьте в друзья, чтобы начать разговор</string>
-    <string name="Chat_Address">Адрес</string>
+    <string name="Chat_Transfer_Detail">Подробности перевода</string>
+    <string name="Chat_one_device_can_only_grab_a_luckypackage">Устройство может только захватить
+        красный конверт
+    </string>
+    <string name="Chat_system_luckypackage_have_been_frozen">Красный конверт подвешен системный
+        администратор
+    </string>
+    <string name="Chat_the_day_before_yesterday_time">позавчера %s</string>
     <string name="Chat_Address_already_exists">Адрес уже существует</string>
+    <string name="Chat_The_main_content">Основное содержание</string>
+    <string name="Chat_Time">время</string>
     <string name="Chat_Album">Фотоальбом</string>
-    <string name="Chat_All_photos">Все фотографии</string>
-    <string name="Chat_Allow_Connect_to_access_your_album">Пожалуйста, установите в опциях телефона "Настройки-Личное-Фотоальбом" разрешение подключения для доступа к фотоальбому твоего телефона</string>
-    <string name="Chat_Allow_Connect_to_access_your_microphone">Пожалуйста, установите в опциях телефона "Настройки-Личное-Микрофон" разрешение подключения для доступа к микрофону твоего телефона</string>
-    <string name="Chat_Announcement">[Уведомление]</string>
+    <string name="Chat_Organizational_structure">В структуру</string>
+    <string name="Chat_Contact_details">За контактов</string>
     <string name="Chat_Audio">[Аудио]</string>
-    <string name="Chat_Back">Назад</string>
     <string name="Chat_Best_luck">Хорошее везение</string>
-    <string name="Chat_Bitcoin_has_been_return_to_your_wallet">После истечения времени денежного подарка остаточная сумма вернется в твой кошелек</string>
-    <string name="Chat_Call">Вызов/Позвонить</string>
-    <string name="Chat_Camera_Roll">Фотопленка </string>
+    <string name="Chat_Bitcoin_has_been_return_to_your_wallet">После истечения времени денежного
+        подарка остаточная сумма вернется в твой кошелек
+    </string>
     <string name="Chat_Chats">Чаты</string>
     <string name="Chat_Choose_Members">Выбор членов</string>
     <string name="Chat_Choose_contact">Выбор контакта</string>
     <string name="Chat_Complete">Завершено</string>
-    <string name="Chat_Compressing">Сжатие…</string>
-    <string name="Chat_Connect">Connect - P2P Encrypted Instant Message</string>
-    <string name="Chat_Connecting">Соединение…</string>
-    <string name="Chat_Connection_protocol_upgrades">Обновление протокола соединения</string>
-    <string name="Chat_Contact_card">Рекомендованные друзья для тебя</string>
     <string name="Chat_Create_a_new_chat">Создать новый чат</string>
-    <string name="Chat_Creating_group">Создание группы</string>
     <string name="Chat_Crowd_founding_in_progress">Выполняется краудфандинг</string>
     <string name="Chat_Crowd_funding">Получение средств краудфандинга</string>
     <string name="Chat_Crowd_funding_by_who">Инициировать краудфандинг %s</string>
     <string name="Chat_Crowdfoundind_History">Запись краудфандинг</string>
     <string name="Chat_Crowdfunding">Краудфандинг</string>
-    <string name="Chat_Crowfunding">Инициировать  краудфандинг</string>
-    <string name="Chat_Disable_self_destruct">После выхода из режима чтения самоуничтожние</string>
+    <string name="Chat_Crowfunding">Инициировать краудфандинг</string>
     <string name="Chat_Draft">[Черновик]</string>
-    <string name="Chat_Enable_Self_destruct_Mode">После активации чтения самоуничтожение</string>
-    <string name="Chat_Encrypted">Кодирование</string>
     <string name="Chat_Enter_BTC">%1$s\n%2$s BTC</string>
     <string name="Chat_Expired">%1$d/%2$d уже просрочен</string>
     <string name="Chat_Expression">[Смайлик]</string>
-    <string name="Chat_Failed_to_get_redpact">Неудалось получить денежный подарок, обновите страницу и поробуйте снова</string>
-    <string name="Chat_Failed_to_get_transfer">Неудалось получить оплату, обновите страницу и поробуйте снова</string>
-    <string name="Chat_Favorites">Избранное</string>
+    <string name="Chat_Failed_to_get_redpact">Неудалось получить денежный подарок, обновите страницу
+        и поробуйте снова
+    </string>
     <string name="Chat_Find_me_from_the_recommendation">Найти меня по рекомендации</string>
     <string name="Chat_Founded_complete">Краудфандинг завершен</string>
     <string name="Chat_Group_Members">Члены группы (%d человек)</string>
     <string name="Chat_Group_Namecard">[Визитная карточка группы]</string>
     <string name="Chat_Group_certification">[Проверка группы]</string>
-    <string name="Chat_Hide__messages_">В разговоре не отображается пользовательский ник и аватар, после истечения срока разговора, он не будет сохранен</string>
     <string name="Chat_History">Запись</string>
-    <string name="Chat_Hour"> %d час</string>
-    <string name="Chat_I_know">Я знаю</string>
     <string name="Chat_Loading">Загружается…</string>
     <string name="Chat_Location">[Местоположение]</string>
     <string name="Chat_Lucky_packet_Overtime">Время ожидания денежного подарка истекло!</string>
-    <string name="Chat_Lucky_packet_transfering_to_your_wallet">Подожди пока система передаст денежный подарок в твой кошелек</string>
-    <string name="Chat_Message_not_parse_upgrade_version">Сообщение не может быть проанализировано, пожалуйста обновите до последней новой версии</string>
+    <string name="Chat_Lucky_packet_transfering_to_your_wallet">Подожди пока система передаст
+        денежный подарок в твой кошелек
+    </string>
     <string name="Chat_Message_retweet">Передача сообщения</string>
-    <string name="Chat_Minute">%d водораздел</string>
     <string name="Chat_Mute_Notification">Отключить оповещение</string>
-    <string name="Chat_My_Photo_Stream">Мой фотопоток</string>
     <string name="Chat_Name_Card">Визитная карточка</string>
-    <string name="Chat_Network_connection_failed_please_check_network">Не удается подключиться к сети, пожалуйста проверьте сеть</string>
+    <string name="Chat_Network_connection_failed_please_check_network">Не удается подключиться к
+        сети, пожалуйста проверьте сеть
+    </string>
     <string name="Chat_New_application">Новое заяление</string>
     <string name="Chat_New_message_notification">Оповещение о новом сообщении</string>
     <string name="Chat_Not_Group_Master">Ты не являешься администратором этой группы</string>
     <string name="Chat_Not_connected">Чат (не подсоединено)</string>
-    <string name="Chat_Original">Оригнальное изображение</string>
-    <string name="Chat_Panoramas">Общий вид фотографии</string>
-    <string name="Chat_Per_BTC">%1$s  человек\n%2$s BTC</string>
     <string name="Chat_Photo">Фотография</string>
     <string name="Chat_Picture">[Изображение]</string>
     <string name="Chat_Preview">Предварительный просмотр</string>
     <string name="Chat_Read_Burn">Уничтожить после прочтения</string>
-    <string name="Chat_Recent_Added">Недавно добавленные</string>
     <string name="Chat_Recent_chat">Последний чат</string>
-    <string name="Chat_Record_time_too_long">Слишком долгое время</string>
-    <string name="Chat_Record_time_too_short">Слишком короткое время</string>
     <string name="Chat_Red_packet">[Денежный подарок]</string>
     <string name="Chat_Refreshing_Secret_Key">Обновление ключа…</string>
     <string name="Chat_Release_to_cancel">Отпустите чтобы отменить отправку</string>
-    <string name="Chat_Resend_this_message">Отправить повторно сообщение?</string>
-    <string name="Chat_Retweet">Переслать </string>
-    <string name="Chat_Screen_Shots">Скриншот</string>
-    <string name="Chat_Seconds">%d секунд</string>
     <string name="Chat_Secret_Key_Refreshed">Успешное обновление ключа</string>
-    <string name="Chat_Send_a_Luck_Packet_Click_to_view">Отправить денежный подарок/щелкните n для получения</string>
+    <string name="Chat_Send_a_Luck_Packet_Click_to_view">Отправить денежный подарок/щелкните n для
+        получения
+    </string>
     <string name="Chat_Send_a_namecard">Отправить визитную карточку</string>
-    <string name="Chat_Send_contact_card_to_the_current_chat">Отправить  %s в текущий разговор</string>
-    <string name="Chat_Send_image_to">Отправить изображение %s</string>
-    <string name="Chat_Send_video_to">Отправить видео %s</string>
     <string name="Chat_Send_vioce">Отправить голосовое сообщение</string>
-    <string name="Chat_Set_success">Установка выполнена</string>
     <string name="Chat_Share_contact">Поделиться визитной карточкой</string>
-    <string name="Chat_Share_contact_to">Поделиться  %1$s с  %2$s</string>
+    <string name="Chat_Share_contact_to">Поделиться %1$s с %2$s</string>
     <string name="Chat_Sight">Камера</string>
     <string name="Chat_Slide_left_to_cancel">Проведите налево для отмены отправки</string>
     <string name="Chat_Snapchat">[Самоуничтожение после прочтения]</string>
     <string name="Chat_Someone_note_me">[Кто-то @ меня]</string>
-    <string name="Chat_Sticky_on_Top">Прикрепить</string>
     <string name="Chat_Sticky_on_Top_chat">Прикрепить чат</string>
-    <string name="Chat_The_day_before_yesterday">Позавчера</string>
-    <string name="Chat_The_private_key_failed_to_updated._Your_message_will_be_encrypted_by_temporary_ECDH_key">Сессия ключ обновление не удается, ваше сообщение будет передано шифруется с помощью ключа фиксированного совместных</string>
     <string name="Chat_Tips">[Сообщение напоминание]</string>
-    <string name="Chat_Today">Сегодня %s</string>
     <string name="Chat_Transfer">[Перевести]</string>
     <string name="Chat_Transfer_to_other_BTC">Перевести другому \n%s BTC</string>
     <string name="Chat_Transfer_to_you_BTC">Перевести себе \n%s BTC</string>
-    <string name="Chat_Unable_to_record">Невозможно записать</string>
-    <string name="Chat_Unencrypted">Незашифрованный</string>
-    <string name="Chat_Unkonw_message">[Неизвестное сообщение]</string>
     <string name="Chat_Unpaid">Не оплачено</string>
     <string name="Chat_Update_Database">Обновление базы данных</string>
     <string name="Chat_Updating_Database">данные Обновление</string>
     <string name="Chat_User_already_in_group">Пользователь уэже в группе</string>
     <string name="Chat_VerifyCode_has_expired">VerifyCode уже просрочен</string>
     <string name="Chat_Video">[Видео]</string>
-    <string name="Chat_Video_compress_size_Are_yousend">После сжатия размер видео: %s, уверены, что хотите отправить его?</string>
-    <string name="Chat_Video_preview">Просмотр видео</string>
-    <string name="Chat_Videos">Видео</string>
     <string name="Chat_Visting_card">[Визитная карточка]</string>
     <string name="Chat_Waitting_for_open">Ожидание получения</string>
-    <string name="Chat_When_choosing_pictures_can_not_choose_the_video">Видео не может быть выбрано, пока выбраны фотографии</string>
     <string name="Chat_Yesterday">Вчера</string>
-    <string name="Chat_Yesterday_s">Вчера %s</string>
-    <string name="Chat_You">Ты </string>
-    <string name="Chat_You_are_start_encrypt_chat_Messages_encrypted">начал зашифрованный чат\n\nСообщение передается зашифровано от точки к точке\nНикакая третья сторона не сможет получить содержания сообщения\nСервер не сохраняет запись истории</string>
-    <string name="Chat_You_can_only_select_photos">Ты само много можешь выбрать только фотографии %zd</string>
-    <string name="Chat_You_have_left_the_group">Вы уже покинули группу</string>
-    <string name="Chat_You_receive_a_red_envelope">Вы получили денежный подарок</string>
-    <string name="Chat_You_receive_a_transfer_BTC">Вы получили денежный перевод/ n%s BTC</string>
-    <string name="Chat_You_received_snapchat_message">После получения текста тут же уничтожить его</string>
-    <string name="Chat_Your_Connect_ID_will_no_longer_be_linked_with_mobile_number">Ваша учетная запись больше не связана с мобильным номером, а этот номер уже используется другим лицом %s</string>
-    <string name="Chat_Your_account_is_not_bound_to_the_phone">Ваш аккаунт не привязан к номеру телефона,пожалуйста, попробуйте снова </string>
-    <string name="Chat_disable_the_self_descruct">%sСамоуничтожение после закрытия прочтения </string>
-    <string name="Chat_et_self_destruct_timer">Установить время самоуничтожения после прочтения</string>
-    <string name="Chat_founded">Получение средств краудфандинга %1$d/%2$d </string>
-    <string name="Chat_latitude_longitude">Широта%1$+.6f, долгота%2$+.6f \ n</string>
-    <string name="Chat_may_be_a_phone_number_you_can">%s может быть номером телефона, вы можете</string>
-    <string name="Chat_members">(%d человек)</string>
-    <string name="Chat_opened_Lucky_Packet_of">Денежный подарок %1$s  был получен %2$s</string>
+    <string name="Chat_You">Ты</string>
+    <string name="Chat_You_are_start_encrypt_chat_Messages_encrypted">начал зашифрованный
+        чат\n\nСообщение передается зашифровано от точки к точке\nНикакая третья сторона не сможет
+        получить содержания сообщения\nСервер не сохраняет запись истории
+    </string>
+    <string name="Chat_Your_Connect_ID_will_no_longer_be_linked_with_mobile_number">Ваша учетная
+        запись больше не связана с мобильным номером, а этот номер уже используется другим лицом %s
+    </string>
+    <string name="Chat_Your_account_is_not_bound_to_the_phone">Ваш аккаунт не привязан к номеру
+        телефона,пожалуйста, попробуйте снова
+    </string>
+    <string name="Chat_disable_the_self_descruct">%s Самоуничтожение после закрытия прочтения</string>
+    <string name="Chat_et_self_destruct_timer">Установить время самоуничтожения после прочтения
+    </string>
+    <string name="Chat_founded">%1$d/%2$d По..инга</string>
+    <string name="Chat_opened_Lucky_Packet_of">Денежный подарок %1$s был получен %2$s</string>
     <string name="Chat_paid_the_bill_to">Счет %1$s был оплачен %2$s</string>
     <string name="Chat_paid_the_crowd_founding_to">Счет краудфандинга %1$s был оплачен %2$s</string>
-    <string name="Chat_send_a_snap_chat_message">Ты отправил сообщение, которое после прочтения самоуничтожится</string>
-    <string name="Chat_set_the_self_destruct_timer_to">После открытия текста %1$s  и после уничтожения %2$s, информировать об удалении </string>
-    <string name="Chat_the_day_before_yesterday_time">позавчера %s</string>
-    <string name="Chat_video_limit">Видео слишком длинное/ n не должно превышать  %d минут</string>
-    <string name="Chat_video_tip">Видео слишком длинное</string>
-    <string name="Chat_your_bitcoin_address_received_a_transfer">На Ваш биткоин адрес поступил денежный перевод, сумма составляет:%s</string>
-    <string name="Common">Общий тип</string>
+    <string name="Chat_set_the_self_destruct_timer_to">После открытия текста %1$s и после
+        уничтожения %2$s, информировать об удалении
+    </string>
     <string name="Common_Cancel">Отменить</string>
+    <string name="Common_Management">управление</string>
+    <string name="Common_The_search_application">Поиск приложений</string>
     <string name="Common_Completed">Завершено</string>
     <string name="Common_Download_App">Загружается %s</string>
     <string name="Common_In">в %s</string>
-    <string name="Common_Installed">Установлено</string>
     <string name="Common_Loading">Загружается...</string>
-    <string name="Common_MM_dd_HH_mm">MM месяц  dd число HH:mm</string>
     <string name="Common_OK">Решено</string>
-    <string name="Common_Pull_down_to_refresh">Потяните вниз, чтобы обновить страницу</string>
-    <string name="Common_Release_to_refresh">Ослабить обновление</string>
-    <string name="Common_footer_hint_normal">Кликнуть для большего количества загрузок</string>
-    <string name="Common_footer_hint_normal_loading">Загрузка еще больше данных </string>
-    <string name="Common_footer_hint_ready">Ослабить для большего количества загрузок</string>
-    <string name="ErrorCode">Вид ошибки</string>
-    <string name="ErrorCode_Create_error">Ошибка при создании</string>
-    <string name="ErrorCode_Data_is_too_large">Слишком много данных</string>
-    <string name="ErrorCode_DecodeRawTransaction_error">Ошибка при расшифровке первого денежного перевода</string>
-    <string name="ErrorCode_Double_flowers">Сбой при двойной операционной сделке</string>
-    <string name="ErrorCode_Ecdh_generation_failed">Сбой при образовании Ecdh</string>
-    <string name="ErrorCode_Error">Обнаружена ошибка</string>
-    <string name="ErrorCode_Error_uploading_avatar">Ошибка при загрузке аватара</string>
-    <string name="ErrorCode_Gcm_generation_failed">Сбой при образовании Gcm</string>
-    <string name="ErrorCode_Not_ProtoBuffer_data">Данные не являются ProtoBuffer </string>
-    <string name="ErrorCode_Not_json_data">Данные не могут быть проанализированы</string>
-    <string name="ErrorCode_Phone_number_is_incorrect">Ошибка номера телефона</string>
     <string name="ErrorCode_Request_Error">Ошибка запроса</string>
-    <string name="ErrorCode_Resource_rule_validation_failed">Сбой при проверки правил источника</string>
-    <string name="ErrorCode_Signature_error">Ошибка подписи</string>
-    <string name="ErrorCode_The_format_is_invalid">Недопустимый формат</string>
-    <string name="ErrorCode_The_phone_number_already_exists">Телефоный номер уже есть</string>
-    <string name="ErrorCode_The_public_key_does_not_match">Открытый ключ не соответствует</string>
-    <string name="ErrorCode_The_resource_already_exists">Источник уже существует</string>
-    <string name="ErrorCode_The_resource_has_expired">Источник просрочен</string>
-    <string name="ErrorCode_The_resource_is_not_exist">Источник не существует</string>
-    <string name="ErrorCode_Token_does_not_match">Token не совпадают</string>
-    <string name="ErrorCode_backup_key_password_hint_incomplete">Резервная копия ключа и пароля являются неполными</string>
-    <string name="ErrorCode_data_error">Ошибка данных</string>
-    <string name="ErrorCode_dust">Нечестная операционная сделка</string>
-    <string name="ErrorCode_he_broadcast_failed">Сбой при транслировании</string>
-    <string name="ErrorCode_msgTx_convert_error">Ошибка при изменении операционной сделки Tx </string>
-    <string name="ErrorCode_publish_hex_decode_error">Ошибка в публикации расшифровки шестнадцатеричной системы счисления</string>
-    <string name="ErrorCode_salt_failure_or_gcm_decryption_failed">Пользователь недействителен или gcm ошибка расшифровки</string>
-    <string name="ErrorCode_timestamp_not_in_the_specified_range">Отметка времени находится вне установленом месте</string>
-    <string name="ErrorCode_xn_mempool_conflict">Конфликт памяти Tx</string>
-    <string name="Link">Соединение контакта</string>
+    <string name="Link_Friend">друзья</string>
+    <string name="Link_Market_value">рыночная стоимость</string>
     <string name="Link_From">От</string>
-    <string name="Link_Group_Common">Общие группы</string>
     <string name="Link_Open_in_Browser">Открыть в браузере</string>
-    <string name="Link_Unable_to_access_permissom">Нет разрешения на доступ. Пожалуйста, включите  доступ в управлении приложениями.</string>
-    <string name="Link_Unable_to_access_permissom_storage">Нет доступа к памяти, пожалуйста авторизуйте доступ в управлении  приложениями</string>
-    <string name="Link_Unable_to_get_the_sms_data">Нет доступа к получению SMS, пожалуйста включите  доступ SMS в управление доступом в приложении на вашем телефоне</string>
-    <string name="Link_contact_loading_failed_check_the_contact_pression">Загрузка контактов не удалось, пожалуйста проверьте доступ к контактным данным  в настройках телефона</string>
+    <string name="Link_Unable_to_access_permissom">Нет разрешения на доступ. Пожалуйста, включите
+        доступ в управлении приложениями.
+    </string>
+    <string name="Link_Unable_to_access_permissom_storage">Нет доступа к памяти, пожалуйста
+        авторизуйте доступ в управлении приложениями
+    </string>
+    <string name="Link_Unable_to_get_the_sms_data">Нет доступа к получению SMS, пожалуйста включите
+        доступ SMS в управление доступом в приложении на вашем телефоне
+    </string>
+    <string name="Link_contact_loading_failed_check_the_contact_pression">Загрузка контактов не
+        удалось, пожалуйста проверьте доступ к контактным данным в настройках телефона
+    </string>
     <string name="Link_Accept">Принято</string>
-    <string name="Link_Accepted">Проверено</string>
     <string name="Link_Add">Добавить</string>
     <string name="Link_Add_Failed">Сбой при добавлении</string>
+    <string name="Link_Add_focus">Для настройки особое внимание</string>
+    <string name="Link_Cancle_focus">Отмена особого внимания</string>
     <string name="Link_Add_Successful">Успешно добавлен</string>
     <string name="Link_Add_as_a_friend">Добавить в друзья</string>
-    <string name="Link_Add_man">Добавить (%d)</string>
-    <string name="Link_Add_tag">Добавить тег</string>
     <string name="Link_Add_to_Contacts">Добавить контакт</string>
+    <string name="Link_Contains">Содержит:%s</string>
+    <string name="Link_Relevant_record">Соответствующие статьи %s запись</string>
     <string name="Link_Added">Добавлено</string>
-    <string name="Link_Address_Book_Access_Denied">Отказ в доступе к адресной книге</string>
+    <string name="Link_Not_logged_in">Не в</string>
     <string name="Link_An_error_occurred_change_nickname">Ошибка при обновлении никнейма</string>
-    <string name="Link_Application_has_passed">Заявка одобрена</string>
-    <string name="Link_Attorn_failed">Сбой при передачи</string>
-    <string name="Link_Attorn_successful">Успешное завершение передачи</string>
     <string name="Link_Black_List">Черный список</string>
     <string name="Link_Block">Добавить в черный список</string>
     <string name="Link_Clear_All_Chat_History">Очистить историю переписки</string>
     <string name="Link_Clear_Chat_History">Очистить историю записи</string>
-    <string name="Link_Close_Successful">Успешно отключено</string>
-    <string name="Link_Contacts">Контактное лицо  </string>
+    <string name="Link_Contacts">Контактное лицо</string>
+    <string name="Link_My_group">Я группы</string>
+    <string name="Link_Chat_record">чата</string>
     <string name="Link_Delete">Удалить</string>
     <string name="Link_Delete_Failed">Ошибка при удалении</string>
-    <string name="Link_Delete_Remark_successfully">Успешное удаление резервных копий</string>
     <string name="Link_Delete_Successful">Успешное удаление</string>
     <string name="Link_Delete_This_Friend">Удалить друга</string>
     <string name="Link_Delete_and_Leave">Выйти из группы</string>
+    <string name="Link_Already_delete_and_Leave">Ты уже выход из группы</string>
     <string name="Link_Enter_Bitcoin_Address">Ввести адрес биткоина</string>
-    <string name="Link_Existed_tags">Существующие теги</string>
-    <string name="Link_Facebook">Фейсбук</string>
     <string name="Link_Favorite_Friend">Часто используемое контактное лицо</string>
-    <string name="Link_Find_me_by_bitcoin_address">Найти меня по биткоин адресу</string>
     <string name="Link_Find_me_by_phone_number">Найти меня по номеру телефона</string>
     <string name="Link_Friend_Recommendation">Рекомендация друга</string>
-    <string name="Link_From_Contact_Match">Через совпадения записей  контактов</string>
+    <string name="Link_From_Contact_Match">Через совпадения записей контактов</string>
+
+    <string name="Link_Subscribe_to_the_center">Центр подписки</string>
+    <string name="Link_Subscribe">подписка</string>
+    <string name="Link_Unsubscribe">Удали из списка</string>
+    <string name="Link_Have_subscribed_to">Уже подписки</string>
+    <string name="Link_Not_to_subscribe_to">Не подписки</string>
+    <string name="Link_To_view_the_message">Просмотр сообщений</string>
+    <string name="Link_Function_is_introduced">О возможности</string>
+    <string name="Link_Digital_currency_quotes">цифровой валютный рынок</string>
+
     <string name="Link_From_Group">От группы</string>
     <string name="Link_From_May_Know">От людей, которых возможно знаете</string>
-    <string name="Link_From_QR_Code">Через  QR-код</string>
+    <string name="Link_From_QR_Code">Через QR-код</string>
     <string name="Link_From_Recommend">Рекомендация от друзей</string>
     <string name="Link_From_Search">Через поиск</string>
-    <string name="Link_From_Transaction">Приглашение от операционной сделки через денежный перевод</string>
+    <string name="Login_username_can_not_empty">Имя пользователя не может быть пустым</string>
+    <string name="Link_From_Transaction">Приглашение от операционной сделки через денежный перевод
+    </string>
     <string name="Link_From_Unknow">Приглашение от неизвестного</string>
     <string name="Link_From_friends_to_share">Приглашение от друзей</string>
     <string name="Link_From_group_link">Ссылка группы</string>
-    <string name="Link_Group">Группа </string>
+    <string name="Link_Group">Группа</string>
     <string name="Link_Group_Introduction">Введение группы</string>
     <string name="Link_Group_Name">Название группы</string>
     <string name="Link_Group_Setting">Настройки группы</string>
     <string name="Link_Group_brief">Краткое описание группы</string>
-    <string name="Link_Group_invitation_has_been_sent">Приглашение вступить в группу уже отправлено</string>
     <string name="Link_Group_invitation_is_invalid">Срок пригласительного уже истек</string>
-    <string name="Link_Group_invitation_sent_failed">Отправка приглашения не удалась</string>
     <string name="Link_Group_is_QR_Code">QR-код группы</string>
-    <string name="Link_HASH_match_contact_firends_The_server_does_not_keep">Используя алгоритм хеширования друзей путем сопоставления адресной книги/ n сервер  не сохраняет ваши личные данные </string>
-    <string name="Link_Hello">Привет </string>
-    <string name="Link_Hello_I_am">Привет, я  %s</string>
-    <string name="Link_Input_a_tag">Ввести тег</string>
-    <string name="Link_Invite">Пригласить  </string>
+    <string name="Link_Hello_I_am">Привет, я %s</string>
+    <string name="Link_Invite">Пригласить</string>
     <string name="Link_Invite_Count">Пригласить (%d)</string>
     <string name="Link_Invite_you_to_join">Приглашение вступить в группу/n %s</string>
-    <string name="Link_Invite_friend_to_join">Пригласить друга присоединиться к групповому чату/ n %s</string>
-    <string name="Link_Join_Group">Добавить группу   </string>
+    <string name="Link_Invite_friend_to_join">Пригласить друга присоединиться к групповому чату/ n
+        %s
+    </string>
+    <string name="Link_Join_Group">Добавить группу</string>
     <string name="Link_ManageGroup">Управление группой</string>
-    <string name="Link_Members">Участник  (%d)</string>
+    <string name="Link_Group_create_information_error">Создание группы информации ошибку</string>
+    <string name="Link_Members">Участник (%d)</string>
     <string name="Link_More">Более подробно</string>
     <string name="Link_My_Alias_in_Group">Мой никнейм</string>
     <string name="Link_New_Friends">Новые друзья</string>
     <string name="Link_New_friend">Новый друг</string>
-    <string name="Link_Note">Примечание :%s</string>
-    <string name="Link_Open_Successful">Успешная активация</string>
-    <string name="Link_Open_in_Safari">Открыта в Safari</string>
     <string name="Link_Operation_failed">Операция не удалась</string>
     <string name="Link_Operation_frequent">Часто используемые операции</string>
     <string name="Link_Other">Остальное</string>
     <string name="Link_Ownership_Transfer">Передача прав администратору группы</string>
     <string name="Link_People_you_may_know">Люди, которых возможно вы знаете</string>
-    <string name="Link_Phone_Setting_allowing_access_camera">Пожалуйста в  телефоне /"настройки - конфиденциальность - камеры/", /n подключите  доступ к  камере вашего мобильного телефона</string>
     <string name="Link_Profile">Личные данные</string>
     <string name="Link_Qr_code_is_invalid">QR-код недействителен</string>
     <string name="Link_Refresh_QR_Code">Обновление QR-код</string>
-    <string name="Link_Refresh_QR_code_failed">Ошибка при обновлении QR-код</string>
-    <string name="Link_Refresh_QR_tip">После обновления QR-код группы ,  QR-код старой группы и ссылка будут не активны</string>
+    <string name="Link_Refresh_QR_tip">После обновления QR-код группы , QR-код старой группы и
+        ссылка будут не активны
+    </string>
     <string name="Link_Refuse">Отказ</string>
-    <string name="Link_Remark_change_successfull">Успешное создание резервного копирования</string>
     <string name="Link_Remove_Member_Failed">Сбой при удалении участника</string>
-    <string name="Link_Save_tag_successfully">Успешное созданение тега</string>
     <string name="Link_Save_to_Contacts">Сохранить в контактах</string>
-    <string name="Link_Scan">Сканировать </string>
-    <string name="Link_Scan_to_add">Отсканировать для добавления </string>
+    <string name="Link_Scan">Сканировать</string>
+    <string name="Link_Close_to_remind">Закрытие напомнить</string>
     <string name="Link_Search">Поиск</string>
+    <string name="Link_Search_contacts">Поиск контактов</string>
+    <string name="Link_Search_chat_log">Поиск чата</string>
+    <string name="Link_Search_group">Поиск групп</string>
+    <string name="Link_Search_for_specified_content">Поиск указать содержание</string>
+    <string name="Link_Commonly_used_search">Часто поиск</string>
     <string name="Link_Search_Result">Результат поиска</string>
     <string name="Link_Search_friends">Поиск друзей</string>
     <string name="Link_Select_new_owner">Выбрать нового хозяина группы</string>
-    <string name="Link_Selecting__new_owner__release_your_ownership">Установив %s хозяином группы, Вы добровольно должны отказаться от прав хозяина группы</string>
+    <string name="Link_Selecting__new_owner__release_your_ownership">Установив %s хозяином группы,
+        Вы добровольно должны отказаться от прав хозяина группы
+    </string>
     <string name="Link_Send">Отправить</string>
+    <string name="Link_Scan_Result">Результаты сканирования</string>
+    <string name="Link_Dialogue">диалог</string>
+    <string name="Link_Workbench">стол</string>
+    <string name="Link_Inactive">Не активировать</string>
     <string name="Link_Send_friend_request">Отправить запрос о дружбе</string>
     <string name="Link_Send_successful">Успешно отправлено</string>
     <string name="Link_Send_to">Отправить %s</string>
-    <string name="Link_Set_Remark_and_Tag">Создать резервную копию и тег</string>
+    <string name="Link_Set_Remark_and_Tag">Настройки примечание</string>
+    <string name="Link_Department">сектор</string>
     <string name="Link_Set_Tag">Создать тег</string>
-    <string name="Link_Set_group_nicknames_only_be_in_this_group">Создать название для группы. Название группы можно будет увидеть только членам этой группы</string>
+    <string name="Link_Set_group_nicknames_only_be_in_this_group">Создать название для группы.
+        Название группы можно будет увидеть только членам этой группы
+    </string>
     <string name="Link_Share">Поделиться</string>
     <string name="Link_Share_failed">Сбой при передаче</string>
     <string name="Link_Share_to">Поделиться на %s</string>
@@ -333,303 +294,302 @@
     <string name="Link_Stranger">Незнакомец</string>
     <string name="Link_Tansfer_Record">Запись денежного перевода</string>
     <string name="Link_The_group_is_not_public">Эта группа не является публичной</string>
-    <string name="Link_The_group_is_not_public_Not_Share">Группа не является публичной, неразрешено делиться </string>
+    <string name="Link_The_group_is_not_public_Not_Share">Группа не является публичной, неразрешено
+        делиться
+    </string>
     <string name="Link_Through_the_network_search">Искать через интернет-поисковик</string>
-    <string name="Link_Unable_to_get_the_camera_data">Не удалось получить данные камеры, пожалуйста открой разрешения камеры в настройках телефона, приложение для управления доступа</string>
-    <string name="Link_Unable_to_get_the_voice_data">Нет доступа к аудио, пожалуйста  включите звук в настройках доступа приложений на вашем телефоне</string>
-    <string name="Link_Unknown_error">Неизвестная ошибка</string>
-    <string name="Link_Update_Group_Name_Failed">Сбой при выполнении обновления названия группы </string>
-    <string name="Link_User_refuses_camera_permission_please_set">Пользователь отказывается давать разрешение на использование камеры, вернуться на предыдущую страницу/n установить-->конфиденциальность/общие и другие параметры установки</string>
+    <string name="Link_Unable_to_get_the_camera_data">Не удалось получить данные камеры, пожалуйста
+        открой разрешения камеры в настройках телефона, приложение для управления доступа
+    </string>
+    <string name="Link_Unable_to_get_the_voice_data">Нет доступа к аудио, пожалуйста включите звук в
+        настройках доступа приложений на вашем телефоне
+    </string>
+    <string name="Link_Update_Group_Name_Failed">Сбой при выполнении обновления названия группы
+    </string>
     <string name="Link_Verify">Идет проверка...</string>
-    <string name="Link_Web_page">Веб-страница  </string>
     <string name="Link_Whether_Public">Программа публичная?</string>
-    <string name="Link_You_Remove_from_the_group_chat">Вы удалили %s из группового чата</string>
-    <string name="Link_You_apply_to_join_has_passed">Ваше заявление на добавление в группу %s было принято</string>
-    <string name="Link_You_apply_to_join_rejected">Ваше заявление на добавление в группу %s было отклонено </string>
+    <string name="Link_You_apply_to_join_has_passed">Ваше заявление на добавление в группу『%s』было
+        принято
+    </string>
+    <string name="Link_You_apply_to_join_rejected">Ваше заявление на добавление в группу %s было
+        отклонено
+    </string>
     <string name="Link_Your_invitation">Ваше приглашение</string>
-    <string name="Link_access_to_your_Address_Book_in_Settings">Пожалуйста, предоставьте  доступ к вашей адресной книге в Настройки -> конфиденциальность -> Контакты</string>
-    <string name="Link_application_was_refused">Заявка отклонена</string>
     <string name="Link_apply_to_join_group">Заявление на добавление в группу</string>
-    <string name="Link_apply_to_join_group_chat">%1$s отправить заявления на добавление в группу %2$s</string>
+    <string name="Link_apply_to_join_group_chat">%1$s отправить заявления на добавление в группу
+        %2$s
+    </string>
     <string name="Link_become_new_group_owner">Стать новым владельцем группы %s</string>
     <string name="Link_contact_count">%1$d контактное лицо %2$s%3$s</string>
-    <string name="Link_contact_count_group_count">Контактное лицо %1$d, группа %2$d</string>
-    <string name="Link_enter_the_group">Добавить группу  %s</string>
+    <string name="Link_contact_count_group_count">Контактное лицо %1$d группа %2$d</string>
+    <string name="Link_enter_the_group">Добавить группу %s</string>
     <string name="Link_group_count">Группа %d</string>
+    <string name="Link_My_application">Я приложений</string>
+    <string name="Link_Employee_number">Номер сотрудника</string>
+    <string name="Link_Subordinate_departments">Принадлежащего сектор:</string>
+    <string name="Link_Contact_number">Номер:</string>
     <string name="Link_have_joined_the_group">Вы уже добавлены в эту группу</string>
-    <string name="Link_invite_encrypted_chat_with_APP_Download">%s  приглашает Вас начать зашифрованный чат с Connect, Connect - это приложение для зашифрованного общения P2P。Адрес для скачивания: https://connect.im</string>
-    <string name="Link_invite_you_to_start_encrypted_chat_with_Connect">%s  приглашает Вас начать зашифрованный чат с Connect</string>
-    <string name="Link_invited_to_the_group_chat">%1$s пригласила , чтобы добавить в группу %2$s</string>
-    <string name="Link_search_someThing">Поиск (адрес/телефоный номер/ID подключения)</string>
-    <string name="Link_the_group_member_can_see_the_QR">После активации, члены группы могут увидеть QR код</string>
+    <string name="Link_invite_encrypted_chat_with_APP_Download">%s приглашает Вас начать
+        зашифрованный чат с Connect, Connect - это приложение для зашифрованного общения P2P。Адрес
+        для скачивания: https://connect.im
+    </string>
+    <string name="Link_invited_to_the_group_chat">%1$s пригласила , чтобы добавить в группу %2$s
+    </string>
+    <string name="Link_search_someThing">телефоный номер/ID подключения</string>
+    <string name="Link_the_group_member_can_see_the_QR">После активации, члены группы могут увидеть
+        QR код
+    </string>
     <string name="Link_update_Failed">Сбой при исправлении</string>
-    <string name="Link_user_friends">%s друга</string>
-    <string name="Login">Логин модуля</string>
-    <string name="Login_created_by_random_number_generator">Создается с помощью генератора случайных чисел</string>
+    <string name="Link_user_friends">%s группа</string>
+    <string name="Login_created_by_random_number_generator">Создается с помощью генератора случайных
+        чисел
+    </string>
     <string name="Login_Avatar_upload_failed">Сбой при загрузки аватара</string>
-    <string name="Login_Camera_guide_tip">Нажмите, чтобы сделать фотографию и удерживайте для записи видео</string>
+    <string name="Login_Camera_guide_tip">Нажмите, чтобы сделать фотографию и удерживайте для записи
+        видео
+    </string>
     <string name="Login_Code">Код подтверждения</string>
-    <string name="Login_Collecting_Sounds_as_Random_Seed">Собирание голосов как случайных чисел</string>
-    <string name="Login_Decrypted_private_key">Расшифрованый приватный ключ</string>
-    <string name="Login_Edit">Редактирование</string>
-    <string name="Login_Encrypted_private_key">Шифрование приватного ключа</string>
-    <string name="Login_Generated_Failure">Сбой при создании, пожалуйста  убедитесь, что вы настроили звук микрофона</string>
+    <string name="Login_Login_Account">Логин</string>
+    <string name="Login_Collecting_Sounds_as_Random_Seed">Собирание голосов как случайных чисел
+    </string>
+    <string name="Login_Generated_Failure">Сбой при создании, пожалуйста убедитесь, что вы настроили
+        звук микрофона
+    </string>
     <string name="Login_Generated_Successful">Успешное создание</string>
-    <string name="Login_Generating_Bitcoin_address">Создание биткоин адреса как подключиться к услуге ID</string>
-    <string name="Login_Generating_Private_and_Public_Key">Создание публичного и частного ключей...</string>
-    <string name="Login_Import_private_key">Импорт приватного ключа</string>
-    <string name="Login_Import_your_backup">Импорт резервной копии или другой приватный ключ</string>
-    <string name="Login_Invalid_version_number">Неверный номер версии программы</string>
-    <string name="Login_Local_User">Локальный пользователь</string>
-    <string name="Login_Local_account">Локальная учетная запись</string>
-    <string name="Login_Login">Вход в систему </string>
-    <string name="Login_Login_Password_Hint_Title">Подсказка для пароля</string>
-    <string name="Login_Next">Следующий шаг </string>
-    <string name="Login_Not_set">Не устанавливается</string>
+    <string name="Login_Generating_Bitcoin_address">Создание Btc адреса</string>
+    <string name="Login_Generating_Private_and_Public_Key">Создание публичного и частного
+        ключей...
+    </string>
+    <string name="Login_Next">Следующий шаг</string>
     <string name="Login_Password">Пароль</string>
-    <string name="Login_Password_Hint">Подсказка для пароля :%s</string>
-    <string name="Login_Password_Standard_Tip">Установите пароль (минимум 8 символов)</string>
-    <string name="Login_Password_explain">Пароль используемый для шифрования приватного ключа/n сервер не сохранит пароль</string>
+    <string name="Login_username">Имя пользователя</string>
+    <string name="Login_Confirm_password">Подтверждение пароля</string>
     <string name="Login_Password_incorrect">Неправильный пароль</string>
-    <string name="Login_Phone_binded">Номер уже привязан</string>
-    <string name="Login_Please_check_that_your_input_is_correct">Пожалуйста проверьте правильность ввода</string>
-    <string name="Login_Please_wait_for">Просьба подождать %d секунд</string>
+    <string name="Login_User_name_or_password_error">Имя и пароль пользователя ошибки</string>
     <string name="Login_Resend">Отправить заново</string>
     <string name="Login_Resend_Time">Отправить заново (%d)</string>
-    <string name="Login_Reset_Password_And_Login">Восстановить пароль для входа в систему</string>
     <string name="Login_SMS_code_has_been_send">SMS-код был отправлен</string>
-    <string name="Login_SMS_code_is_sending">Отправив код SMS-подтверждения...</string>
     <string name="Login_SMS_code_sent_failure">Сбой при отправки кода SMS-подтверждения</string>
     <string name="Login_Save_successful">Успешно сохранено</string>
-    <string name="Login_Scan_your_backup_for_login">Сканирование для входа в систему</string>
+    <string name="Link_Focus_successful">Внимание успешно</string>
+    <string name="Link_Focus_cancle_successful">отменить внимание успех</string>
     <string name="Login_Select_Country">Выбрать страну</string>
-    <string name="Login_Select_User">Выбрать пользователя</string>
     <string name="Login_Select_form_album">Выбрать из фотогалереи</string>
     <string name="Login_Send_failed">Сбой при отправке</string>
-    <string name="Login_Sending_verification_code">Отправление кода подтверждения</string>
-    <string name="Login_Sign_In_Up_Local_account">Вход в данную учетную запись</string>
-    <string name="Login_Sign_Up">Регистрация</string>
-    <string name="Login_Successful">Успешно завершено</string>
-    <string name="Login_Take_Photo">Сделать фото  </string>
-    <string name="Login_The_qrCode_can_not_be_identified">QR-кода не может быть идентифицирован</string>
+    <string name="Login_Take_Photo">Сделать фото</string>
     <string name="Login_Update_successful">Успешное завершение обновления</string>
+    <string name="Login_Review_successful">Успешно аудита</string>
     <string name="Login_Updated_failed">Обновление не удалось</string>
     <string name="Login_User_avatar_is_illegal">Аватарка пользователя является незаконной</string>
-    <string name="Login_User_name_can_not_be_Connect">Имя пользователя не может быть "Connect"</string>
-    <string name="Login_UserName_Error">Ошибка в имени пользователя</string>
     <string name="Login_Verification_code_error">Ошибка кода подтверждения</string>
     <string name="Login_Welcome">Добро пожаловать</string>
-    <string name="Login_Your_account_logged_on_at">Ваш зарегистрированый аккаунт на %1$s, время регистрации  в %2$s</string>
     <string name="Login_creat_account">Создать учетную запись</string>
-    <string name="Login_export_encrypted_prikey_explain">Это ваш личный зашифрованный ключ/n  Вы можете экспортировать в  фотогалерею или по электронной почте./ Для входа в систему вы можете сканировать QR-код  учетной записи</string>
-    <string name="Login_export_encrypted_prikey_explain_Set_Account_Security">Это ваш личный зашифрованный ключ/n  Вы можете экспортировать в  фотогалерею или по электронной почте./ Для входа в систему вы можете сканировать QR-код  учетной записи/ Вы можете в "настройках" установить резервное копирование " учетной записи и безопасн</string>
-    <string name="Login_export_prikey_explain">Это ваш личный ключ/n  Вы можете экспортировать в  фотогалерею или по электронной почте./ Для входа в систему вы можете сканировать QR-код  учетной записи</string>
     <string name="Login_guide_bitcoinWallet">Биткоин кошелек</string>
-    <string name="Login_guide_bitcoinWalletDescribe">Денежный перевод биткоин/n так же просто, как отправка сообщения</string>
+    <string name="Login_guide_bitcoinWalletDescribe">Денежный перевод биткоин/n так же просто, как
+        отправка сообщения
+    </string>
     <string name="Login_guide_encryptedChat">Зашифрованая беседа</string>
-    <string name="Login_guide_encryptedChat_guide_encryptedChatDescribe">Вся информация зашифрована/n через приватный ключ и ключ общего пользования</string>
+    <string name="Login_guide_encryptedChat_guide_encryptedChatDescribe">Вся информация
+        зашифрована/n через приватный ключ и ключ общего пользования
+    </string>
     <string name="Login_guide_funStickers">Смешные наклейки</string>
-    <string name="Login_guide_funStickersDescribe">Для более лучшего выражения/n смешные gif наклейки</string>
-    <string name="Login_letter_number_and_character_must_be_included_in_your_login_password">пароль  длиной  более 8 бит  ,  должны содержать  буквы, цифры  или  символов  двух</string>
-    <string name="Login_private_not_registered_register_now">Приватный ключ не зарегистрирован, хотите зарегистрироваться сейчас?</string>
-    <string name="Login_recording_authority_in_the_settings">Не активировано разрешение на звукозапись, просьба  открыть настройки  -> приватность, разрешение на  микрофон</string>
+    <string name="Login_guide_funStickersDescribe">Для более лучшего выражения/n смешные gif
+        наклейки
+    </string>
+    <string name="Login_letter_number_and_character_must_be_included_in_your_login_password">пароль
+        длиной более 8 бит , должны содержать буквы, цифры или символов двух
+    </string>
     <string name="Login_scan_string_error">Ошибка QR-кода</string>
     <string name="Login_username_already_exists">Пользователь с таким именем уже существует</string>
-    <string name="Message_send_fail_not_in_group">Сбой отправки информации, Вы не входите в данную группу</string>
-    <string name="Network">Вид сети</string>
-    <string name="Network_Image_loading_failed">Сбой загрузки изображения</string>
+    <string name="Message_send_fail_not_in_group">Сбой отправки информации, Вы не входите в данную
+        группу
+    </string>
     <string name="Network_No_data">Нет данных</string>
-    <string name="Network_Server_error">Ошибка сервера</string>
-    <string name="Network_Timeout">Время ожидания истекло </string>
-    <string name="Network_equest_failed_please_try_again_later">При сбое, просьба  повторить попытку через минуту</string>
-    <string name="Set">Вид установки</string>
-    <string name="Set_A_phone_number_can_only_grab_once">Номер телефона можно привязать только один раз</string>
+    <string name="Network_Timeout">Время ожидания истекло</string>
+    <string name="Network_equest_failed_please_try_again_later">При сбое, просьба повторить попытку
+        через минуту
+    </string>
+    <string name="Set_CONNECT_ID_regular">Идентификатор CONNECT должен состоять из 6-20 букв, цифр и
+        символов подчеркивания, начинающихся с буквы
+    </string>
+    <string name="Set_A_phone_number_can_only_grab_once">Номер телефона можно привязать только один
+        раз
+    </string>
     <string name="Set_About">Относительно</string>
+    <string name="Set_Version_checking">Контроль версий</string>
     <string name="Set_Account_security">Аккаунт и безопасность</string>
     <string name="Set_Add_mobile">Привязать номер телефона</string>
-    <string name="Set_After_verified_your_phone_login_on_another_phone">После успешного завершения проверки телефона/n Ваш приватный ключ будет зашифровано скопирован/n Можно войти в ситему с другого телефона/или импортировать резервную копию данного приватного ключа   Регистрация/вход в систему учетной записи </string>
-    <string name="Set_Auto">Автоматичекая оплата </string>
+    <string name="Set_Auto">Автоматичекая оплата</string>
     <string name="Set_BTC_symbol">฿</string>
-    <string name="Set_Backup_Private_Key">Резервное копирование приватного ключа</string>
-    <string name="Set_Backup_decrypted_private_key">Резервное копирование расшифрованного приватного ключа</string>
-    <string name="Set_Backup_encrypted_private_key">Резервное копирование закрытого ключа</string>
-    <string name="Set_CONNECT_ID_can_only_be_set_once">CONNECT ID  можно установить только один раз</string>
-    <string name="Set_CONNECT_ID_set_success_no_set">После успешного завершения установки CONNECT ID , не возможно изменить </string>
-    <string name="Set_Call_failed_please_check_system_mail_application">Сбой вызова, просьба проверить системные приложения электронной почты</string>
-    <string name="Set_Change_Mobile">Изменить номер телефона</string>
+    <string name="Set_CONNECT_ID_can_only_be_set_once">CONNECT ID можно установить только один раз
+    </string>
+    <string name="Set_CONNECT_ID_set_success_no_set">После успешного завершения установки CONNECT ID
+        , не возможно изменить
+    </string>
     <string name="Set_Change_Pattern">Изменить рисунок</string>
-    <string name="Set_Change_password">Изменить пароль</string>
-    <string name="Set_Check_Update">Проверка обновлений</string>
+    <string name="Set_Open_password">Открытие пароль проверки</string>
+    <string name="Set_Close_password">Закрытие пароль проверки</string>
+    <string name="Set_Check_Update">Проверка новой версии</string>
     <string name="Set_Copied">Скопировано</string>
-    <string name="Set_Copy">Копировать</string>
-    <string name="Set_Copy_picture_address_success">Успешное завершение копирования картинки</string>
     <string name="Set_Currency">Монеты</string>
-    <string name="Set_Did_not_receive_the_verification_code">Не получил код подтверждения?отправить голосовой код подтверждения</string>
-    <string name="Set_Disbale_fingerprint_payment">Отменить пароль-рисунок для оплаты</string>
+    <string name="Set_Did_not_receive_the_verification_code">Не получил код подтверждения?отправить
+        голосовой код подтверждения
+    </string>
     <string name="Set_Draw_Pattern">Начертить рисунок</string>
     <string name="Set_Draw_pattern_again">Просьба еще раз ввести пароль-рисунок</string>
     <string name="Set_Draw_your_pattern">Ввести пароль-рисунок</string>
-    <string name="Set_Enable_or_disable_Connect_Notification_via">Включить или отключить уведомления о подключении через “настройки”->”уведомления” на вашем телефоне</string>
+    <string name="Set_Enable_or_disable_Connect_Notification_via">Включить или отключить уведомления
+        о подключении через “настройки”->”уведомления” на вашем телефоне
+    </string>
     <string name="Set_Enter_Login_Password">Проверка регистрационного пароля</string>
     <string name="Set_Enter_New_Mobile_Number">введите новый телефонный номер</string>
-    <string name="Set_Enter_correct_please_enter_a_new_gesture">Просьба ввести новый правильный пароль-рисунок</string>
-    <string name="Set_Enter_new_password">Введите новый пароль</string>
-    <string name="Set_Export_Private_Key">Экспорт закрытого ключа</string>
+    <string name="Set_Enter_correct_please_enter_a_new_gesture">Просьба ввести новый правильный
+        пароль-рисунок
+    </string>
     <string name="Set_FeedBack">Отзывы</string>
     <string name="Set_Found_new_version">Новая версия программы</string>
-    <string name="Set_General">Общепринятый</string>
+    <string name="Set_General">Универсальный настройки</string>
     <string name="Set_Help_and_feedback">Справка и отзывы</string>
-    <string name="Set_ID">ID </string>
-    <string name="Set_Id_address">ID &amp; адрес биткоина</string>
-    <string name="Set_Import_your_local_private_key_backup">резервную копию данного приватного ключа   Регистрация/вход в систему учетной записи </string>
+    <string name="Set_Feedback">отзывы</string>
+    <string name="Set_ID">ID</string>
     <string name="Set_Installed">Установлено</string>
     <string name="Set_Language">Язык</string>
     <string name="Set_Link_Mobile">Привязать телефон</string>
-    <string name="Set_Load_failed_please_try_again_later">Сбой при загрузке, просьба повторить попытку позже</string>
+    <string name="Set_Load_failed_please_try_again_later">Сбой при загрузке, просьба повторить
+        попытку позже
+    </string>
     <string name="Set_Log_Out">Выйти из учетной записи</string>
+    <string name="Set_Delete_account">Удалить счета</string>
     <string name="Set_Logging_out">Выход...</string>
-    <string name="Set_Logout_delete_login_data_still_log">При выходе будут удалены данные регистрации и пароль-рисунок, Вы по-прежнему хотите выйти с этой учетной записи?</string>
+    <string name="Set_Logout_delete_login_data_still_log">после выхода  в следующий раз  не  удалять любые  исторических данных  ,  по - прежнему  можете использовать этот  счет  входа </string>
+    <string name="Set_delete_account_hinit">После удаления счета не будет восстановлен, уверен, удаление текущего счета?</string>
     <string name="Set_Miner_fee">Комиссионный сбор</string>
-    <string name="Set_Mobile_Number_has_been_updated">Заверешние исправления телефоного номера</string>
     <string name="Set_My_Profile">Мой профайл</string>
     <string name="Set_My_QR_code">Мой QR-код</string>
-    <string name="Set_Name">Никнейм  </string>
-    <string name="Set_No_transaction_history">Нет записей об операционных сделках</string>
-    <string name="Set_Not_connected_to_mobile_network">Ваш номер телефона еще не привязан к учетной записи</string>
+    <string name="Set_Name">Никнейм</string>
     <string name="Set_Not_synchronized">Несинхронизировано</string>
-    <string name="Set_Nothing">Ничего не введено</string>
-    <string name="Set_Now_update_app">Немедленно обновить </string>
+    <string name="Set_Now_update_app">Немедленно обновить</string>
     <string name="Set_Off">Закрыто</string>
     <string name="Set_On">Активирован</string>
     <string name="Set_Open_Source">Открыть исходный код</string>
-    <string name="Set_Password_Hint">Подсказка пароля: </string>
-    <string name="Set_Password_incorrect_you_have_chance">Ошибка пароля, у вас еще есть %d попыток</string>
-    <string name="Set_Patten_can_prevent_access_data_required_when_entering">Пароль-рисунок может предотвратить несанкционированный доступ к данным в песочнице/после активации n, перед использованием необходимо проверить пароль-рисунок</string>
+    <string name="Set_Scanned_the_qr_code_to_add_friends">Чистить поверхность ErWeiMa добавлять друзей</string>
+    <string name="Set_Password_incorrect_you_have_chance">Ошибка пароля, у вас еще есть %d попыток
+    </string>
+    <string name="Set_Patten_can_prevent_access_data_required_when_entering">Пароль-рисунок может
+        предотвратить несанкционированный доступ к данным в песочнице/после активации n, перед
+        использованием необходимо проверить пароль-рисунок
+    </string>
     <string name="Set_Pattern_Password">Пароль-рисунок</string>
     <string name="Set_Pattern_Setting_Success">Успешное завершение установки пароль-рисунка</string>
-    <string name="Set_Pay_with_Fingerprint">Оплата по отпечатку пальца</string>
     <string name="Set_Payment">Оплатить</string>
     <string name="Set_Payment_Password">Платежный пароль</string>
     <string name="Set_Phone">Телефон</string>
+    <string name="Set_Area_code">Районный кодекс</string>
+    <string name="Login_Secondary_authentication_password">Второй пароль сертификации</string>
+    <string name="Login_Secondary_authentication_password_describe">
+        Второй пароль для входа в систему сертификации для пользователей, многократно защиты счета, повысить безопасность счета
+    </string>
     <string name="Set_Phone_unbinded">Телефон не привязан</string>
     <string name="Set_Please_connect_at_least_4_points">Просьба минимум ввести 4 точки</string>
-    <string name="Set_Please_try_again_after_seconds">Просьба после %d секунд повторить попытку </string>
-    <string name="Set_Please_wait">Просьба подождать (%d секунд)</string>
     <string name="Set_Privacy">Конфиденциальный</string>
-    <string name="Set_Private_key_backup">Резервная копия закрытого ключа</string>
     <string name="Set_Profile_Photo">Аватарка</string>
-    <string name="Set_Rate_Connect">Дать оценку</string>
     <string name="Set_Remove_Success">Успешное завершение экспортировки</string>
     <string name="Set_Reset">Переустановка</string>
     <string name="Set_Save">Сохранение</string>
-    <string name="Set_Save_Failed">Сбой при сохранении  </string>
+    <string name="Set_Save_Failed">Сбой при сохранении</string>
     <string name="Set_Save_Photo">Сохранить на телефон</string>
-    <string name="Set_Send_it_to_mailbox">Отправлено на электронный почтовый ящик</string>
     <string name="Set_Set_Avatar_success">Успешное завершения изменения аватарки</string>
     <string name="Set_Set_Payment_Password">Установка платежного пароля</string>
-    <string name="Set_Set_max_trasfer_fee_successful">Успешное завершение установки максимального комиссионного сбора</string>
     <string name="Set_Set_success">Успешное завершение исправления данных</string>
     <string name="Set_Setting">Установка</string>
     <string name="Set_Setting_Faied">Сбой установки</string>
-    <string name="Set_Setting_language">Установка языка ...</string>
-    <string name="Set_Skip_password">Пропустить пароль</string>
-    <string name="Set_Sound">Громкость</string>
+    <string name="Set_Sound">Звук напоминает</string>
     <string name="Set_Start_encrypted_messaging">Начать зашифрованное общение</string>
-    <string name="Set_Start_encrypted_messaging_next">Пропустить, начать зашифрованное общение</string>
     <string name="Set_This_is_the_newest_version">Самая последняя новая версия</string>
-    <string name="Set_Transaction_fee_is_to_large">Установленый комиссионый сбор слишком высокий</string>
-    <string name="Set_Two_Patterns_do_not_match">При введении 2 раза,  пароль-рисунок не совпал </string>
-    <string name="Set_Unlink">Отключение привязки учетной записи к телефону</string>
-    <string name="Set_Unlink_failed">Сбой при отключении привязки учетной записи</string>
-    <string name="Set_Unlink_successful">Успешное завершение отключения</string>
-    <string name="Set_Unlink_your_mobile_phone">Отключение привязки учетной записи к телефону</string>
-    <string name="Set_Updated_time">Время обновления :%s</string>
+    <string name="Set_Two_Patterns_do_not_match">При введении 2 раза, пароль-рисунок не совпал
+    </string>
     <string name="Set_Use_Login_Password">Пароль для входа в систему</string>
-    <string name="Set_Verification_Faied">Проверка не удалась</string>
     <string name="Set_Verify_Phone">Проверка телеофна</string>
-    <string name="Set_Verify_Success">Успешное завершение проверки</string>
-    <string name="Set_Verify_fingerPrint_for_Pay">Подтвердить активацию отпечатка пальца для оплаты</string>
     <string name="Set_Versions_number">Версия программы : %s</string>
-    <string name="Set_Vibrate">Вибрация</string>
+    <string name="Set_Vibrate">Толчок намек</string>
     <string name="Set_Your_Phone">Ваш телефон</string>
-    <string name="Set_Your_cell_phone_number">Ваш номер телефона</string>
-    <string name="Set_Your_private_key_will_be_encrypted_with_new_password">Ваш закрытый ключ будет зашифрован новым паролем</string>
-    <string name="Set_fingerprint_not_allowed_on_jailbreaking_phones">Для безопасности важих средств, функция пароль-рисунок не используется на телефоне в ROOT </string>
-    <string name="Set_load_tip">Веб-страница загружается, Вы не можете пока ее использовать</string>
-    <string name="Set_miner_fee_explain">Интернетный комиссионный сбор используется для оплаты запуска работы, т.е. чем выше комиссионый сбор, тем быстрее операционная сделка будет подтверждена блокччейном</string>
+    <string name="Set_miner_fee_explain">Интернетный комиссионный сбор используется для оплаты
+        запуска работы, т.е. чем выше комиссионый сбор, тем быстрее операционная сделка будет
+        подтверждена блокччейном
+    </string>
     <string name="Set_new_version">Новая версия программы :%s</string>
-    <string name="Set_or">Или</string>
-    <string name="Set_tip_title">Подсказка  </string>
-    <string name="Set_unlink_Connect_not_find_friend_your_backup_deleted">После отмены привязки учетной записи,  Connect не будет в состоянии найти любого друга из контактов в телефоне, резервная копия закрытого ключа на сервере будет удалена.</string>
-    <string name="Set_verification_code_has_been_send_to_phone">Проверочный код был отправлен на ваш телефон</string>
-    <string name="Set_you_can_login_mobile_number_link_one_account">После внесения изменения, Вы можете войти через новый зарегистрированый телефонный номер/ n один новый телефонный номер может быть привязан к учетной записи один раз </string>
-    <string name="Wallet">Модель кошелька</string>
+    <string name="Set_tip_title">Подсказка</string>
+    <string name="Set_verification_code_has_been_send_to_phone">Проверочный код был отправлен на ваш
+        телефон
+    </string>
+    <string name="Wallet_Auto_fees_greater_than_the_maximum_continue">Плата (% SBTC) автоматически
+        вычисляет больше, чем максимальное значение, следует ли продолжать?
+    </string>
+    <string name="Wallet_Confirm_transfer">Подтверждение передачи</string>
     <string name="Wallet_Detail">Подробности</string>
-    <string name="Wallet_Packet_Send_User_Connect">Отправить этот "Денежный подарок" используя Connect</string>
+    <string name="Wallet_Expired">уже просрочен</string>
+    <string name="Wallet_Get">Уже открыт</string>
+    <string name="Wallet_Immediately_create">Создать сейчас</string>
+    <string name="Wallet_Immediately_update">обновить сейчас</string>
+    <string name="Wallet_Not_received">Не получено</string>
+    <string name="Wallet_Packet_Send_User_Connect">Отправить этот "Денежный подарок" используя
+        Connect
+    </string>
     <string name="Wallet_Scan_to_pay_me">Отсканировать код для передачи мне оплаты</string>
+    <string name="Wallet_The_Connect_system_address">Подключите системный адрес</string>
     <string name="Wallet_Transfer_Count">Денежный перевод (%dчеловек)</string>
+    <string name="Wallet_You_do_not_have_any_data">У вас нет каких-либо данных</string>
+    <string name="Wallet_not_create_wallet">Вы не создали кошелек</string>
+    <string name="Wallet_not_initialized_the_wallet_and_can_not_trade">Другая сторона не была
+        инициализирована бумажник, а не торговля
+    </string>
+    <string name="Wallet_not_update_wallet">Вы не обновили свой кошелек</string>
+    <string name="Wallet_synchronization_data_failed">Синхронные данные не удалось</string>
     <string name="Wallet_Add_note">Оставить сообщение</string>
     <string name="Wallet_Address_Book">Часто употребляемая адресная книга</string>
-    <string name="Wallet_Allow_fingerprint_to_pay">Подтверждение отпечатка пальца для оплаты</string>
-    <string name="Wallet_Amount">Денежная сумма</string>
     <string name="Wallet_Amount_BTC">Денежная сумма (BTC)</string>
-    <string name="Wallet_Amount_Each">Денежная сумма денежного подарка</string>
-    <string name="Wallet_Amount_is_too_small">Денежная сумма слишком маленькая!</string>
-    <string name="Wallet_Amount_must_be_greater_than">Денежная сумма должна бытьбольше, чем %f</string>
-    <string name="Wallet_Amount_must_be_less_than">Денежная сумма должна быть меньше, чем %f</string>
+    <string name="Wallet_Amount_is_too_small">Упаковать сделки возникает ошибка, наработать сумма
+        слишком мал
+    </string>
     <string name="Wallet_Amount_of_member">Количество людей краудфандинга</string>
     <string name="Wallet_Amount_Symbol">Денежная сумма (%s)</string>
     <string name="Wallet_Auto_Calculate_Miner_Fee">Автоматический расчет комиссионого сбора</string>
-    <string name="Wallet_Auto_fees_is_greater_than_the_maximum_set_maximum_and_continue">Автоматический расчеткомиссионого сбора (%sBTC) превышает максимальное значение, нужно ли исправить комиссионный сбор для максимального значения и дальше?</string>
-    <string name="Wallet_BTC_Each">Каждый   %sBTC</string>
+    <string name="Wallet_BTC_Each">Каждый %sBTC</string>
     <string name="Wallet_BTC_Total">Общая сумма краудфандинга :%s</string>
     <string name="Wallet_Balance">Баланс: ฿%s</string>
     <string name="Wallet_Balance_Credit">Остаток средств на счете:฿%s</string>
     <string name="Wallet_Best_wishes">Желаю Вам огромного богатства!</string>
     <string name="Wallet_Canceled">Отменено</string>
-    <string name="Wallet_Charge_small_calculate_to_the_poundage">Слишком маленькая сумма для сдачи , сумма: :%sBTC, нужно ли дать мелочю сдачу на комиссионный сбор?</string>
+    <string name="Wallet_Charge_small_calculate_to_the_poundage">Слишком маленькая сумма для сдачи ,
+        сумма: :%sBTC, нужно ли дать мелочю сдачу на комиссионный сбор?
+    </string>
     <string name="Wallet_Clear">Очистеть указаную сумму</string>
-    <string name="Wallet_Click_to_open_lucky_packet">Кликните для получения денежного подарка</string>
     <string name="Wallet_Click_to_recive_payment">Кликните для получения денежного перевода</string>
     <string name="Wallet_Click_to_transfer_bitcoin">Кликните для оплаты биткоина</string>
     <string name="Wallet_Confirm_PIN">Просьба ввести еще 1 раз</string>
-    <string name="Wallet_Confirm_Payment_password">Подтвердить Ваш платежный пароль</string>
-    <string name="Wallet_Confirm_password">Подтвердить пароль</string>
     <string name="Wallet_Confirmed">Подтверждено</string>
     <string name="Wallet_Congratulations">Поздравляем Вас!</string>
     <string name="Wallet_Connect_Pay">Оплата Connect</string>
-    <string name="Wallet_Connect_term">Группа Connect</string>
-    <string name="Wallet_Could_not_get_himself_sent_money_transfer">Нельзя сделать денежный перевод самому себе</string>
-    <string name="Wallet_Each">Каждый человек  </string>
     <string name="Wallet_Enter_4_Digits">Просьба ввести 4 цифры</string>
-    <string name="Wallet_Enter_again">Повторите ввод</string>
     <string name="Wallet_Enter_number">Вести количество людей</string>
     <string name="Wallet_Enter_your_PIN">Вести платежный пароль</string>
-    <string name="Wallet_Error_code_Domain_Pelese_try_later">Код ошибки:%1$d, сообщение :%2$s\n, просьба подождать одну минуту и повторить попытку</string>
-    <string name="Wallet_Failed_to_obtain_the_balance">Сбой при получении средств</string>
     <string name="Wallet_Fee_BTC">Комиссионный сбор: %3.8f BTC</string>
-    <string name="Wallet_Finger_pay">Оплата при сканировании отпечатка пальца</string>
-    <string name="Wallet_Forget_Password">Забыл пароль</string>
     <string name="Wallet_From_Connect_team">Из Connect группы</string>
-    <string name="Wallet_Get_rate_failed">Сбй при получении валютного курса</string>
     <string name="Wallet_Goal">Итого %s BTC</string>
-    <string name="Wallet_Good_luck_next_time">Удачи в получении денежного подарка в следующий раз</string>
-    <string name="Wallet_Input_quanitity">Введите сумму</string>
-    <string name="Wallet_Insufficient_balance">Нехватка суммы! </string>
-    <string name="Wallet_Lucky_packet_from">Отправка денежного подарка %s</string>
-    <string name="Wallet_Lucky_packet_transferred_to_your_wallet">Перечислено в ваш кошкелек</string>
+    <string name="Wallet_Good_luck_next_time">Удачи в получении денежного подарка в следующий раз
+    </string>
+    <string name="Wallet_Insufficient_balance">Нехватка суммы!</string>
+    <string name="Wallet_Lucky_packet_transferred_to_your_wallet">Перечислено в ваш кошкелек
+    </string>
     <string name="Wallet_Multiple_transfers">Несколько переводов денежных средств</string>
     <string name="Wallet_My_Balance">Мой баланс средств</string>
     <string name="Wallet_Nick_name">Примечание</string>
-    <string name="Wallet_No_match_user">Нет совпадений среди пользователей </string>
-    <string name="Wallet_No_more_than_group_members">Количество получателей не должно превышать количество людей в группе</string>
-    <string name="Wallet_No_qr_code_in_the_picture">Фотография не содержит кода для сканировния</string>
+    <string name="Wallet_No_match_user">Нет совпадений среди пользователей</string>
     <string name="Wallet_Note">Оставить запись</string>
     <string name="Wallet_Opened">Уже открыт %1$d/%2$d</string>
-    <string name="Wallet_Overtime_Bitcoin_has_been_return_to_your_wallet">Время ожидания истекло! Биткоин был возвращен обратно в ваш кошелек</string>
-    <string name="Wallet_PINs_do_not_match">Ошибка в подтверждении пароля</string>
     <string name="Wallet_Packet">Денежный подарок</string>
-    <string name="Wallet_Packet_Send_Share">Поделитесь этим денежным подарком со своими друзьями</string>
+    <string name="Wallet_Packet_Send_Share">Поделитесь этим денежным подарком со своими друзьями
+    </string>
     <string name="Wallet_PacketSend_Opened">Открыть</string>
     <string name="Wallet_Pay_Faied">Сбой при оплате</string>
     <string name="Wallet_Payment_Password_do_not_match">Не совпадение при 2 вводах</string>
@@ -639,77 +599,172 @@
     <string name="Wallet_Prepare_Lucky_Packet">Отправка денежного подарка</string>
     <string name="Wallet_Quantity">Число</string>
     <string name="Wallet_Receipt">Получение средств</string>
-    <string name="Wallet_Receivables_from">Краудфандинг (%d человек)</string>
     <string name="Wallet_Received">Получено</string>
     <string name="Wallet_Recent_transfer">Последний перевод денежный средств</string>
     <string name="Wallet_Reset_password">Восстановить пароль</string>
     <string name="Wallet_Result_is_not_a_bitcoin_address">Не тот адресс</string>
     <string name="Wallet_Retry">Повторить снова</string>
-    <string name="Wallet_Save_to_Photos">Сохранить в фотогалерее</string>
-    <string name="Wallet_Saving_Payment_Password">Сохранение платежного пароля</string>
     <string name="Wallet_Select_friends">Выбрать друга</string>
     <string name="Wallet_Send_Lucky_Packet_to">Отправить "Денежный подарок" %s</string>
-    <string name="Wallet_Send_a_bitcoin_transfer_link">Перевести денежные средства по ссылке биткоина</string>
-    <string name="Wallet_Send_a_lucky_packet">Отправить "Денежный подарок" по ссылки биткоина</string>
-    <string name="Wallet_Send_the_payment_connection">Соединение для отправки личных средств </string>
+    <string name="Wallet_Send_a_bitcoin_transfer_link">Перевести денежные средства по ссылке
+        биткоина
+    </string>
+    <string name="Wallet_Send_the_payment_connection">Соединение для отправки личных средств
+    </string>
     <string name="Wallet_Sent">Отправлено</string>
     <string name="Wallet_Sent_to_friend">Личный "Денежный подарок"</string>
     <string name="Wallet_Sent_to_group">Группа "Денежный подарок"</string>
     <string name="Wallet_Sent_via_link">Отправить по ссылке</string>
-    <string name="Wallet_Sent_via_link_luck_packet">Для отправки денежного подарка пройдите по ссылке</string>
+    <string name="Wallet_Sent_via_link_luck_packet">Для отправки денежного подарка пройдите по
+        ссылке
+    </string>
     <string name="Wallet_Set_Amount">Установка суммы</string>
-    <string name="Wallet_Set_Payment_Password_Successful">Успешное завершение установки платежного пароля</string>
-    <string name="Wallet_Set_max_trasfer_fee">Установка максимального комиссионного сбора за транзакции</string>
-    <string name="Wallet_Set_transaction_fee_specified">Установка комисионного сбора за транзакции </string>
-    <string name="Wallet_Setting_Payment_Password">Сохранение платежного пароля</string>
+    <string name="Wallet_Set_max_trasfer_fee">Установка максимального комиссионного сбора за
+        транзакции
+    </string>
+    <string name="Wallet_Set_transaction_fee_specified">Установка комисионного сбора за транзакции
+    </string>
     <string name="Wallet_Tags">Вкладка</string>
     <string name="Wallet_The_Countdown">Отсчет времени в обратном порядке</string>
-    <string name="Wallet_Too_much">Слишком большая сумма денег!</string>
-    <string name="Wallet_Too_much_transaction_can_not_generated">При многократном вводе и выводе, операционная сделка не может быть сгенерирована</string>
+    <string name="Wallet_Too_much_transaction_can_not_generated">При многократном вводе и выводе,
+        операционная сделка не может быть сгенерирована
+    </string>
     <string name="Wallet_Transaction_detail">Подробности операцинной сделки</string>
-    <string name="Wallet_Transaction_fee_too_low_Continue">Комиссионный сбор очень мал, желаете продолжить?</string>
+    <string name="Wallet_Transaction_fee_too_low_Continue">Комиссионный сбор очень мал, желаете
+        продолжить?
+    </string>
     <string name="Wallet_Transactions">Запись операционных сделок</string>
     <string name="Wallet_Transcation">Квитанция</string>
     <string name="Wallet_Transfer">Перевод денежных средств</string>
-    <string name="Wallet_Transfer_BTC_to_you_by_Connect_IM">%1$s через Connect.IM перевод денежных средств %2$s</string>
     <string name="Wallet_Transfer_Delete_Sele">Удалить выбранное</string>
     <string name="Wallet_Transfer_Failed">Сбой при переводе денежных средств</string>
-    <string name="Wallet_Transfer_Out_Send_User_Connect">Отправить этот денежный перевод используя Connect </string>
-    <string name="Wallet_Transfer_Successful">Перевод денежных средств успешно завершен</string>
     <string name="Wallet_Transfer_To_User">Перевод денежных средств на %s</string>
-    <string name="Wallet_Transfer_Unable">unable</string>
-    <string name="Wallet_Transfer_amount">Сумма превода денежных средств : %s</string>
-    <string name="Wallet_Transfer_to_Bitcoin_Address">Перевод денежных средств на адресс биткоина</string>
+    <string name="Wallet_Transfer_to_Bitcoin_Address">Перевод денежных средств на адресс биткоина
+    </string>
     <string name="Wallet_Transfer_to_Friends">Перевод денежных средств другу</string>
-    <string name="Wallet_Transfer_via_other_APP_messges">Пройдя по ссылке веб-сайта перечислите денежные средства </string>
+    <string name="Wallet_Transfer_via_other_APP_messges">Пройдя по ссылке веб-сайта перечислите
+        денежные средства
+    </string>
     <string name="Wallet_Unconfirmed">Неподтвержденный</string>
     <string name="Wallet_Unfortunately">Очень сожалеем!</string>
     <string name="Wallet_Verifying">В процессе оплаты</string>
     <string name="Wallet_Waitting_for_pay">Ожидание оплаты</string>
     <string name="Wallet_Wallet">Кошелек</string>
-    <string name="Wallet_Wallet_Out_Send_Share">Поделитесь этим денежным переводом со своими друзьями</string>
-    <string name="Wallet_Without_a_blacklist">Имя пользователя нет в черном списке</string>
-    <string name="Wallet_You_already_open_this_luckypacket">Вы уже открыли этот "Денежный подарок"</string>
-    <string name="Wallet_You_are_a_narcissism">Вы самовлюлюбленный человек</string>
-    <string name="Wallet_You_do_not_have_any_Transactions">У вас нет никаких записей об операционных сделок</string>
+    <string name="Wallet_Wallet_Out_Send_Share">Поделитесь этим денежным переводом со своими
+        друзьями
+    </string>
+    <string name="Wallet_You_already_open_this_luckypacket">Вы уже открыли этот "Денежный подарок"
+    </string>
+    <string name="Wallet_You_do_not_have_any_Transactions">У вас нет никаких записей об операционных
+        сделок
+    </string>
     <string name="Wallet_You_got_a_Lucky_Packet">Получение денежного подарка</string>
-    <string name="Wallet_Your_Bitcoin_Address">адресс твоего биткоина \n\n%s</string>
     <string name="Wallet_Your_Bitcoin_Address_Title">адресс твоего биткоина</string>
-    <string name="Wallet_crowdfunding_each">Каждый человек %sBTC</string>
-    <string name="Wallet_don_not_have_any_Transactions">Нет личной коллекции записи</string>
-    <string name="Wallet_error_lucky_packet_amount_too_small">Минимальная сумма %f BTC отправки денежного подарка</string>
+    <string name="Wallet_crowdfunding_each">Каждый человек %@BTC</string>
     <string name="Wallet_has_requested_for_payment">Запрос на оплату %s</string>
-    <string name="Wallet_has_requested_to_payment">Запрос на получение денег к %s </string>
+    <string name="Wallet_has_requested_to_payment">Запрос на получение денег к %s</string>
     <string name="Wallet_members_paid_BTC">%1$d/%2$d оплата завершена, в общем %3$s BTC</string>
-    <string name="Wallet_request_for_payment">Просьба начать оплату %s</string>
-    <string name="Wallet_request_for_payment_BTC">Отправка оплаты %1$s ,  сумма оплаты %2$sBTC</string>
-    <string name="Wallet_send_lucky_packet_via_Connect">Отправка денежного подарка через подключение оплаты</string>
-    <string name="Wallet_send_lucky_packet_via_Connect_packets">При подключении платежной услуги  \n%d  можно отправлять "Денежный подарок"</string>
+    <string name="Wallet_send_lucky_packet_via_Connect_packets">При подключении платежной услуги
+        \n%d можно отправлять "Денежный подарок"
+    </string>
     <string name="Wallet_transfer_man">Перевод денежных средств %d)</string>
     <string name="Wallet_transferOutVia_return">Возврат перечисленных денежных средств</string>
-    <string name="Wallet_transferOutVia_return_Success">Успешный возврат перечисленных денежных средств</string>
-    <string name="app_name">Connect</string>
+    <string name="Wallet_transferOutVia_return_Success">Успешный возврат перечисленных денежных
+        средств
+    </string>
+    <string name="app_name">iWork</string>
     <string name="app_name_im">CONNECT.IM</string>
-    <string name="Chat_system_luckypackage_have_been_frozen">Красный конверт подвешен системный администратор</string>
-    <string name="Chat_one_device_can_only_grab_a_luckypackage">Устройство может только захватить красный конверт</string>
+    <string name="title_activity_group_create">GroupCreateActivity</string>
+    <string name="Chat_Other_Part"> друг друга </string>
+    <string name="Chat_set_Create_New_Group">создать группу</string>
+    <string name="Chat_set_Group_Chat_Encrypt_Open"> после открытия  ,  группы  по двухточечной  шифрования передачи  сообщений </string>
+    <string name="Chat_Subscriber">абонент</string>
+    <string name="Chat_Subscribe">подписаться</string>
+    <string name="Chat_View_Full_Text">просмотреть  полный текст</string>
+    <string name="Chat_Enter_Subscribe"> счета  в  подписки</string>
+    <string name="Chat_Subscribe_Success">[подписка на успех]</string>
+
+    <string name="Work_Add">добавить</string>
+    <string name="Work_On_a_business_trip">В командировку</string>
+    <string name="Work_Ask_for_leave">leave</string>
+    <string name="Work_To_submit_an_expense_account">требования</string>
+    <string name="Work_The_examination_and_approval">утверждения</string>
+    <string name="Work_Subsidized_meals">Еда дополнительный</string>
+    <string name="Work_Recruitment">набор</string>
+    <string name="Work_The_contract">контракт</string>
+    <string name="Work_Wage">зарплата</string>
+    <string name="Work_Visitors">посетители</string>
+    <string name="Work_Warehouse">Склад AnFang</string>
+    <string name="Work_Warehouse_abnormal_records">Склад аномалия доступа запись</string>
+    <string name="Work_Visitors_info">Посетители информации</string>
+    <string name="Work_Visitors_reason">Посетители цели:%1$s</string>
+    <string name="Work_Visitors_phone">Способ связи:</string>
+    <string name="Work_Visitors_time">Время визита:%1$s</string>
+    <string name="Work_Time">Время записи:%1$s</string>
+    <string name="Work_Visitors_share">ErWeiMa поделиться приглашение</string>
+    <string name="Work_Visitors_Facial_information">Личной информации:</string>
+    <string name="Work_Visitors_Left_face">налево</string>
+    <string name="Work_Visitors_Is_face">Положительный лицо</string>
+    <string name="Work_Visitors_Right_face">направо</string>
+    <string name="Work_Visitors_to_approval">Посетители утверждения</string>
+    <string name="Work_Visitors_sure_to_deny_access">Подтверждение ли доступ запрещен?</string>
+    <string name="Work_Visitors_agree_to_visit">Подтверждение согласия ли визит?</string>
+    <string name="Work_Visitors_to_audit">Предстоит рассматривать</string>
+    <string name="Work_Visitors_the_approved">Уже аудита</string>
+    <string name="Work_Visitors_apply_list">Список заявок</string>
+    <string name="Work_Visitors_audit_records">аудита</string>
+    <string name="Work_Pay_attention_to_him">Внимание,он</string>
+    <string name="Work_Pay_attention_to_her">Внимание,она</string>
+    <string name="Work_Cancel_the_attention">Отмена внимание</string>
+    <string name="Work_Security_record_information">AnFang запись информации:</string>
+    <string name="Work_Exception_type">Аномалия тип: неопознанный персонал на склад</string>
+
+    <string name="Chat_Refreshing">обновление ...</string>
+    <string name="Link_Join_Group_Success">успех  к  групповой чат </string>
+    <string name="Chat_No_Data">Нет данных...</string>
+    <string name="Chat_Create_Group_Success">создать группу  успеха</string>
+    <string name="Error_Device_Remote_Login">ваш счет  уже  в  %1$s  устройств  входа  в</string>
+    <string name="Company_company">компания</string>
+    <string name="Login">вход</string>
+    <string name="Login_Account">компания  имя пользователя</string>
+    <string name="Login_password">пароль</string>
+    <string name="Please_Input_Login_username">компания  имя пользователя</string>
+    <string name="Please_Input_Login_password">пароль</string>
+    <string name="Login_Immediately">посадку незамедлительно</string>
+    <string name="Beijing_BitMain">Beijing BitMain Technology Co., Ltd.</string>
+    <string name="Work_No_More_Results">Больше никаких  результатов поиска</string>
+    <string name="Work_Third_Party_Service">услуг третьих сторон</string>
+    <string name="Work_Service_Search">Поиск приложений</string>
+    <string name="Work_Search">поиск</string>
+    <string name="Work_Entering_the_warehouse">Склад положение:%1$s</string>
+    <string name="Link_exit_the_group">%sыход из  группы</string>
+
+    <string name="Link_Group_Create">создать группу</string>
+    <string name="Link_Group_Invite">пригласить  в  группы</string>
+    <string name="Link_Group_Invite_Success">Приглашение выполнено успешно</string>
+    <string name="Login_Forget_Password">Забыли пароль</string>
+    <string name="Login_Connect_Change_Password">Пожалуйста, свяжитесь с администрацией, чтобы изменить пароль</string>
+    <string name="Link_Function_Under_Development">Функция находится в разработке...</string>
+    <string name="Link_Function_Manager">Управление приложениями</string>
+    <string name="Error_Device_Remote_Other_Login">Ваша учетная запись уже подписана на других устройствах</string>
+    <string name="Link_Group_Launch">Групповой чат</string>
+
+    <string name="Chat_There_Are_News_Mentions_You">В сообщениях %1$d указано, что вы</string>
+    <string name="Chat_There_Are_News_Attention_You">%1$d новые последующие новости</string>
+
+    <string name="Chat_Message_Top_Remove">неприклеенный</string>
+    <string name="Chat_Message_Top">Верх страницы</string>
+    <string name="Chat_Conversation_Del">Удалить разговор</string>
+    <string name="Chat_Tip_Attention">[Моя забота]</string>
+
+    <string name="Chat_Search_Txt">Поиск содержимого чата</string>
+    <string name="Chat_Private_Setting">устанавливать</string>
+    <string name="Chat_Group_Setting">Настройки группы(%1$d)</string>
+    <string name="Link_Open_to_remind">Включить напоминания</string>
+    <string name="Link_View_Detail">Подробнее</string>
+    <string name="Robot_New_Visitor_Apply">Новое приложение для посетителей!</string>
+    <string name="Robot_Abnormal_Remind">Аномальный склад напоминает!</string>
+    <string name="Robot_Visiting_Purpose">Цель посещения: %1$s</string>
+    <string name="Robot_WareHouse_Warn">%1$s Обнаружен незнакомый человек</string>
+    <string name="Link_Today">сегодня</string>
 </resources>

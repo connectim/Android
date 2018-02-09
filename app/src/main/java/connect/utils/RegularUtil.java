@@ -1,34 +1,22 @@
 package connect.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Canonical matching tool
- * Created by Administrator on 2016/8/26.
  */
 public class RegularUtil {
 
     /** Telephone number rule */
     public static final String PHONE_NUMBER = "\\d{6,20}";
-
     /** Login password rules */
     public static final String LOGIN_PASSWORD = "[a-zA-Z0-9]{6,20}";
-
     /** All digital rule */
     public static final String ALL_NUMBER = "[0-9]*";
-
     /** Verification code rule */
     public static final String VERIFICATION_CODE = "[0-9]{4}";
-
     /** Network picture */
     public static final String VERIFICATION_HTTP = "^http.*";
-
     /** Input amount */
     public static final String VERIFICATION_AMOUT = "^[0-9]+(\\.?[0-9]+)$";
-
     /**  http/https address */
     public static final String VERIFICATION_URL_HEADER = "^(http|https)://.*";
     /** website address */
@@ -46,9 +34,11 @@ public class RegularUtil {
     /** group avatar */
     public static final String GROUP_AVATAR = "%1$s/avatar/v1/group/%2$s.jpg";
     /** password */
-    public static final String PASSWORD = "^(?!^(\\d+|[a-zA-Z]+|[~!\\@#$%^&*\\/\\.,;:\\-_?]+)$)^[\\w~!\\@#$%\\^&*\\/\\.,;:\\-_?]{8,32}$";
+    public static final String PASSWORD = "^(?!^(\\d+|[a-zA-Z]+|[`~!@#\\$%\\^&*\\(\\)\\-_=\\+\\\\\\|\\[\\]\\{\\}:;\\\"\\',.<>\\/\\?]+)$)^[\\w`~!@#\\$%\\^&*\\(\\)\\-_=\\+\\\\\\|\\[\\]\\{\\}:;\\\"\\',.<>\\/\\?]{8,32}$";
     /** expression */
     public static final String VERIFYCATION_EMOTION = "\\[([\\u4e00-\\u9fa5]|[a-zA-Z]|[0-9])+\\]";
+    /** connect id */
+    public static final String CONNECT_ID = "^[_a-zA-Z0-9]{5,19}$";
 
     public static boolean matches(String value, String rule) {
         return value.matches(rule);
@@ -58,22 +48,11 @@ public class RegularUtil {
         return value.split(rule);
     }
 
-    public static List<String> find(String value, String rule) {
-        List<String> strings = new ArrayList<>();
-
-        Pattern pattern = Pattern.compile(rule);
-        Matcher matcher = pattern.matcher(value);
-        while (matcher.find()) {
-            strings.add(matcher.group());
-        }
-        return strings;
+    public static String replace(String value, String oldStr, String newStr) {
+        return value.replaceAll(oldStr, newStr);
     }
 
-    public static String replace(String value, String oldstr, String newstr) {
-        return value.replaceAll(oldstr, newstr);
-    }
-
-    public static String groupAvatar(String groupkey) {
-        return String.format(RegularUtil.GROUP_AVATAR, ConfigUtil.getInstance().serverAddress(), groupkey);
+    public static String groupAvatar(String groupKey) {
+        return String.format(RegularUtil.GROUP_AVATAR, ConfigUtil.getInstance().serverAddress(), groupKey);
     }
 }

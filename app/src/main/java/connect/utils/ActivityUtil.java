@@ -5,8 +5,9 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
+import connect.activity.base.BaseApplication;
 import connect.ui.activity.R;
-import connect.ui.base.BaseApplication;
 
 public class ActivityUtil {
 
@@ -34,7 +35,7 @@ public class ActivityUtil {
         next(curActivity, nextActivity, extras, reqCode, R.anim.dialog_bottom_show, R.anim.activity_0_to_0);
     }
 
-    private static void next(Activity curActivity, Class nextActivity, Bundle extras, int reqCode, int inAnimId,
+    public static void next(Activity curActivity, Class nextActivity, Bundle extras, int reqCode, int inAnimId,
                              int outAnimId) {
         Intent intent = new Intent(curActivity, nextActivity);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -49,6 +50,10 @@ public class ActivityUtil {
         curActivity.overridePendingTransition(inAnimId,outAnimId);
     }
 
+    /**
+     * Return to the previous Activity
+     * @param curActivity
+     */
     public static void goBack(Activity curActivity) {
         goBackWithResult(curActivity, 0,null);
     }
@@ -62,8 +67,7 @@ public class ActivityUtil {
     }
 
     public static void goBackWithResult(Activity curActivity, int retCode, Bundle retData, int inAnimId, int outAnimId) {
-        Intent intent = null;
-        intent = new Intent();
+        Intent intent = new Intent();
         if (null != retData) {
             intent.putExtras(retData);
         }
@@ -87,13 +91,9 @@ public class ActivityUtil {
     }
 
     public static String getRunningActivityName() {
-        Context context = BaseApplication.getInstance().getAppContext();
+        Context context = BaseApplication.getInstance().getBaseContext();
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         return activityManager.getRunningTasks(1).get(0).topActivity.getClassName();
     }
 
-    public static boolean isRunChatActivity(String acyname) {
-        String runAcy = getRunningActivityName();
-        return acyname.equals(runAcy);
-    }
 }

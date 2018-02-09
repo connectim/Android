@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <EditText
-        android:id="@id/edittxt1"
+        android:id="@id/edittxt2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_10"
@@ -19,6 +19,8 @@
         android:layout_marginTop="@dimen/dp_20"
         android:background="@drawable/shape_8px_ffffff"
         android:padding="@dimen/dp_5"
+        android:maxLength="20"
+        android:maxLines="1"
         android:textSize="@dimen/sp_16"/>
 
     <TextView

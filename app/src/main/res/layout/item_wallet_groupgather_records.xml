@@ -20,7 +20,7 @@
             android:id="@+id/left_rela"
             android:layout_width="@dimen/dp_44"
             android:layout_height="@dimen/dp_44">
-            <connect.view.roundedimageview.RoundedImageView
+            <ImageView
                 android:id="@+id/avater_rimg"
                 android:layout_width="@dimen/dp_44"
                 android:layout_height="@dimen/dp_44"

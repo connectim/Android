@@ -3,7 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <connect.view.album.ui.widget.HackyViewPager
+    <connect.widget.album.view.HackyViewPager
         android:id="@id/gallery"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
@@ -47,7 +47,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:background="@drawable/shape_stroke_green"
+            android:background="@drawable/shape_stroke_blue"
             android:gravity="center"
             android:paddingLeft="@dimen/dp_6"
             android:paddingRight="@dimen/dp_6"

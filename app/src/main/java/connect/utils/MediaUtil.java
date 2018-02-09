@@ -4,16 +4,19 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 
-import connect.ui.activity.chat.bean.RecExtBean;
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
+import connect.activity.chat.bean.RecExtBean;
+import connect.utils.log.LogManager;
 
 /**
  * media play
- * Created by gtq on 2016/11/28.
  */
 public class MediaUtil {
 
+    private static String TAG = "_MediaUtil";
     private static MediaUtil mediaUtil;
+    private MediaPlayer mediaPlayer;
+    private String filePath = null;
 
     public static MediaUtil getInstance() {
         if (mediaUtil == null) {
@@ -21,10 +24,6 @@ public class MediaUtil {
         }
         return mediaUtil;
     }
-
-    private MediaPlayer mediaPlayer;
-
-    private String filePath = null;
 
     public synchronized void playVoice(String path) {
         if (mediaPlayer == null) {
@@ -40,7 +39,7 @@ public class MediaUtil {
         } else {
             mediaPlayer.reset();
             if (!filePath.equals(path)) {//Close the last playback state
-                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.VOICE_RELEASE, filePath);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.VOICE_RELEASE, filePath);
             }
         }
 
@@ -49,14 +48,14 @@ public class MediaUtil {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {//Play to the full
             @Override
             public void onCompletion(MediaPlayer mp) {
-                RecExtBean.sendRecExtMsg(RecExtBean.ExtType.VOICE_COMPLETE, filePath);
+                RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.VOICE_COMPLETE, filePath);
             }
         });
         try {
             mediaPlayer.setDataSource(filePath);
             mediaPlayer.prepare();
         } catch (Exception e) {
-            // TODO: handle exception
+            LogManager.getLogger().d(TAG, e.getMessage());
         }
         mediaPlayer.start();
     }
@@ -71,7 +70,7 @@ public class MediaUtil {
             mediaPlayer = null;
         }
         //stop play voice
-        RecExtBean.sendRecExtMsg(RecExtBean.ExtType.VOICE_RELEASE, filePath);
+        RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.VOICE_RELEASE, filePath);
     }
 
     public boolean isPlayVoive() {

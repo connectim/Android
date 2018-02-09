@@ -11,20 +11,25 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import connect.ui.base.BaseApplication;
-import connect.utils.log.LogManager;
+import connect.activity.base.BaseApplication;
 
 /**
- * Created by gtq on 2016/12/26.
+ * Configuration file read
  */
 public class ConfigUtil {
     private static ConfigUtil configUtil;
 
-    private String Tag = "ConfigUtil";
     private Map<String, String> keyMaps = null;
 
+    public static ConfigUtil getInstance() {
+        if (configUtil == null) {
+            configUtil = new ConfigUtil();
+        }
+        return configUtil;
+    }
+
     public ConfigUtil() {
-            initConfig(ModeEnum.SANDBOX);
+        initConfig(ModeEnum.RELEASE);
     }
 
     /**
@@ -41,6 +46,12 @@ public class ConfigUtil {
         }
     }
 
+    /**
+     * Parse the configuration xml file
+     * @param mode
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
     public void xmlParser(String mode) throws XmlPullParserException, IOException {
         InputStream inputStream = BaseApplication.getInstance().getApplicationContext().getAssets().open("config.xml");
 
@@ -67,14 +78,12 @@ public class ConfigUtil {
                     if (nameTxt.equals("APP_MODE")) {
                         if (contentTxt.equals("" + mode)) {
                             findMode = true;
-                            LogManager.getLogger().d(Tag, "APP_MODE find mode");
                         } else {
                             findMode = false;
                         }
                     }
 
                     if (findMode) {
-                        LogManager.getLogger().d(Tag, nameTxt + "-->" + contentTxt);
                         keyMaps.put(nameTxt, contentTxt);
                     }
                     break;
@@ -85,17 +94,6 @@ public class ConfigUtil {
         }
     }
 
-    public static ConfigUtil getInstance() {
-        if (configUtil == null) {
-            synchronized (ConfigUtil.class) {
-                if (configUtil == null) {
-                    configUtil = new ConfigUtil();
-                }
-            }
-        }
-        return configUtil;
-    }
-
     /**********************************************************************************************
      * Read the different attribute values
      *********************************************************************************************/
@@ -103,11 +101,12 @@ public class ConfigUtil {
     private String HTTP_MODE = "HTTP_MODE";
     private String SERVER_PUBKEY = "SERVER_PUBKEY";
     private String SERVER_ADDRESS = "SERVER_ADDRESS";
-    private String SOCKET_ADDRESS = "SOCKET_ADDRESS";
-    private String SOCKET_PORT = "SOCKET_PORT";
+    private String VISITOR_ADDRESS = "VISITOR_ADDRESS";
+    private String WAREHOUSE_ADDRESS = "WAREHOUSE_ADDRESS";
     private String SHARE_CARD_ADDRESS = "SHARE_CARD_ADDRESS";
     private String SHARE_PAY_ADDRESS = "SHARE_PAY_ADDRESS";
     private String CRASH_TAGS = "CRASH_TAGS";
+    private String CRASH_APPID= "CRASH_APPID";
 
     /**
      * app version
@@ -129,7 +128,7 @@ public class ConfigUtil {
         return "true".equals(mode);
     }
 
-    public String serverPubkey() {
+    public String serverPubKey() {
         return keyMaps.get(SERVER_PUBKEY);
     }
 
@@ -142,23 +141,12 @@ public class ConfigUtil {
         return keyMaps.get(SERVER_ADDRESS);
     }
 
-    /**
-     * Postal address
-     *
-     * @return
-     */
-    public String socketAddress() {
-        return keyMaps.get(SOCKET_ADDRESS);
+    public String visitorAddress() {
+        return keyMaps.get(VISITOR_ADDRESS);
     }
 
-    /**
-     * Communication port
-     *
-     * @return
-     */
-    public int socketPort() {
-        String port = keyMaps.get(SOCKET_PORT);
-        return Integer.parseInt(port);
+    public String warehouseAddress() {
+        return keyMaps.get(WAREHOUSE_ADDRESS);
     }
 
     /**
@@ -188,7 +176,12 @@ public class ConfigUtil {
         return keyMaps.get(CRASH_TAGS);
     }
 
+    public String getCrashAPPID(){
+        return keyMaps.get(CRASH_APPID);
+    }
+
     public enum ModeEnum {
+        PC("pc"),
         TEST("test"),
         SANDBOX("sandbox"),
         RELEASE("release");

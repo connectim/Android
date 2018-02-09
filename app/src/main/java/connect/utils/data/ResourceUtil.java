@@ -17,11 +17,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
 
 /**
  * system Resource drawable color text
- * Created by gtq on 2016/11/23.
  */
 public class ResourceUtil {
 

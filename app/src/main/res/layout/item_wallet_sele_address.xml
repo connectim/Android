@@ -5,7 +5,7 @@
     android:paddingTop="@dimen/dp_4"
     >
 
-    <connect.view.SideScrollView
+    <connect.widget.SideScrollView
         android:id="@+id/side_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
         </RelativeLayout>
 
     </RelativeLayout>
-    </connect.view.SideScrollView>
+    </connect.widget.SideScrollView>
 
 
     <RelativeLayout
@@ -101,8 +101,8 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp_25"
             android:layout_marginRight="@dimen/dp_25"
-            android:imeOptions="actionSend"
-            android:maxLines="1"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:hint="@string/Link_Enter_Bitcoin_Address"
             android:visibility="gone"/>
     </RelativeLayout>

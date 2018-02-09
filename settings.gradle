@@ -1,1 +1,1 @@
-include ':app', ':greendb', ':DaoGenerator', ':protoc'
+include ':app', ':protoc', ':instant', ':encrypt', 'ffmpeg4android_lib'

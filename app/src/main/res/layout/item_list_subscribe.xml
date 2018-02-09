@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_70"
+                android:background="@drawable/selector_list_item_bg">
+
+
+    <ImageView
+        android:id="@id/roundimg"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dp_12"/>
+
+    <connect.widget.MaterialBadgeTextView
+        android:id="@id/badgetv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_5"
+        android:background="@color/color_red"
+        android:textColor="@color/color_white"
+        android:textSize="@dimen/sp_10"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_70"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_toRightOf="@id/roundimg"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/sp_14"/>
+
+        <TextView
+            android:id="@id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
+            android:ellipsize="end"
+            android:maxLength="18"
+            android:maxLines="1"
+            android:textColor="@color/color_161A21"
+            android:textSize="@dimen/sp_12"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@id/time_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_9"
+        android:textColor="@color/color_b3b5bc"
+        android:textSize="@dimen/sp_12"/>
+</RelativeLayout>

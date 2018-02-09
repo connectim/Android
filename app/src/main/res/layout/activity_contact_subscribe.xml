@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f1f1f1">
+
+    <connect.widget.TopToolBar
+        android:id="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:id="@+id/quotes_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_list_item_bg"
+        android:layout_marginTop="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_15"
+        android:paddingTop="@dimen/dp_9"
+        android:paddingBottom="@dimen/dp_9">
+        <ImageView
+            android:layout_width="@dimen/dp_38"
+            android:layout_height="@dimen/dp_38"
+            android:src="@mipmap/kline"/>
+        <TextView
+            style="@style/BaseTextStyle.16"
+            android:text="@string/Link_Digital_currency_quotes"
+            android:layout_marginLeft="@dimen/dp_22"
+            android:layout_gravity="center_vertical"/>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@color/color_d1d5da"
+        android:dividerHeight="@dimen/px_1"
+        android:listSelector="@android:color/transparent">
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

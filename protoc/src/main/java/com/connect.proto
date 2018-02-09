@@ -12,10 +12,6 @@ string desc = 6;
 string covers_url = 7;
 }
 
-message TextMessage {
-string content = 1;
-}
-
 message SystemRedPackage {
 int64 amount = 1;
 string hashId = 2;
@@ -28,7 +24,6 @@ string txid = 2;
 string tips = 3;
 string sender = 4;
 }
-
 
 message Voice {
 string url = 1;
@@ -47,7 +42,16 @@ string latitude = 2;
 string address = 3;
 }
 
+message Pagination {  
+    int32 page = 1;
+    int32 size = 2;
+}
 
+message GetTx {  
+    int32 currency = 1;
+    string address = 2;
+    Pagination page = 3;
+}
 
 message SystemRedpackgeNotice {
 UserInfo receiver = 1;
@@ -99,9 +103,9 @@ string message=2;
 bytes body=3;
 }
 message HttpResponse {
-int32 code = 1;
-string message=2;
-IMResponse body=3;
+ int32 code = 1;
+   string message = 2;
+   bytes body = 3;
 }
 message HttpNotSignResponse {
 int32 code=1;
@@ -110,18 +114,23 @@ bytes body=3;
 }
 
 //user ===============
-message UserAddress {
-string address=1;
-}
 message UserInfo {
-string username=1;
-string avatar=2;
-string pub_key=3;
-string address=4;
-bool  recommend = 5;
-string connect_id = 6;
-int32 source = 7;
+   string username = 1;
+ string avatar = 2;
+ string pub_key = 3;
+ string uid = 4;
+ bool recommend = 5;
+ string connectId = 6;
+ int32 source = 7;
+ int64 created_at = 8;
+ bool update_connect_id = 9;
+ bool password_check = 10;
+ string ca_pub = 11;
+ string name = 12;
+ string ou = 13;
+ int64 id = 100;
 }
+
 message UsersInfo {
 repeated UserInfo users=1;
 }
@@ -146,10 +155,6 @@ string encryption_pri = 2;
 string password_hint = 3;
 }
 
-message SessionInfo {
-string address = 1;
-bool mute = 2;
-}
 message SettingUserInfo {
 string avatar = 1;
 string username = 2;
@@ -159,14 +164,14 @@ string name = 1;
 }
 
 message UserIdentifier {
-string address = 1;
+string uid = 1;
 }
 
 message TagList {
 repeated string list = 1;
 }
 message SetingUserToTag {
-string address = 1;
+string uid = 1;
 string name = 2;
 }
 message UserInfoDetail {
@@ -190,6 +195,7 @@ string type = 6;
 
 message SearchUser {
 string criteria = 1;
+int32  typ =2;
 }
 
 message FriendRecords {
@@ -220,16 +226,15 @@ bool recommend = 1;
 }
 
 message NOInterest {
-string address = 1;
+string uid = 1;
 }
 
 //setting ===============
 message Privacy {
-bool address=1;
-bool phone_num=2;
-bool verify=3;
-bool sync_phone_book=4;
-bool recommend = 5;
+bool phone_num = 1;
+bool verify = 2;
+bool sync_phone_book = 3;
+bool recommend = 4;
 }
 
 message DeviceToken {
@@ -279,16 +284,6 @@ message GenerateToken {
 bytes salt=1;
 }
 
-
-message RegisterUser {
-string username=1;
-string avatar=2;
-string mobile=3;
-string token=4;
-string encryption_pri=5;
-string password_hint=6;
-}
-
 message GenerateTokenResponse {
 bytes salt=1;
 int64 expired =2;
@@ -307,11 +302,11 @@ string tips=3;
 string token=4;
 }
 message GroupInviteUser {
-repeated string addresses = 1;
+repeated string uids = 1;
 string identifier=2;
 }
 message GroupInviteResponse {
-string address = 1;
+string uid  = 1;
 string token = 2;
 }
 message GroupInviteResponseList {
@@ -327,21 +322,24 @@ string hash = 2;
 message GroupToken {
 string token = 1;
 }
+
 message Group {
 string identifier = 1;
 string name=2;
-string summary=3;
-bool public =4;
-bool reviewed = 5;
-string avatar = 6;
+string summary = 3;
+string avatar = 4;
+int32 category = 5;
 }
+
 message GroupMember {
 string username=1;
-string avatar=2;
-string address=3;
-int32 role=4;
-string nick=5;
-string pub_key=6;
+ string avatar=2;
+ string uid=3;
+ int32 role=4;
+ string nick=5;
+ string pub_key=6;
+ string salt=7;
+ string name = 8;
 }
 
 message GroupApplyChange {
@@ -355,13 +353,11 @@ repeated string tips_history = 4;
 message GroupSetting {
 string identifier = 1;
 string summary = 2;
-bool public = 3;
-bool reviewed = 4;
 }
 
 
 message GroupAttorn {
-string address = 1;
+string uid = 1;
 string identifier = 2;
 }
 
@@ -376,7 +372,7 @@ int32 source =4;
 message GroupReviewed {
 string identifier = 1;
 string verificationCode = 2;
-string address = 3;
+string uid = 3;
 string backup= 4;
 }
 
@@ -388,6 +384,7 @@ string name =3;
 int32 count =4;
 string hash =5;
 bool   public=6;
+bool   joined=7;
 }
 message GroupInfoBaseShare {
 string avatar=1;
@@ -398,12 +395,12 @@ string hash =5;
 bool   public=6;
 string username = 7;
 string identifier = 8;
+bool   joined=9;
 }
+
 message GroupInfo {
 Group group=1;
 repeated GroupMember members=2;
-string backup=3;
-string ecdh=4;
 }
 
 message GroupHash {
@@ -413,11 +410,9 @@ int64 expired = 2;
 
 
 message GroupSettingInfo {
-bool public = 1;
-bool reviewed = 2;
-string avatar=3;
-string summary=4;
-bool  mute = 5;
+string avatar=1;
+string summary=2;
+bool  mute = 3;
 }
 
 
@@ -427,6 +422,7 @@ string summary=2;
 bool public =3;
 repeated AddGroupUserInfo users = 4;
 bool reviewed = 5;
+int32 category = 6;
 }
 
 message AddUserToGroup {
@@ -435,13 +431,13 @@ repeated AddGroupUserInfo users = 2;
 }
 
 message AddGroupUserInfo {
-string address=1;
-string backup=2;
+string uid=1;
+int32 source=2;
 }
 
 message DelOrQuitGroupMember {
 string identifier = 1;
-string address=2;
+string uid=2;
 }
 
 message UpdateGroupInfo{
@@ -484,11 +480,11 @@ UserInfo invite_by=5;
 }
 
 message QuitGroupUserAddress {
-repeated string addresses=1;
+repeated string uids=1;
 }
 
 message ChangeGroupNick {
-string address=1;
+string uid=1;
 string nick=2;
 }
 message DownloadBackUpResp {
@@ -513,8 +509,8 @@ bytes tag = 3;
 bytes ciphertext = 4;
 }
 message IMResponse {
-string sign = 1;
-GcmData cipher_data = 2;
+   string sign = 1;
+   GcmData cipher_data = 2;
 }
 
 message RequestNotEncrypt {
@@ -530,8 +526,10 @@ GcmData cipher_data = 3;
 }
 
 message IMTransferData {
-string sign = 1;
-GcmData cipher_data = 2;
+ string sign = 1;
+ GcmData cipher_data = 2;
+ string token = 3;
+ string uid = 4;
 }
 
 message Ack {
@@ -540,8 +538,9 @@ int32 type = 2;
 }
 // connect Socket ,Return the data after connection
 message NewConnection {
-bytes salt = 1;
-bytes pub_key=2;
+string token=1;
+bytes salt = 2;
+bytes pub_key=3;
 }
 
 message Connection {
@@ -570,12 +569,15 @@ message CommandDetail {
 int32 cmd_type=1;
 Command cmd=2;
 }
+
 message DeviceInfo {
-string deviceId=1;
-string deviceName=2;
-string locale = 3;
-int32 cv = 4;
-string uuid=5;
+    string deviceId = 1;
+    string deviceName = 2;
+    string locale = 3;
+    int32 cv = 4;
+    string uuid = 5;
+    ChatCookieData chatCookieData = 6;
+    string token = 7;
 }
 
 message QuitMessage {
@@ -622,72 +624,50 @@ string upgrade_url=7;
 }
 
 //friend relationship ===============
-message RelationShip {
-string version = 1;
-repeated FriendInfo friends = 2;
-}
 
 message SyncRelationship {
 string version = 1;
 }
 
-message FriendInfo {
-string username = 1;
-string avatar = 2;
-string pub_key = 3;
-string address = 4;
-bool common = 5;
-int32 source = 6;
-string remark = 7;
-}
-
+//category:
+//"ADD":        "add",
+//"DEL":        "del",
+//"COMMON":     "common",
+//"COMMON_DEL": "common_del",
+//"BLACK":      "black",
+//"BLACK_DEL":  "black_del",
+//"REMARK":     "remark",
 message SettingFriendInfo {
-string address = 1;
+string uid = 1;
 string remark = 2;
 bool common = 3;
+string category = 4;
 }
 
 message AddFriendRequest {
-string address = 1;
-GcmData tips = 2;
+string uid = 1;
+string tips = 2;
 int32 source = 3;
 }
 
 message AcceptFriendRequest {
-string address = 1;
+string uid = 1;
 int32 source=2;
 }
 
 message ReceiveAcceptFriendRequest {
-string address = 1;
+string uid = 1;
 string version = 2;
 }
 
 message RemoveRelationship {
-string address = 1;
+string uid = 1;
 }
 
 message ReceiveFriendRequest {
-UserInfo sender = 1;
-GcmData tips = 2;
+UserInfoBase sender = 1;
+string  tips = 2;
 int32 source = 3;
-}
-
-
-message ChangeRecords {
-string version=1;
-repeated ChangeRecord changeRecords = 2;
-}
-
-message ChangeRecord {
-string category = 1;
-string address = 2;
-UserInfo userInfo = 3;
-}
-
-message SyncUserRelationship {
-RelationShip relationShip=1;
-UserCommonGroups userCommonGroups=2;
 }
 
 //message===============
@@ -695,19 +675,8 @@ message UpdateMobileBind {
 string username = 1;
 }
 message MessagePost {
-string pub_key = 1;
-string sign = 2;
-MessageData msg_data = 3;
-}
-
-message MessageData {
-string receiver_address = 1;
-string msg_id = 2;
-GcmData cipher_data = 3;
-int32 typ = 4;
-bytes salt = 5;
-string chat_pub_key = 6;
-bytes ver = 7;
+string uid = 1;
+MessageData msg_data = 2;
 }
 
 message MSMessage {
@@ -722,9 +691,9 @@ string token = 2;
 }
 
 message MediaFile {
-string pub_key = 1;
-string sign = 2;
-GcmData cipher_data = 3;
+ string token = 1;
+   bytes body = 2;
+   string uid = 3;
 }
 
 message RichMedia {
@@ -737,17 +706,17 @@ string secret_key = 2;
 }
 message RejectMessage {
 string msg_id = 1;
-string receiver_address = 2;
+string uid = 2;
 int32 status = 3;
 bytes data = 4;
 }
 
 message ManageSession {
-string address = 1;
+string uid = 1;
 }
 
 message UpdateSession {
-string address = 1;
+string uid = 1;
 bool flag = 2;
 }
 
@@ -808,14 +777,15 @@ repeated AddressInfo address_info=1;
 }
 
 message Bill {
-string hash=1;
-string sender=2;
-string receiver=3;
-uint64 amount=4;
-string txid=5;
-int32 status=6;
-string tips=7;
-int64  created_at = 8;
+    string hash = 1;
+    string sender = 2;
+    string receiver = 3;
+    uint64 amount = 4;
+    string txid = 5;
+    int32 status = 6;
+    string tips = 7;
+    int64 created_at = 8;
+    int32 category = 9;
 }
 
 message BillHashId {
@@ -890,23 +860,25 @@ int32 type = 8;
 }
 
 message RedPackage {
-string hash_id=1;
-string send_address=2;
-int32 category=3;
-int32 size=4;
-int64 money=5;
-string tips=6;
-string send_tx=7;
-int32 status=8;
-string txid=9;
-int64 remain_size=10;
-bool  refund=11;
-bool expired =12;
-string url = 13;
-int64 deadline = 14;
-int32 typ = 15;
-int64 created_at=16;
-bool  system = 17;
+    string hash_id = 1;
+    string send_address = 2;
+    int32 category = 3;
+    int32 size = 4;
+    int64 money = 5;
+    string tips = 6;
+    string send_tx = 7;
+    int32 status = 8;
+    string txid = 9;
+    int64 remain_size = 10;
+    bool refund = 11;
+    bool expired = 12;
+    string url = 13;
+    int64 deadline = 14;
+    int32 typ = 15;
+    int64 created_at = 16;
+    bool system = 17;
+    bool pause = 18;
+    int32 currency = 19;
 }
 
 message RedPackageInfo {
@@ -951,16 +923,17 @@ string hash_id=1;
 }
 
 message Crowdfunding {
-string hash_id=1;
-UserInfo sender=2;
-int64 size=3;
-int64 total=4;
-string tips=5;
-int64 status=6;
-CrowdfundingRecords records=7;
-int64 created_at = 8;
-int64 remain_size = 9;
-string group_name = 10;
+    string hash_id = 1;
+    UserInfo sender = 2;
+    int64 size = 3;
+    int64 total = 4;
+    string tips = 5;
+    int64 status = 6;
+    CrowdfundingRecords records = 7;
+    int64 created_at = 8;
+    int64 remain_size = 9;
+    string group_name = 10;
+    string group_hash = 11;
 }
 
 message Crowdfundings {
@@ -1054,22 +1027,23 @@ int32 pageIndex = 2;
 
 
 message ExternalBillingInfo {
-string hash = 1;
-string sender = 2;
-string receiver = 3;
-uint64 amount = 4;
-string txid = 5;
-int32 status = 6;
-string tips = 7;
-bool received = 8;
-bool publish = 9;
-bool refund = 10;
-bool expired = 11;
-int64 created_at = 12;
-string url = 13;
-UserInfo receiverInfo = 14;
-int64 deadline = 15;
-bool cancelled = 16;
+    string hash = 1;
+    string sender = 2;
+    string receiver = 3;
+    uint64 amount = 4;
+    string txid = 5;
+    int32 status = 6;
+    string tips = 7;
+    bool received = 8;
+    bool publish = 9;
+    bool refund = 10;
+    bool expired = 11;
+    int64 created_at = 12;
+    string url = 13;
+    UserInfo receiverInfo = 14;
+    int64 deadline = 15;
+    bool cancelled = 16;
+    int32 currency = 17;
 }
 
 
@@ -1175,11 +1149,836 @@ message ChatCookieData {
 }
 
 message FriendChatCookie {
-    string address = 1;
+    string uid = 1;
 }
 
 message ChatCookie {
     string sign = 1;
-    ChatCookieData data = 2;
+    string ca_pub = 2;
+    ChatCookieData data = 3;
 }
 
+
+
+//用户信息
+message MessageUserInfo{
+	string uid=1;
+	string username=2;
+	string avatar=3;
+}
+//聊天类型
+enum ChatType {
+	PRIVATE= 0; // 个人聊天
+	GROUPCHAT  = 1;  //群组聊天(加密)
+	CONNECT_SYSTEM = 2; // Connect
+	GROUP_DISCUSSION= 3;//讨论组
+	SUBSCRIBER = 4; //订阅号
+        UNKNOW = 5; //未知，陌生人/群
+}
+//临时协同密钥
+message ChatSession {
+   string pubKey = 1;
+   string friendPubkey = 2;
+}
+//消息体
+message ChatMessage {
+	string msg_id = 1;
+	int64 msg_time = 2;
+	string from = 3;
+	string to= 4;
+	bytes body = 5;//群组聊天
+	ChatType chat_type=6;
+	int32 msg_type = 7;
+	string ext= 8;
+	bytes origin_msg = 9;
+	GcmData cipher_data = 10;//个人聊天
+	MessageUserInfo sender = 11; //发送方信息
+}
+//传输层模型
+message MessageData {
+	ChatMessage chat_msg = 1;
+	ChatSession chat_session = 2;
+}
+//文本消息
+message TextMessage{
+	string content=1;
+	repeated string at_uids=2;
+	int64 snap_time = 3;
+}
+//emoj表情
+message EmotionMessage{
+	string content=1;
+	int64 snap_time = 2;
+}
+//图片消息
+message PhotoMessage{
+	string url=1;
+	string thum=2;
+	string size=3;
+	int32 image_width=4;
+	int32 image_height=5;
+	int64 snap_time = 6;
+	bytes file_key = 7;
+}
+//音频消息
+message VoiceMessage{
+	string url=1;
+	int32 time_length=2;
+	int64 snap_time = 3;
+	bytes file_key = 4;
+}
+//视频消息
+message VideoMessage{
+	string url=1;
+	string cover=2;
+	int32 time_length=3;
+	int32 size=4;
+	int32 image_width=5;
+	int32 image_height=6;
+	int64 snap_time = 7;
+	bytes file_key = 8;
+}
+//名片消息
+message CardMessage{
+	string uid=1;
+	string username=2;
+	string avatar=3;
+}
+
+
+//收款消息
+message PaymentMessage{
+	int32 payment_type=1;// 0:单人收款 1:众筹
+	string hash_id=2;
+	int64 amount=3;
+	int32 member_size =4;
+	string tips =5;
+}
+//转账消息
+message TransferMessage{
+	int32  transfer_type=1;//0:单人转账 1:外部转账  2:外部转账
+	string hash_id=2;
+	int64 amount=3;
+	string tips =4;
+}
+
+//红包消息
+message LuckPacketMessage{
+	string hash_id=1;
+	int32 lucky_type=2;//0:内部红包 1:外部红包 2:系统红包
+	string tips =3;
+	int64 amount=4;
+}
+
+//位置消息
+message LocationMessage{
+	float latitude=1;
+	float longitude=2;
+	string address=3;
+	string screen_shot=4;
+	int32 image_width=5;
+	int32 image_height=6;
+	bytes file_key = 7;
+}
+
+//提示消息
+message NotifyMessage{
+        int32 notify_type = 1;
+	string content=2;
+	string extion=3;
+}
+//加入群组消息
+message JoinGroupMessage{
+	string avatar=1;
+	string group_name=2;
+	string group_id=3;
+	string token=4;
+}
+//外部链接消息
+message WebsiteMessage{
+	string url=1;
+	string title=2;
+	string subtitle=3;
+	string img=4;
+}
+
+message SmsValidateResp {
+	int32 status = 1;
+	string token = 2;
+	UserInfo userInfo =3;
+}
+
+message UpdateCa {
+    string mobile= 1;
+    string token = 2;
+    string ca_pub =3;
+}
+
+message RegisterUser {
+    string username=1;
+    string avatar=2;
+    string mobile=3;
+    string token=4;
+    string ca_pub=5;
+}
+
+message RelationshipChange {
+    string uid=1;
+    string friend=2;
+    string category=3;
+}
+
+message Mfa {
+    int32 typ = 1;
+    string val = 2;
+    string token =3;
+    string code=4;
+}
+
+message TcpRequest {
+    string uid = 1;
+    string sign = 2;
+    GcmData cipher_data = 3;
+}
+
+message ChangeMobileVerify {
+    string mobile = 1;
+    string token = 2;
+    string code = 3;
+    int32 category =4;
+    string ex_token =5;
+}
+
+message PasswordCheck {
+    string mobile= 1;
+    string token = 2;
+    string password=3;
+    string ca_pub =4;
+}
+
+message FriendInfo {
+    string username = 1;
+  string avatar = 2;
+  string signed_per_key = 3;
+  string uid = 4;
+  bool common = 5;
+  int32 source = 6;
+  string remark = 7;
+  string connect_id = 8;
+  bool blackList = 9;
+  string name = 10;
+   string ou=11;
+   string pub_key = 12;
+}
+
+message Preferences {
+bool phone_num=1;
+bool recommend = 2;
+}
+
+message FriendListChange {
+ChangeRecord change = 1;
+string version = 2;
+}
+
+
+message UserInfoBase {
+    string username = 1;
+  string avatar = 2;
+  string uid = 3;
+  string name =4;
+}
+
+
+message UsersInfoBase {
+repeated UserInfoBase users=1;
+}
+
+
+message EphemeralSetting {
+    string uid = 1;
+    string friendUid = 2;
+    int32 deadline = 3;
+}
+
+
+message EphemeralAck {
+    string uid = 1;
+    string friendUid = 2;
+    string msgID = 3;
+}
+
+message AckBatch {
+    string msg_id = 1;
+    repeated Ack Acks = 2;
+}
+
+
+message BroadcastMemberKey {
+string group_id = 1;
+repeated GroupMemberKey member_key = 2;
+}
+
+message GroupMemberKey {
+string receiver_uid = 1;
+string sign = 2;
+string ca_pub_key = 3;
+GroupMemberKeyData group_key_data = 4;
+}
+
+message GroupMemberKeyData {
+string group_id = 1;
+string uid = 2;
+GcmData cipher_data = 3;
+}
+
+// RSS
+message RSSList {
+    repeated RSS rss_list = 1;
+}
+
+message RSS {
+    int64 rss_id = 1;
+    string icon = 2;
+    string title = 3;
+    string desc = 4;
+    bool sub_rss = 5; // 订阅状态 0 未订阅 1：已订阅
+}
+
+message RSSMessage {
+    string title = 1;
+    string detail = 2;
+    string source = 3;
+    string source_url = 4;
+    int64 time = 5;
+    int64 id = 6;
+}
+
+
+message Article {
+    string title = 1;
+    string image = 2;
+    string article_url = 3;
+    int32 article_type = 4;
+    int64 time = 5;
+    int64 id = 6;
+}
+
+message ArticleList {
+    repeated Article messages = 1;
+    int64 time = 2;
+}
+
+
+message RSSMessageList {
+    repeated RSSMessage messages = 1;
+    int64 time = 2;
+}
+
+message RSSPush {
+    int32 category =  1; //1:rss 2:article
+    bytes data = 2;
+    int64 rss_id = 3;
+    string msg_id =4;
+}
+
+
+// Signal
+message ProvisionEnvelope {
+  bytes publicKey = 1;
+  bytes body      = 2; // Encrypted ProvisionMessage
+}
+
+message ProvisionMessage {
+  bytes  identityKeyPublic  = 1;
+  bytes  identityKeyPrivate = 2;
+  string number             = 3;
+  string provisioningCode   = 4;
+  string userAgent          = 5;
+  bytes  profileKey         = 6;
+  bool   readReceipts       = 7;
+}
+
+message Envelope {
+  enum Type {
+    UNKNOWN       = 0;
+    CIPHERTEXT    = 1;
+    KEY_EXCHANGE  = 2;
+    PREKEY_BUNDLE = 3;
+    RECEIPT       = 5;
+  }
+
+  Type   type          = 1;
+  string source        = 2;
+  uint32 sourceDevice  = 7;
+  string relay         = 3;
+  uint64 timestamp     = 5;
+  bytes  legacyMessage = 6; // Contains an encrypted DataMessage
+  bytes  content       = 8; // Contains an encrypted Content
+}
+
+message Content {
+  DataMessage    dataMessage    = 1;
+  SyncMessage    syncMessage    = 2;
+  CallMessage    callMessage    = 3;
+  NullMessage    nullMessage    = 4;
+  ReceiptMessage receiptMessage = 5;
+}
+
+message CallMessage {
+  message Offer {
+    uint64 id          = 1;
+    string description = 2;
+  }
+
+  message Answer {
+    uint64 id          = 1;
+    string description = 2;
+  }
+
+  message IceUpdate {
+    uint64 id            = 1;
+    string sdpMid        = 2;
+    uint32 sdpMLineIndex = 3;
+    string sdp           = 4;
+  }
+
+  message Busy {
+    uint64 id = 1;
+  }
+
+  message Hangup {
+    uint64 id = 1;
+  }
+
+
+  Offer     offer     = 1;
+  Answer    answer    = 2;
+  repeated IceUpdate iceUpdate = 3;
+  Hangup    hangup    = 4;
+  Busy      busy      = 5;
+}
+
+message DataMessage {
+  enum Flags {
+    END_SESSION             = 0;
+    EXPIRATION_TIMER_UPDATE = 1;
+    PROFILE_KEY_UPDATE      = 2;
+  }
+
+  string             body        = 1;
+  repeated AttachmentPointer  attachments = 2;
+  GroupContext       group       = 3;
+  uint32             flags       = 4;
+  uint32             expireTimer = 5;
+  bytes              profileKey  = 6;
+  uint64             timestamp   = 7;
+}
+
+message NullMessage {
+  bytes padding = 1;
+}
+
+message ReceiptMessage {
+  enum Type {
+    DELIVERY = 0;
+    READ     = 1;
+  }
+
+  Type   type      = 1;
+  repeated uint64 timestamp = 2;
+}
+
+message Verified {
+  enum State {
+    DEFAULT    = 0;
+    VERIFIED   = 1;
+    UNVERIFIED = 2;
+  }
+
+  string destination = 1;
+  bytes  identityKey = 2;
+  State  state       = 3;
+  bytes  nullMessage = 4;
+}
+
+message SyncMessage {
+  message Sent {
+    string      destination              = 1;
+    uint64      timestamp                = 2;
+    DataMessage message                  = 3;
+    uint64      expirationStartTimestamp = 4;
+  }
+
+  message Contacts {
+    AttachmentPointer blob     = 1;
+    bool              complete = 2;
+  }
+
+  message Groups {
+    AttachmentPointer blob = 1;
+  }
+
+  message Blocked {
+    repeated string numbers = 1;
+  }
+
+  message Request {
+    enum Type {
+      UNKNOWN       = 0;
+      CONTACTS      = 1;
+      GROUPS        = 2;
+      BLOCKED       = 3;
+      CONFIGURATION = 4;
+    }
+
+    Type type = 1;
+  }
+
+  message Read {
+    string sender    = 1;
+    uint64 timestamp = 2;
+  }
+
+  message Configuration {
+    bool readReceipts = 1;
+  }
+
+  Sent          sent          = 1;
+  Contacts      contacts      = 2;
+  Groups        groups        = 3;
+  Request       request       = 4;
+  repeated Read          read          = 5;
+  Blocked       blocked       = 6;
+  Verified      verified      = 7;
+  Configuration configuration = 9;
+  bytes         padding       = 8;
+}
+
+message AttachmentPointer {
+  enum Flags {
+    VOICE_MESSAGE = 0;
+  }
+
+  fixed64 id          = 1;
+  string  contentType = 2;
+  bytes   key         = 3;
+  uint32  size        = 4;
+  bytes   thumbnail   = 5;
+  bytes   digest      = 6;
+  string  fileName    = 7;
+  uint32  flags       = 8;
+}
+
+message GroupContext {
+  enum Type {
+    UNKNOWN      = 0;
+    UPDATE       = 1;
+    DELIVER      = 2;
+    QUIT         = 3;
+    REQUEST_INFO = 4;
+  }
+  bytes             id      = 1;
+  Type              type    = 2;
+  string            name    = 3;
+  repeated string            members = 4;
+  AttachmentPointer avatar  = 5;
+}
+
+message ContactDetails {
+  message Avatar {
+    string contentType = 1;
+    uint32 length      = 2;
+  }
+
+  string   number     = 1;
+  string   name       = 2;
+  Avatar   avatar     = 3;
+  string   color      = 4;
+  Verified verified   = 5;
+  bytes    profileKey = 6;
+}
+
+message GroupDetails {
+  message Avatar {
+    string contentType = 1;
+    uint32 length      = 2;
+  }
+
+  bytes  id       = 1;
+  string name     = 2;
+  repeated string members  = 3;
+  Avatar avatar   = 4;
+  bool   active   = 5;
+}
+
+
+message WebSocketRequestMessage {
+    string verb    = 1;
+    string path    = 2;
+    bytes  body    = 3;
+    repeated string headers = 5;
+    uint64 id      = 4;
+}
+
+message WebSocketResponseMessage {
+    uint64 id      = 1;
+    uint32 status  = 2;
+    string message = 3;
+    repeated string headers = 5;
+    bytes  body    = 4;
+}
+
+message WebSocketMessage {
+    enum Type {
+        UNKNOWN  = 0;
+        REQUEST  = 1;
+        RESPONSE = 2;
+    }
+
+    Type                     type     = 1;
+    WebSocketRequestMessage  request  = 2;
+    WebSocketResponseMessage response = 3;
+}
+
+message LoginReq {
+string username =1;
+string password = 2;
+}
+
+message UserLoginInfo {
+ string token = 1;
+ bool logined = 2;
+ string name = 3;
+ string o_u = 4;
+ string uid = 5;
+ string avatar = 6;
+ string pub_key = 7;
+ string emp_no = 8;
+ string mobile = 9;
+ int32  gender = 10;
+ string tips = 11;
+}
+
+message HttpRequest {
+  string uid = 1;
+  bytes body = 2;
+  string token = 3;
+}
+
+message Workmate {
+ string name = 1;
+ string o_u = 2;
+ string uid = 3;
+ string avatar = 4;
+ string pub_key = 5;
+ bool registed = 6;
+ string emp_no = 7;
+ string mobile = 8;
+ int32  gender = 9;
+ string tips = 10;
+}
+
+message Workmates {
+ repeated Workmate list = 1;
+}
+
+message PubKey {
+ string pub_key = 1;
+}
+
+message Department {
+ string name = 1;
+ int64 id = 2;
+ int64 count=3;
+}
+
+message Departments {
+ repeated Department list = 1;
+}
+
+message SyncWorkmates {
+Workmates workmates = 1;
+Departments depts = 2;
+}
+
+message UserFollow {
+ string uid = 1;
+ bool follow = 2;
+}
+
+message SyncUserRelationship {
+RelationShip relationShip=1;
+UserCommonGroups userCommonGroups=2;
+}
+
+message RelationShip {
+string version = 1;
+repeated FriendInfo friends = 2;
+}
+
+message ChangeRecords {
+string version=1;
+repeated ChangeRecord changeRecords = 2;
+}
+
+message ChangeRecord {
+string category = 1;
+FriendInfo friendInfo = 2;
+}
+
+message SyncCompany {
+ WorkmatesVersion workmatesVersion=1;
+ UserCommonGroups userCommonGroups=2;
+}
+
+message WorkmatesVersion {
+ repeated Workmate list = 1;
+ string version = 2;
+}
+
+message WorkmateChangeRecords {
+ string version = 1;
+ repeated WorkmateChangeRecord workmateChangeRecords = 2;
+}
+
+message WorkmateChangeRecord {
+ string category = 1;
+ Workmate workmate = 2;
+}
+
+message WorkmateVersion {
+ string uid = 1;
+ string version = 2;
+}
+
+message Staff {
+ string staff_no = 1;
+ string token = 2;
+}
+
+message Banner {
+  string name = 1;
+  string title = 2;
+  string img = 3;
+  string href = 4;
+  string router = 5;
+  int32 priority = 6;
+  int32 category = 7;
+}
+
+message Banners {
+  repeated Banner list =1;
+}
+
+message Application {
+ string name = 1;
+ string code = 2;
+ string img = 3;
+ string href = 4;
+ string router = 5;
+ int32 priority = 6;
+ int32 category = 7;
+ bool added = 8;
+}
+
+message Applications {
+  repeated Application list =1;
+}
+
+message VisitorRecordsReq {
+ string page_num = 1;
+ string page_size = 2;
+ string staff_id = 3;
+}
+
+message VisitorRecord {
+ int32 id = 1;
+ string staffNo = 2;
+ string staffName = 3;
+ string staffPhone = 4;
+ string guestId = 5;
+ string guestName = 6;
+ int64 startTime = 7;
+ int64 endTime = 8;
+ string reason = 9;
+ string face = 10;
+ string face_left = 11;
+ string face_right = 12;
+ string guest_phone = 13;
+ bool check = 14;
+ int32 extract = 15;
+ bool pass = 16;
+}
+
+message VisitorRecords {
+ repeated VisitorRecord list = 1;
+}
+
+message GroupInviteWorkmate {
+ string inviteBy = 1;
+ string tips = 2;
+ repeated string uids = 3;
+ string identifier = 4;
+}
+
+message Examine {
+ string guest_id = 1;
+ bool pass = 2;
+ string reason = 3;
+}
+
+message ExamineMessage {
+  string body = 1;
+}
+
+message StaffLog {
+  int64 id = 1;
+ string face = 2;
+ int32 status = 3;
+ int64 date_time = 4;
+ int32 category = 5;
+ int32 Typ = 6;
+ string device_id = 7;
+ string confirm_uid = 8;
+ string location = 9;
+ int32 action_type = 10;
+}
+
+message StaffLogs {
+  repeated StaffLog list = 1;
+}
+
+message StaffLogsReq {
+  int32 page_num = 1;
+  int32 page_size = 2;
+}
+
+message UnRegisterCheck {
+  int32 status = 1;
+  int64 id = 2;
+}
+
+message UnRegisterMessage {
+string body = 1;
+int64 id = 2;
+}
+
+message UnRegisterNotify {
+ string uid = 1;
+ int64 id = 2;
+ int64 time = 3;
+ string location = 4;
+}
+
+message AesGcm {
+ string pub_key = 1;
+ string sign = 2;
+ repeated GcmData cipher_data = 3;
+}
+
+message VisitorNotify {
+ string uid= 1;
+ int64 time = 2;
+ string reason = 3;
+}

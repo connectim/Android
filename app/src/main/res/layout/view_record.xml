@@ -73,7 +73,7 @@
             android:textSize="@dimen/sp_14"/>
     </LinearLayout>
 
-    <connect.ui.activity.chat.view.DiffuseView
+    <connect.widget.recordvoice.DiffuseView
         android:id="@id/record"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/showtime">
+
+    <LinearLayout
+        android:id="@id/linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/dp_70"
+        android:layout_marginRight="@dimen/dp_70"
+        android:background="@drawable/shape_stroke_20_ffffff"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_12">
+
+        <TextView
+            android:id="@id/txt1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:hint="text view"
+            android:maxLines="1"
+            android:textColor="@color/color_black"
+            android:textSize="@dimen/sp_14"/>
+
+        <TextView
+            android:id="@id/txt2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:hint="12:50"
+            android:textColor="@color/color_858998"
+            android:textSize="@dimen/sp_12"/>
+
+        <ImageView
+            android:id="@id/roundimg1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_150"
+            android:layout_marginTop="@dimen/dp_12"
+            android:scaleType="centerCrop"/>
+
+        <TextView
+            android:id="@id/txt3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:ellipsize="end"
+            android:hint="test text"
+            android:maxLines="3"
+            android:textColor="@color/color_858998"
+            android:textSize="@dimen/sp_12"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12">
+
+            <TextView
+                android:id="@id/txt4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Chat_View_Full_Text"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/sp_14"/>
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>

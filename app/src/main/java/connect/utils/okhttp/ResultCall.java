@@ -6,7 +6,7 @@ import java.lang.reflect.ParameterizedType;
 import okhttp3.Response;
 
 /**
- * Parsing Protobuff and back to the mediation analysis results
+ * Parsing ProtoBuff and back to the mediation analysis results
  */
 public abstract class ResultCall<T> extends Callback<T> {
 

@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
 import android.provider.Settings;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 
@@ -23,22 +22,30 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-import connect.ui.activity.contact.bean.PhoneContactBean;
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
+import connect.activity.contact.bean.PhoneContactBean;
 import connect.utils.GlobalLanguageUtil;
+import connect.utils.StringUtil;
 import connect.utils.log.LogManager;
-import connect.wallet.jni.AllNativeMethod;
-
-/**
- * Created by Administrator on 2017/4/27 0027.
- */
 
 public class SystemDataUtil {
 
-    private static String Tag = "SystemDataUtil";
+    public String getVersionCode(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        PackageInfo packageInfo;
+        String versionCode = "1";
+        try {
+            packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+            versionCode = packageInfo.versionCode + "";
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
+    }
 
     /**
      * Get the APP version Name
+     *
      * @param context
      * @return
      */
@@ -49,13 +56,14 @@ public class SystemDataUtil {
             info = manager.getPackageInfo(context.getPackageName(), 0);
             return info.versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            LogManager.getLogger().e("Exception",e.toString());
+            LogManager.getLogger().e("Exception", e.toString());
         }
         return null;
     }
 
     /**
      * screen width
+     *
      * @return
      */
     public static int getScreenWidth() {
@@ -65,6 +73,7 @@ public class SystemDataUtil {
 
     /**
      * screen height
+     *
      * @return
      */
     public static int getScreenHeight() {
@@ -86,11 +95,12 @@ public class SystemDataUtil {
             e.printStackTrace();
             deviceId = "";
         }
-        return AllNativeMethod.cdGetHash256(deviceId);
+        return StringUtil.cdHash256(deviceId);
     }
 
     /**
      * Pseudo-Unique ID
+     *
      * @return
      */
     public static String getLocalUid() {
@@ -110,14 +120,13 @@ public class SystemDataUtil {
             serial = "serial";
         }
         serial = new UUID(deviceID.hashCode(), serial.hashCode()).toString();
-        LogManager.getLogger().d(Tag, serial);
-        return AllNativeMethod.cdGetHash256(serial);
+        return StringUtil.cdHash256(serial);
     }
 
     /**
-     * Gets the current state
+     * Gets the current national code
      */
-    public static String getCountry(){
+    public static String getCountry() {
         Locale locale = Locale.getDefault();
         return locale.getCountry();
     }
@@ -131,26 +140,32 @@ public class SystemDataUtil {
     }
 
     /**
-     * For country code
+     * Gets the current national currency code
      */
-    public static String getCountryCode(){
+    public static String getCountryCode() {
         Locale locale = Locale.getDefault();
-        Currency currency = Currency.getInstance(locale);
+        Currency currency;
+        try {
+            currency = Currency.getInstance(locale);
+        } catch (Exception e) {
+            // IllegalArgumentException:Unsupported ISO 3166 country: en
+            return "";
+        }
         return currency.getCurrencyCode();
     }
 
     /**
      * Set up the language
      */
-    public static void setAppLanguage(Context context,String languageCode){
+    public static void setAppLanguage(Context context, String languageCode) {
         Locale myLocale;
-        if(TextUtils.isEmpty(languageCode)){
+        if (TextUtils.isEmpty(languageCode)) {
             myLocale = Locale.getDefault();
-        }else if(languageCode.equals("zh")){
+        } else if (languageCode.equals("zh")) {
             myLocale = Locale.SIMPLIFIED_CHINESE;
-        }else if(languageCode.equals("ru")){
-            myLocale = new Locale("ru","RU");
-        }else{
+        } else if (languageCode.equals("ru")) {
+            myLocale = new Locale("ru", "RU");
+        } else {
             myLocale = Locale.ENGLISH;
         }
         Resources resources = context.getResources();
@@ -166,11 +181,12 @@ public class SystemDataUtil {
 
     /**
      * getAddressContacts Access to the phone address book contacts (optimize query speed)
+     *
      * @return Object
      * @Exception
      */
-    public static List<PhoneContactBean> getLoadAddresSbook(Context context) {
-        Map<Integer, String> map = new HashMap<Integer, String>();
+    public static List<PhoneContactBean> getLocalAddressBook(Context context) {
+        Map<Integer, String> map = new HashMap<>();
         ContentResolver contentResolver = context.getContentResolver();
         Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
         String contactIds = "";
@@ -192,8 +208,8 @@ public class SystemDataUtil {
         Cursor phonesCursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " in ( " + contactIds + ")", null, null);
         i = 0;
-        List<PhoneContactBean> loacList = new ArrayList<PhoneContactBean>();
-        List<String> tempList = new ArrayList<String>();
+        List<PhoneContactBean> loacList = new ArrayList<>();
+        List<String> tempList = new ArrayList<>();
         PhoneContactBean contacts = null;
         int nowContact = 0;
         if (phonesCursor != null) {
@@ -235,5 +251,4 @@ public class SystemDataUtil {
         }
         return loacList;
     }
-
 }

@@ -8,13 +8,14 @@
               android:padding="@dimen/dp_10">
 
     <LinearLayout
+        android:id="@id/linearlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/shape_20px_e6f6f6f6"
         android:orientation="vertical">
 
-        <connect.ui.activity.chat.view.PickHorScrollView
-            android:id="@id/scrollview"
+        <connect.activity.chat.view.PickHorScrollView
+            android:id="@id/pickscrollview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
@@ -24,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"></LinearLayout>
-        </connect.ui.activity.chat.view.PickHorScrollView>
+        </connect.activity.chat.view.PickHorScrollView>
 
         <View
             android:layout_width="match_parent"

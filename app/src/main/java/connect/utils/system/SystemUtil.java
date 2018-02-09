@@ -1,13 +1,18 @@
 package connect.utils.system;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Vibrator;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -17,13 +22,10 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 
-/**
- * Created by john on 2016/11/19.
- */
 public class SystemUtil {
 
     /**
@@ -95,6 +97,16 @@ public class SystemUtil {
         editText.clearFocus();
     }
 
+    public static boolean isSoftShowing(Activity activity) {
+        final int softKeyboardHeight = 100;
+        View rootView = activity.getWindow().getDecorView();
+        Rect r = new Rect();
+        rootView.getWindowVisibleDisplayFrame(r);
+        DisplayMetrics dm = rootView.getResources().getDisplayMetrics();
+        int heightDiff = rootView.getBottom() - r.bottom;
+        return heightDiff > softKeyboardHeight * dm.density;
+    }
+
     /**
      * view Location in the screen
      * @param view
@@ -111,8 +123,8 @@ public class SystemUtil {
      * @return Object
      * @Exception
      */
-    public static void sendPhoneSMS(Context context, String phonenumber, String inviteText) {
-        Uri smsToUri = Uri.parse("smsto:" + phonenumber);
+    public static void sendPhoneSMS(Context context, String phoneNumber, String inviteText) {
+        Uri smsToUri = Uri.parse("smsto:" + phoneNumber);
         Intent intent = new Intent(Intent.ACTION_SENDTO, smsToUri);
         intent.putExtra("sms_body", inviteText);
         context.startActivity(intent);
@@ -144,8 +156,8 @@ public class SystemUtil {
      * @param phonenum
      */
     public static void callPhone(Context context, String phonenum) {
-        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phonenum));
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phonenum));
         context.startActivity(intent);
     }
 
@@ -158,11 +170,38 @@ public class SystemUtil {
                 .getSystemService(ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager
                 .getRunningAppProcesses();
-        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
-            if (appProcess.processName.equals(context.getPackageName())) {
-                return appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND;
+        if (appProcesses != null) {
+            //Attempt to invoke interface method 'java.util.Iterator java.util.List.iterator()' on a null object reference
+            for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+                if (appProcess.processName.equals(context.getPackageName())) {
+                    return appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND;
+                }
             }
         }
         return false;
+    }
+
+    /**
+     * Determine whether to open the Wifi
+     * @return
+     */
+    public static boolean isOpenWifi(){
+        Context context = BaseApplication.getInstance().getBaseContext();
+        ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return networkInfo.isConnected();
+    }
+
+    public static int getStateBarHeight() {
+        int statusBarHeight1 = -1;
+        Context context = BaseApplication.getInstance().getBaseContext();
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            //根据资源ID获取响应的尺寸值
+            statusBarHeight1 = context.getResources().getDimensionPixelSize(resourceId);
+        } else {
+            statusBarHeight1 = dipToPx(50);
+        }
+        return statusBarHeight1;
     }
 }

@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_45"
-                android:background="@color/color_161A21">
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_45"
+    android:background="@color/color_161A21">
+
+    <ImageView
+        android:id="@+id/search_image1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:clickable="false"
+        android:contentDescription="@string/app_name"
+        android:paddingLeft="@dimen/dp_17"
+        android:paddingRight="@dimen/dp_20"
+        android:src="@mipmap/search3x"/>
 
     <TextView
         android:id="@id/txt1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_height="@dimen/dp_45"
+        android:gravity="center"
         android:text="@string/Chat_Not_connected"
-        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
         android:textColor="@color/color_ffffff"
-        android:textSize="@dimen/sp_17"/>
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold" />
 
     <ProgressBar
         android:id="@id/probar1"
@@ -22,6 +34,20 @@
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/txt1"
         android:indeterminateDrawable="@anim/rotate_progressbar"
-        android:visibility="gone"/>
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@id/relativelayout_1"
+        android:layout_width="@dimen/dp_45"
+        android:layout_height="@dimen/dp_45"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/add_white3x" />
+    </RelativeLayout>
 
 </RelativeLayout>

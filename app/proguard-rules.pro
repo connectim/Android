@@ -27,9 +27,9 @@
 -keep class connect.wallet.jni.** {*;}
 
 # connect
--keep class protos.Connect{*;}
+-keep class Connect{*;}
 
--keep class protos.Connect$*{
+-keep class Connect$*{
     *;
 }
 
@@ -158,7 +158,7 @@ public static java.lang.String TABLENAME;
 -keepattributes Signature
 -keep public class com.google.gson.**
 -keep public class com.google.gson.** {*;}
--keep  class connect.ui.activity.wallet.bean.RateBean {*;}
+-keep  class connect.activity.wallet.bean.RateBean {*;}
 
 # so
 -libraryjars libs/armeabi/libadd.so

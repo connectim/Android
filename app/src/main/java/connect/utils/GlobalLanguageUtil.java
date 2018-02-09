@@ -13,14 +13,16 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import connect.db.SharedPreferenceUtil;
-import connect.ui.base.BaseApplication;
+import connect.database.SharedPreferenceUtil;
+import connect.activity.base.BaseApplication;
 
 /**
  * Language International Chemical
  */
 public class GlobalLanguageUtil {
+
     private static GlobalLanguageUtil globalLanguageUtil;
+    private Map<String, String> languageMap = new HashMap<>();
 
     public static GlobalLanguageUtil getInstance() {
         if (globalLanguageUtil == null) {
@@ -32,9 +34,6 @@ public class GlobalLanguageUtil {
         }
         return globalLanguageUtil;
     }
-
-    private String Tag = "GlobalLanguageUtil";
-    private Map<String, String> languageMap = new HashMap<>();
 
     public GlobalLanguageUtil() {
         String code = SharedPreferenceUtil.getInstance().getStringValue(SharedPreferenceUtil.APP_LANGUAGE_CODE);

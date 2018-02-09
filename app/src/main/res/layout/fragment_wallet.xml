@@ -1,45 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_f0f0f6">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/color_f0f0f6"
+                android:orientation="vertical">
 
-    <connect.view.TopToolBar
+    <connect.widget.TopToolBar
         android:id="@id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <ImageView
-        android:contentDescription="@string/app_name"
-        android:layout_width="@dimen/dp_100"
-        android:layout_height="@dimen/dp_100"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_72"
-        android:src="@mipmap/bitcoin_luckybag3x"
-        android:id="@+id/imageView" />
-
-    <TextView
-        style="@style/BaseTextStyle.14"
-        android:layout_marginTop="@dimen/dp_48"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/Wallet_My_Balance"/>
-
-    <TextView
-        android:id="@+id/amount_tv"
-        style="@style/BaseTextStyle.16"
-        android:textSize="@dimen/sp_20"
-        android:textColor="@color/color_38415e"
-        android:padding="@dimen/dp_12"
-        android:layout_gravity="center_horizontal"
-        android:textStyle="bold"
-        android:text=""/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/wallet_menu_recycler"
-        android:layout_marginTop="@dimen/dp_70"
-        android:fadingEdge="none"
-        android:overScrollMode="never"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar_top"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_100"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_72"
+            android:contentDescription="@string/app_name"
+            android:src="@mipmap/bitcoin_luckybag3x"/>
+
+        <TextView
+            style="@style/BaseTextStyle.14"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_48"
+            android:text="@string/Wallet_My_Balance"/>
+
+        <TextView
+            android:id="@+id/amount_tv"
+            style="@style/BaseTextStyle.16"
+            android:layout_gravity="center_horizontal"
+            android:padding="@dimen/dp_12"
+            android:text=""
+            android:textColor="@color/color_38415e"
+            android:textSize="@dimen/sp_20"
+            android:textStyle="bold"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/wallet_menu_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_50"
+            android:fadingEdge="none"
+            android:overScrollMode="never"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/create_rela"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@color/color_trans_80_black">
+
+        <TextView
+            android:id="@+id/create_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dp_150"
+            android:text="@string/Wallet_not_create_wallet"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp_24"/>
+
+        <TextView
+            android:id="@+id/create_btn"
+            style="@style/ButtonLongStyle"
+            android:layout_width="@dimen/dp_180"
+            android:layout_height="@dimen/dp_45"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp_180"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_10"
+            android:text="@string/Wallet_Immediately_create"/>
+    </RelativeLayout>
+</RelativeLayout>

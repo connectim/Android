@@ -5,6 +5,7 @@ import android.util.Base64;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.List;
 
 /**
@@ -12,11 +13,17 @@ import java.util.List;
  */
 public class StringUtil {
 
-    /** message header ext */
+    public static String SHA_256 = "SHA-256";
+    public static String MD5 = "MD5";
+
+    /**
+     * message header ext
+     */
     public static final byte[] MSG_HEADER_EXI = new byte[]{(byte) 0xc0, (byte) 0x2E, (byte) 0xC7};
 
     /**
      * Remove non digital
+     *
      * @param string
      * @return
      */
@@ -26,19 +33,43 @@ public class StringUtil {
 
     /**
      * list to String
+     *
      * @param list
      * @return
      */
-    public static String listToString(List<Integer> list){
+    public static String listToString(List<Integer> list) {
         String value = "";
-        for(Integer integer : list){
+        for (Integer integer : list) {
             value = value + integer;
         }
         return value;
     }
 
+    public static String cdHash256(String value) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(value.getBytes());
+            String hash = StringUtil.bytesToHexString(md.digest());
+            return hash;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static boolean checkZh(String s){
+        char c = s.charAt(0);
+        int i =(int)c;
+        if((i>=65&&i<=90)||(i>=97&&i<=122)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * byte to String
+     *
      * @param src
      * @return
      */
@@ -60,6 +91,7 @@ public class StringUtil {
 
     /**
      * String to byte
+     *
      * @param hexString
      * @return
      */
@@ -73,7 +105,7 @@ public class StringUtil {
         byte[] d = new byte[length];
         for (int i = 0; i < length; i++) {
             int pos = i * 2;
-            d[i] = (byte) ( (byte) "0123456789ABCDEF".indexOf(hexChars[pos]) <<
+            d[i] = (byte) ((byte) "0123456789ABCDEF".indexOf(hexChars[pos]) <<
                     4 | (byte) "0123456789ABCDEF".indexOf(hexChars[pos + 1]));
         }
         return d;
@@ -81,10 +113,11 @@ public class StringUtil {
 
     /**
      * encrypt Base64
+     *
      * @param value
      * @return
      */
-    public static String encodeBase64(String value){
+    public static String encodeBase64(String value) {
         String strBase64 = null;
         try {
             strBase64 = Base64.encodeToString(value.getBytes("UTF-8"), Base64.DEFAULT);
@@ -96,6 +129,7 @@ public class StringUtil {
 
     /**
      * Compare version size
+     *
      * @param versionServer
      * @param versionLocal
      * @return if version1 > version2, return 1, if equal, return 0, else return -1
@@ -112,20 +146,18 @@ public class StringUtil {
             int[] number1 = getValue(version1, index1);
             int[] number2 = getValue(version2, index2);
 
-            if (number1[0] < number2[0]){
+            if (number1[0] < number2[0]) {
                 return -1;
-            }
-            else if (number1[0] > number2[0]){
+            } else if (number1[0] > number2[0]) {
                 return 1;
-            }
-            else {
+            } else {
                 index1 = number1[1] + 1;
                 index2 = number2[1] + 1;
             }
         }
-        if (index1 == version1.length() && index2 == version2.length())
+        if (index1 - 1 == version1.length() && index2 - 1 == version2.length())
             return 0;
-        if (index1 < version1.length())
+        if (index1 - 1 < version1.length())
             return 1;
         else
             return -1;
@@ -144,9 +176,39 @@ public class StringUtil {
         return value_index;
     }
 
-    public static byte[] byteTomd5(byte[] bytes) throws NoSuchAlgorithmException {
-        MessageDigest md5 = MessageDigest.getInstance("MD5");
-        md5.update(bytes);
-        return md5.digest();
+    public static byte[] digest(String encName, byte[] strSrc) {
+        byte[] strDes = null;
+        try {
+            if (encName == null || encName.equals("")) {
+                throw new RuntimeException("encName is Null");
+            }
+            MessageDigest md = MessageDigest.getInstance(encName);
+            md.update(strSrc);
+            strDes = md.digest();
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
+        return strDes;
     }
+
+    public static byte[] getSecureRandom(int seed) {
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[seed];
+        random.nextBytes(bytes);
+        return bytes;
+    }
+
+    public static String getFormatPhone(String phone){
+        StringBuffer stringBuffer = new StringBuffer("");
+        for(int i = 0; i < phone.length(); i ++){
+            if(stringBuffer.length() == 3){
+                stringBuffer.append(" ");
+            }else if(stringBuffer.length() == 8){
+                stringBuffer.append(" ");
+            }
+            stringBuffer.append(phone.charAt(i));
+        }
+        return stringBuffer.toString();
+    }
+
 }

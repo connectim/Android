@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_10">
+
+    <TextView
+        android:id="@+id/name_tv"
+        style="@style/BaseTextStyle.16"
+        android:textStyle="bold"
+        android:text="BTC/USDT"/>
+
+    <TextView
+        android:id="@+id/volume_tv"
+        style="@style/BaseTextStyle.14"
+        android:layout_below="@+id/name_tv"
+        android:layout_marginTop="@dimen/dp_5"
+        android:textColor="@color/color_a5a7ae"
+        android:text="201564.66"/>
+
+    <TextView
+        android:id="@+id/price_tv"
+        style="@style/BaseTextStyle.16"
+        android:layout_toLeftOf="@+id/gains_tv"
+        android:layout_marginRight="@dimen/dp_20"
+        android:layout_centerVertical="true"
+        android:text="2014.66"/>
+
+    <TextView
+        android:id="@+id/gains_tv"
+        style="@style/BaseTextStyle.16"
+        android:layout_width="@dimen/dp_80"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:textColor="@color/color_ffffff"
+        android:paddingBottom="@dimen/dp_5"
+        android:paddingTop="@dimen/dp_5"
+        android:paddingLeft="@dimen/dp_5"
+        android:paddingRight="@dimen/dp_5"
+        android:text="+ 20%"
+        android:background="@drawable/shape_stroke_blue"/>
+
+</RelativeLayout>

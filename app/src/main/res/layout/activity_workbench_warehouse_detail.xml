@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_F6F6F6">
+
+    <connect.widget.TopToolBar
+        android:id="@id/toolbar_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/type_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_ffffff"
+        android:padding="@dimen/dp_15"
+        style="@style/BaseTextStyle.14"
+        android:gravity="center_vertical"
+        android:text=""/>
+
+    <View
+        style="@style/BaseViewLine"
+        android:background="@color/color_E0E0E0"/>
+
+    <TextView
+        android:id="@+id/time_tv"
+        style="@style/BaseTextStyle.12"
+        android:layout_width="match_parent"
+        android:textColor="@color/color_A5A5A5"
+        android:background="@color/color_ffffff"
+        android:paddingLeft="@dimen/dp_15"
+        android:paddingBottom="@dimen/dp_15"
+        android:paddingTop="@dimen/dp_15"
+        android:paddingRight="@dimen/dp_15"
+        android:text="" />
+
+    <TextView
+        style="@style/BaseTextStyle.12"
+        android:layout_width="match_parent"
+        android:textColor="@color/color_A5A5A5"
+        android:background="@color/color_ffffff"
+        android:paddingLeft="@dimen/dp_15"
+        android:paddingBottom="@dimen/dp_15"
+        android:paddingTop="@dimen/dp_15"
+        android:paddingRight="@dimen/dp_15"
+        android:text="@string/Work_Exception_type" />
+
+    <!--<View
+        style="@style/BaseViewLine"
+        android:background="@color/color_E0E0E0"/>-->
+
+    <TextView
+        style="@style/BaseTextStyle.12"
+        android:layout_width="match_parent"
+        android:textColor="@color/color_8E8E8E"
+        android:padding="@dimen/dp_15"
+        android:text="@string/Work_Security_record_information" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_15"
+        android:background="@color/color_ffffff"
+        android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/is_face_image"
+            android:layout_below="@+id/is_face_text"
+            android:layout_centerHorizontal="true"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_250"
+            android:scaleType="fitXY"
+            android:src="@mipmap/warehouse_bg"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/bottom_relative"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <View
+            style="@style/BaseViewLine.eeeeee"
+            android:layout_above="@+id/know_text"
+            android:background="@color/color_D2D2D2"/>
+        <TextView
+            android:id="@+id/know_text"
+            style="@style/BaseTextStyle.14"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:background="@drawable/selector_list_item_bg"
+            android:text="@string/Common_OK"/>
+    </RelativeLayout>
+
+</LinearLayout>

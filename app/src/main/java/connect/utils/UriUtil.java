@@ -2,7 +2,6 @@ package connect.utils;
 
 /**
  * http request URI
- * Created by gtq on 2016/11/21.
  */
 public class UriUtil {
 
@@ -15,6 +14,8 @@ public class UriUtil {
     public static String CONNECT_V1_SMS_SEND = "/connect/v1/sms/send";
     /** Verify the authentication code are legal */
     public static String CONNECT_V1_SIGN_IN = "/connect/v1/sign_in";
+    /** Verify the authentication code are legal */
+    public static String CONNECT_V2_SMS_VALIDATE = "/connect/v2/sms/validate";
     /** Upload users avatar */
     public static String AVATAR_V1_UP = "/avatar/v1/up";
     /** registered */
@@ -25,6 +26,41 @@ public class UriUtil {
     public static String CONNECT_V1_PRIVATE_EXISTED = "/connect/v1/private/user_existed";
     /** The private key is registered */
     public static String CONNECT_V1_PRIVATE_SIGN = "/connect/v1/private/sign_in";
+    /** The private key is registered */
+    public static String CONNECT_V2_SIGN_IN_CA = "/connect/v2/sign_in/ca";
+    /** The private key is registered */
+    public static String CONNECT_V2_SIGN_UP = "/connect/v2/sign_up";
+    /** The private key is registered */
+    public static String CONNECT_V2_SIGN_UP_PASSWORD = "/connect/v2/sign_in/password";
+    /** The private key is registered */
+    public static String CONNECT_V3_LOGIN = "/connect/v3/login";
+    /** The private key is registered */
+    public static String CONNECT_V3_SYNC_WORKMATE = "/connect/v3/sync_workmate";
+    /** The private key is registered */
+    public static String CONNECT_V3_DEPARTMENT = "/connect/v3/department";
+    /** Query the user information 1: name(en)  2:uid  3:name(zh)*/
+    public static String CONNECT_V3_WORKMATE_SEARCH = "/connect/v3/workmate/search";
+    public static String CONNECT_V3_USERS_FOLLOW = "/connect/v3/users/follow";
+    public static String CONNECT_V3_PROXY_TOKEN = "/visitors/v1/staff/token";
+    public static String CONNECT_V3_API_BANNERS = "/connect/v3/api/banners";
+    public static String CONNECT_V3_API_APPLICATIONS = "/connect/v3/api/applications";
+    public static String CONNECT_V3_PROXY_VISITOR_RECORDS = "/visitors/v1/staff/records";
+    public static String CONNECT_V3_PROXY_EXAMINE_VERIFY = "/visitors/v1/staff/records/examine/verify";
+    public static String CONNECT_V3_PROXY_RECORDS_HISTORY = "/visitors/v1/staff/records/history";
+
+    public static String CONNECT_V3_API_APPLICATIONS_ADD = "/connect/v3/api/applications/add";
+    public static String CONNECT_V3_API_APPLICATIONS_DEL = "/connect/v3/api/applications/del";
+
+    /** 根据 部门id查询 所有员工 */
+    public static String CONNECT_V3_DEPAERTMENT_WORKMATES = "/connect/v3/department/workmates";
+    /** 群成员邀请入群 */
+    public static String CONNECT_V3_GROUP_INVITE = "/connect/v3/group/invite";
+    /** 获取仓库列表 */
+    public static String STORES_V1_IWORK_LOGS = "/stores/v1/iwork/logs";
+    /** 确认陌生人信息 */
+    public static String STORES_V1_IWORK_LOG_COMFIRM = "/stores/v1/iwork/log/confirm";
+    /** 查询陌生人信息详情 */
+    public static String STORES_V1_IWORK_LOGS_DETAIL = "/stores/v1/iwork/logs/detail";
 
     /**======================================================================================
      *                                Login successfully initialized
@@ -40,7 +76,7 @@ public class UriUtil {
     /**======================================================================================
      *                                setting
      * ====================================================================================== */
-    /** Query the user information */
+    /** Query the user information 1: uid   2:connectid  "":username*/
     public static String CONNECT_V1_USER_SEARCH = "/connect/v1/users/search";
     /** Set user basic information */
     public static String CONNECT_V1_SETTING_USERINFO = "/connect/v1/setting/userinfo";
@@ -62,22 +98,28 @@ public class UriUtil {
     public static String SETTING_SETTING_RECOMMEND = "/connect/v1/setting/recommend";
     /** private setting */
     public static String SETTING_PRIVACY = "/connect/v1/setting/privacy";
-    /** sync pay setting */
+    /** 钱包设置信息 */
     public static String SETTING_PAY_SUNC = "/connect/v1/setting/pay/setting/sync";
     /** pay setting */
     public static String SETTING_PAY_SETTING = "/connect/v1/setting/pay/setting";
-    /** Pay the password version */
+    /** 钱包版本号 */
     public static String SETTING_PAY_VERSION = "/connect/v1/setting/pay/pin/version";
     /** pay password setting */
     public static String SETTING_PAY_PIN_SETTING = "/connect/v1/setting/pay/pin/setting";
-
-
+    /** Send a message authentication code */
+    public static String V2_SMS_SEND = "/connect/v2/sms/send";
+    /** Modify the second authentication password */
+    public static String V2_SRTTING_PASSWORD_UPDATE = "/connect/v2/setting/password/update";
+    /** Verify phone verification code */
+    public static String V2_SETTING_MOBILE_VERIFY = "/connect/v2/setting/mobile/verify";
+    /** delete account */
+    public static String V2_SETTING_DELETE_USER = "/connect/v2/setting/delete_user";
+    /** delete account */
+    public static String CONNECT_V3_PUBKEY = "/connect/v3/pubkey";
 
     /**======================================================================================
      *                                wallet
      * ====================================================================================== */
-    /** Check account balances */
-    public static String BLOCKCHAIN_UNSPENT_INFO = "/blockchain/v1/unspent/%s/info";
     /** Query the address all of the transactions */
     public static String BLOCKCHAIN_ADDRESS_TX = "/blockchain/v1/address/%s/tx?page=%d&pagesize=%d";
     /** Fundamental information for sending a red envelope */
@@ -114,25 +156,70 @@ public class UriUtil {
     public static String WALLET_ADDRESS_BOOK_REMOVE = "/wallet/v1/address_book/remove";
     /** Many people transfer */
     public static String WALLET_BILLING_MUILT_SEND = "/wallet/v1/billing/muilt_send";
+    /** create wallet */
+    public static String WALLET_V2_CREATE = "/wallet/v2/create";
+    /** sync wallet */
+    public static String WALLET_V2_SYNC = "/wallet/v2/sync";
+    /** create coin */
+    public static String WALLET_V2_COINS_CREATE = "/wallet/v2/coins/create";
+    /** update wallet */
+    public static String WALLET_V2_UPDATA = "/wallet/v2/update";
+    /** coin list */
+    public static String WALLET_V2_COINS_LIST = "/wallet/v2/coins/list";
+    /** update coin */
+    public static String WALLET_V2_COINS_UPDATA = "/wallet/v2/coins/update";
+    /** address default */
+    public static String WALLET_V2_COINS_ADDRESS_DEFAULT = "/wallet/v2/coins/addresses/default";
+    /** update coin */
+    public static String WALLET_V2_COINS_ADDRESS_GET_DEFAULT = "/wallet/v2/coins/addresses/get_default";
+    /** service transfer */
+    public static String WALLET_V2_SERVICE_TRANSFER = "/wallet/v2/service/transfer";
+    /** coins addresses */
+    public static String WALLET_V2_COINS_ADDRESS_LIST = "/wallet/v2/coins/addresses/list";
+    /** Get currency status of purse */
+    public static String WALLET_V2_SERVICE_USER_STATUS = "/wallet/v2/service/user_status";
+    /** Collection (not part of purse basic function)*/
+    public static String WALLET_V2_SERVICE_RECEIVE = "/wallet/v2/service/receive";
+    /** payment */
+    public static String WALLET_V2_SERVICE_PAYMENT = "/wallet/v2/service/payment";
+    /** Redpacket */
+    public static String WALLET_V2_SERVICE_LUCKPACKAGE = "/wallet/v2/service/luckpackage";
+    /** external transfer */
+    public static String WALLET_V2_SERVICE_EXTERNAL = "/wallet/v2/service/external";
+    /** Crowd-funding */
+    public static String WALLET_V2_SERVICE_CROWDFUNING = "/wallet/v2/service/crowdfuning";
+    /** Radio broadcast */
+    public static String WALLET_V2_SERVICE_PUBLISH = "/wallet/v2/service/publish";
+    /** Transfer to address */
+    public static String WALLET_V2_SERVICE_TRANSFER_ADDRESS= "/wallet/v2/service/transfer_to_address";
+    /** Get address transaction stream */
+    public static String WALLET_V2_COINS_ADDRESSES_TX = "/wallet/v2/coins/addresses/tx";
+    /** Get currency information */
+    public static String WALLET_V2_COINS_INFO = "/wallet/v2/coins/info";
 
 
     /**======================================================================================
      *                                contact
      * ====================================================================================== */
-    /** add in blacklist */
-    public static String CONNEXT_V1_BLACKLIST = "/connect/v1/blacklist/";
     /** remove from blacklist */
     public static String CONNEXT_V1_BLACKLIST_REMOVE = "/connect/v1/blacklist/remove";
     /** get blacklist */
     public static String CONNEXT_V1_BLACKLIST_LIST = "/connect/v1/blacklist/list";
     /** sync friend */
     public static String CONNEXT_V1_USERS_PHONEBOOK = "/connect/v1/users/phonebook";
-    /** user search */
-    public static String CONNEXT_V1_USERS_SEARCH = "/connect/v1/users/search";
     /** People may know */
     public static String CONNEXT_V1_USERS_RECOMMEND = "/connect/v1/users/recommend";
     /** Get friends transfer record */
     public static String CONNEXT_V1_USERS_FRIEND_RECORDS = "/connect/v1/users/friends/records";
+    /** Get users by search public key */
+    public static String CONNEXT_V1_USERS_SEARCHBYPUBKEY = "/connect/v1/users/searchByPubKey";
+    /** Get users by search public key */
+    public static String CONNEXT_V1_USERS_DISINCLINE = "/connect/v1/users/disincline";
+    public static String CONNECT_V2_RSS = "/connect/v2/rss";
+    public static String CONNECT_V2_RSS_FOLLOW = "/connect/v2/rss/follow";
+    public static String CONNECT_V2_MARKET_EXCHANGE = "/connect/v2/market/exchange";
+    public static String CONNECT_V2_MARKET_ID= "/connect/v2/market/exchange/%s";
+    public static String CONNECT_V2_MARKET_CAPITALIZATIONS = "/connect/v2/market/capitalizations";
 
     /**======================================================================================
      *                                      setting group
@@ -178,7 +265,6 @@ public class UriUtil {
     public static String GROUP_REJECT = "/connect/v1/group/reject";
     /** Upload groups face */
     public static String GROUP_AVATAR = "/connect/v1/group/avatar";
-
     /** Single initiate payment */
     public static String BILLING_RECIVE = "/wallet/v1/billing/recive";
     /** Group a collection */

@@ -9,8 +9,10 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 
+import java.io.File;
+
 import connect.ui.activity.R;
-import connect.ui.base.BaseApplication;
+import connect.activity.base.BaseApplication;
 import connect.utils.BitmapUtil;
 
 /**
@@ -18,8 +20,16 @@ import connect.utils.BitmapUtil;
  */
 public class GlideUtil {
 
-    public static void loadAvater(ImageView imageView, Object path){
-        loadImage(imageView,path,R.mipmap.default_user_avatar);
+    public static void loadAvatarRound(ImageView imageView, Object path){
+        loadAvatarRound(imageView, path, 6);
+    }
+
+    public static void loadAvatarRound(ImageView imageView, Object path, int dpRound){
+        if (dpRound <= 0) {
+            loadImage(imageView,path,R.mipmap.default_user_avatar);
+        } else {
+            loadImage(imageView, path, R.mipmap.default_user_avatar, new GlideRoundTransform(BaseApplication.getInstance().getBaseContext(), dpRound));
+        }
     }
 
     public static void loadImageAssets(ImageView imageView, Object path){
@@ -34,23 +44,19 @@ public class GlideUtil {
         Glide.with(BaseApplication.getInstance())
                 .load(path)
                 .error(errorId)
-                //.thumbnail(0.2f)
                 .into(imageView);
     }
 
-    public static void loadImage(ImageView imageView, Object path,BitmapTransformation... transformations){
+    public static void loadImage(ImageView imageView, Object path, int errorId, BitmapTransformation... transformations){
         Glide.with(BaseApplication.getInstance())
                 .load(path)
                 .transform(transformations)
-                .error(R.mipmap.img_default)
-                //.thumbnail(0.2f)
+                .error(errorId)
                 .into(imageView);
     }
 
     /**
      * Download the pictures
-     * @param path
-     * @param listeners
      */
     public static void downloadImage(String path, final OnDownloadTarget listeners){
         Glide.with(BaseApplication.getInstance())
@@ -59,7 +65,8 @@ public class GlideUtil {
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        String pathLocal = BitmapUtil.bitmapSavePath(resource,null,100);
+                        File file=BitmapUtil.getInstance().bitmapSavePath(resource);
+                        String pathLocal = file.getAbsolutePath();
                         listeners.finish(pathLocal);
                     }
 
@@ -69,6 +76,12 @@ public class GlideUtil {
                         listeners.error();
                     }
                 });
+    }
+
+    public interface OnDownloadTarget{
+        void finish(String path);
+
+        void error();
     }
 
 }

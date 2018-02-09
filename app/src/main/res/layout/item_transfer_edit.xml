@@ -54,7 +54,7 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:id="@id/linearlayout"
+            android:id="@+id/fee_lin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -90,8 +90,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
             android:paddingBottom="@dimen/dp_5"
             android:paddingTop="@dimen/dp_5"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:maxWidth="@dimen/dp_200"
             android:text="@string/Wallet_Add_note"
             android:textColor="@color/color_6277AE"/>
 
@@ -107,6 +111,7 @@
             android:textColor="@color/color_white"/>
 
         <ImageView
+            android:id="@+id/left_image"
             android:contentDescription="@string/app_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -117,7 +122,7 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/amount_tv"
+        android:id="@+id/balance_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
