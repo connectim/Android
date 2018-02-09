@@ -216,8 +216,12 @@ public class ChatAdapter extends RecyclerView.Adapter<MsgBaseHolder> {
             public void Success(Object ts) {
                 ChatMsgEntity msgExtEntity = msgEntityMap.get(msgid);
                 if (msgExtEntity != null) {
-                    msgExtEntity.setSend_status(state);
+                    Integer oldSendStatus = msgExtEntity.getSend_status();
+                    if (oldSendStatus != null && oldSendStatus == 1) {
+                        return;
+                    }
 
+                    msgExtEntity.setSend_status(state);
                     int posi = msgEntities.lastIndexOf(msgExtEntity);
                     if (posi >= 0) {
                         notifyItemChanged(posi);

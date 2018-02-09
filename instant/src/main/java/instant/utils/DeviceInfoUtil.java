@@ -22,7 +22,7 @@ public class DeviceInfoUtil {
      */
     public static String getDeviceId() {
         String deviceId = null;
-        Context context = InstantSdk.instantSdk.getBaseContext();
+        Context context = InstantSdk.getInstance().getBaseContext();
         try {
             deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         } catch (Exception e) {

@@ -15,7 +15,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import connect.activity.chat.bean.MsgExtEntity;
 import connect.activity.chat.bean.RecExtBean;
 import connect.ui.activity.R;
 import instant.bean.ChatMsgEntity;
@@ -100,10 +99,12 @@ public class MsgStateView extends RelativeLayout {
 
         switch (bean.getExtType()) {
             case MSGSTATEVIEW:
-                 String msgid = (String) objects[0];
+                String msgid = (String) objects[0];
                 int state = (int) objects[1];
                 if (msgExtEntity.getMessage_id().equals(msgid)) {
-                    updateMsgState(state);
+                    if (state != 1) {
+                        updateMsgState(state);
+                    }
                 }
                 break;
         }

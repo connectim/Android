@@ -47,7 +47,7 @@ public class XmlParser {
      * @throws IOException
      */
     public void xmlParser(String mode) throws XmlPullParserException, IOException {
-        InputStream inputStream = InstantSdk.instantSdk.getBaseContext().getAssets().open("connect.xml");
+        InputStream inputStream = InstantSdk.getInstance().getBaseContext().getAssets().open("connect.xml");
 
         XmlPullParser pullParser = Xml.newPullParser();
         pullParser.setInput(inputStream, "UTF-8");

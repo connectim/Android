@@ -14,14 +14,14 @@ import instant.utils.log.LogManager;
  */
 public class InstantSdk {
 
-    public static InstantSdk instantSdk = getInstance();
+    private static InstantSdk instantSdk;
 
     private static final String TAG = "_InstantSdk";
     private static long CONTACT_COUNT = 0;
     private Context context;
     private UserCookie defaultCookie;
 
-    private synchronized static InstantSdk getInstance() {
+    public synchronized static InstantSdk getInstance() {
         if (instantSdk == null) {
             instantSdk = new InstantSdk();
         }

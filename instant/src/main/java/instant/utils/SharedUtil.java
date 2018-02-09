@@ -36,13 +36,13 @@ public class SharedUtil {
     public static String COOKIE_CHATUSER = "COOKIE_CHATUSER";
 
     public static SharedUtil getInstance() {
-        return getInstance(InstantSdk.instantSdk.getBaseContext());
+        return getInstance(InstantSdk.getInstance().getBaseContext());
     }
 
     private synchronized static SharedUtil getInstance(Context context) {
         if (null == sharePreUtil || null == sharePre) {
             sharePreUtil = new SharedUtil();
-            UserCookie userCookie = InstantSdk.instantSdk.getDefaultCookie();
+            UserCookie userCookie = InstantSdk.getInstance().getDefaultCookie();
             if (null == userCookie || TextUtils.isEmpty(userCookie.getUid())) {
                 userCookie = sharePreUtil.loadDefaultConnectCookie();
             }
@@ -54,7 +54,7 @@ public class SharedUtil {
 
     /****************************** Default Cookie ********************************************************/
     public void insertDefaultConnectCookie(UserCookie userCookie) {
-        Context context = InstantSdk.instantSdk.getBaseContext();
+        Context context = InstantSdk.getInstance().getBaseContext();
         SharedPreferences defaultSharePre = context.getSharedPreferences(SHAREPREFERENCES_DEFAULT, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = defaultSharePre.edit();
         editor.putString(COOKIE_CONNECT_USER, new Gson().toJson(userCookie));
@@ -62,7 +62,7 @@ public class SharedUtil {
     }
 
     public UserCookie loadDefaultConnectCookie() {
-        Context context = InstantSdk.instantSdk.getBaseContext();
+        Context context = InstantSdk.getInstance().getBaseContext();
         SharedPreferences defaultSharePre = context.getSharedPreferences(SHAREPREFERENCES_DEFAULT, Context.MODE_PRIVATE);
         String connectCookieKey = COOKIE_CONNECT_USER;
         UserCookie userCookie = null;

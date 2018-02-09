@@ -160,9 +160,6 @@
             android:name="connect.activity.set.UserInfoAvatarActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="connect.activity.set.PrivateBlackActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="connect.activity.set.SupportFeedbackActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -178,9 +175,6 @@
             android:name="connect.widget.random.RandomVoiceActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="connect.activity.contact.AddFriendActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="connect.activity.contact.SearchFriendActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -191,12 +185,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.contact.ScanResultActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="connect.activity.contact.FriendInfoAliasActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="connect.activity.contact.AddFriendAcceptActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="connect.activity.contact.AddFriendPhoneActivity"

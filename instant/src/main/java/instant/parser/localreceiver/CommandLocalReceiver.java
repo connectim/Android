@@ -60,9 +60,4 @@ public class CommandLocalReceiver implements CommandListener {
     public void updateGroupChange(Connect.GroupChange groupChange) throws Exception {
         getCommandListener().updateGroupChange(groupChange);
     }
-
-    @Override
-    public void handlerOuterRedPacket(Connect.ExternalRedPackageInfo packageInfo) {
-        getCommandListener().handlerOuterRedPacket(packageInfo);
-    }
 }

@@ -37,7 +37,7 @@ public class BaseApplication extends Application implements InterAccount {
         mApplication = this;
 
         // IM SDK
-        InstantSdk.instantSdk.initSdk(this);
+        InstantSdk.getInstance().initSdk(this);
         // EMOJI
         EmoManager.emojiManager.initEmojiResource();
 
@@ -82,7 +82,7 @@ public class BaseApplication extends Application implements InterAccount {
     @Override
     public void exitRegisterAccount() {
         //SDK
-        InstantSdk.instantSdk.stopInstant();
+        InstantSdk.getInstance().stopInstant();
 
         DaoManager.getInstance().closeDataBase();
 

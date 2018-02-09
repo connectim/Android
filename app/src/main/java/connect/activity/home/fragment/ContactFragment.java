@@ -17,7 +17,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import connect.activity.base.BaseFragment;
 import connect.activity.chat.ChatActivity;
-import connect.activity.contact.AddFriendActivity;
 import connect.activity.contact.ContactInfoActivity;
 import connect.activity.contact.DepartmentActivity;
 import connect.activity.contact.bean.ContactNotice;

@@ -238,7 +238,7 @@ public final class ChatMsgEntity implements Serializable, Cloneable {
     public String showContent() {
         String content = "";
 
-        Context context = InstantSdk.instantSdk.getBaseContext();
+        Context context = InstantSdk.getInstance().getBaseContext();
         MessageType msgType = MessageType.toMessageType(getMessageType());
         switch (msgType) {
             case Text://text

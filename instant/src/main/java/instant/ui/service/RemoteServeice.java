@@ -409,7 +409,7 @@ public class RemoteServeice extends Service {
      * @return
      */
     public boolean isConnectNet() {
-        Context context = InstantSdk.instantSdk.getBaseContext();
+        Context context = InstantSdk.getInstance().getBaseContext();
         ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         boolean isWifiConn = networkInfo.isConnected();
@@ -442,7 +442,7 @@ public class RemoteServeice extends Service {
         public void onReceive(Context context, Intent intent) {
             try {
                 if (context == null) {
-                    context = InstantSdk.instantSdk.getBaseContext();
+                    context = InstantSdk.getInstance().getBaseContext();
                 }
                 ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo.State wifiState = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();

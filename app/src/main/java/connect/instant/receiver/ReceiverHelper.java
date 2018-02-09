@@ -30,7 +30,7 @@ public class ReceiverHelper {
         UserBean userBean = SharedPreferenceUtil.getInstance().getUser();
         long count = ContactHelper.getInstance().contactsCount();
 
-        InstantSdk.instantSdk.registerUserInfo(context,
+        InstantSdk.getInstance().registerUserInfo(context,
                 userBean.getUid(),
                 userBean.getPriKey(),
                 userBean.getPubKey(),

@@ -238,4 +238,9 @@ public class MessageHelper extends BaseDao {
     public void updateMsg(List<MessageEntity> msgEntities) {
         messageEntityDao.updateInTx(msgEntities);
     }
+
+    public void updateMessageSendState(String messageid, int state) {
+        String sql = "UPDATE MESSAGE_ENTITY SET SEND_STATUS = ? WHERE MESSAGE_ID = ? AND SEND_STATUS != 1;";
+        daoSession.getDatabase().execSQL(sql, new Object[]{state, messageid});
+    }
 }

@@ -20,7 +20,7 @@ import protos.Connect;
 
 public class ShakeHandSender {
 
-    private static String TAG = "ShakeHandSender";
+    private static String TAG = "_ShakeHandSender";
 
     /**
      * A shake hands for the first time
@@ -38,6 +38,10 @@ public class ShakeHandSender {
         String uid = userCookie.getUid();
         String token = userCookie.getToken();
         String priKey = userCookie.getPrivateKey();
+
+        LogManager.getLogger().d(TAG, "uid: " + uid);
+        LogManager.getLogger().d(TAG, "token: " + token);
+        LogManager.getLogger().d(TAG, "priKey: " + priKey);
 
         String randomPriKey = AllNativeMethod.cdCreateNewPrivKey();
         String randomPubKey = AllNativeMethod.cdGetPubKeyFromPrivKey(randomPriKey);

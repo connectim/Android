@@ -165,7 +165,7 @@ public class ShakeHandParser extends InterParse {
      * current version
      */
     protected void checkCurVersion() {
-        Context context = InstantSdk.instantSdk.getBaseContext();
+        Context context = InstantSdk.getInstance().getBaseContext();
         PackageManager pm = context.getPackageManager();
         try {
             PackageInfo packageInfo = pm.getPackageInfo(context.getPackageName(), 0);

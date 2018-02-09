@@ -150,7 +150,7 @@ public class FailMsgsManager {
     /**
      * Delay message sent failure
      */
-    private Handler delayFailHandler = new Handler(InstantSdk.instantSdk.getBaseContext().getMainLooper()) {
+    private Handler delayFailHandler = new Handler(InstantSdk.getInstance().getBaseContext().getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);

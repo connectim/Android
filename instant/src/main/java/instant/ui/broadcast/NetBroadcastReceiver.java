@@ -27,7 +27,7 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         try {
             if (context == null) {
-                context = InstantSdk.instantSdk.getBaseContext();
+                context = InstantSdk.getInstance().getBaseContext();
             }
             ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo.State wifiState = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();

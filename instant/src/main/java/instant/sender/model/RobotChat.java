@@ -59,7 +59,7 @@ public class RobotChat extends NormalChat {
 
     @Override
     public String chatKey() {
-        return InstantSdk.instantSdk.getBaseContext().getString(R.string.app_name);
+        return InstantSdk.getInstance().getBaseContext().getString(R.string.app_name);
     }
 
     @Override
@@ -69,12 +69,12 @@ public class RobotChat extends NormalChat {
 
     @Override
     public String headImg() {
-        return InstantSdk.instantSdk.getBaseContext().getString(R.string.app_name);
+        return InstantSdk.getInstance().getBaseContext().getString(R.string.app_name);
     }
 
     @Override
     public String nickName() {
-        return InstantSdk.instantSdk.getBaseContext().getString(R.string.app_name);
+        return InstantSdk.getInstance().getBaseContext().getString(R.string.app_name);
     }
 
     public ChatMsgEntity wareHouseMsg(int wareType, String content) {

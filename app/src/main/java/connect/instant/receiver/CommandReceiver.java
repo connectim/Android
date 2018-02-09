@@ -23,11 +23,9 @@ import connect.database.green.DaoHelper.MessageHelper;
 import connect.database.green.bean.ContactEntity;
 import connect.database.green.bean.GroupEntity;
 import connect.database.green.bean.GroupMemberEntity;
-import connect.database.green.bean.MessageEntity;
 import connect.instant.inter.ConversationListener;
 import connect.instant.model.CFriendChat;
 import connect.instant.model.CGroupChat;
-import connect.instant.model.CRobotChat;
 import connect.ui.activity.R;
 import connect.utils.RegularUtil;
 import connect.utils.TimeUtil;
@@ -63,15 +61,7 @@ public class CommandReceiver implements CommandListener {
 
     @Override
     public void updateMsgSendState(String publickey, String msgid, int state) {
-        ChatMsgEntity chatMsgEntity = MessageHelper.getInstance().loadMsgByMsgid(msgid);
-        if (chatMsgEntity == null) {
-            return;
-        }
-        MessageEntity msgEntity = MessageEntity.chatMsgToMessageEntity(chatMsgEntity);
-        if (msgEntity != null) {
-            msgEntity.setSend_status(state);
-            MessageHelper.getInstance().updateMsg(msgEntity);
-        }
+        MessageHelper.getInstance().updateMessageSendState(msgid, state);
 
         if (TextUtils.isEmpty(publickey)) {
             Map<String, Object> failMap = FailMsgsManager.getInstance().getFailMap(msgid);
@@ -404,32 +394,6 @@ public class CommandReceiver implements CommandListener {
                     ContactHelper.getInstance().inserGroupEntity(groupEntity);
                 }
                 break;
-        }
-    }
-
-    @Override
-    public void handlerOuterRedPacket(Connect.ExternalRedPackageInfo packageInfo) {
-        String mypublickey = SharedPreferenceUtil.getInstance().getUser().getUid();
-        if (packageInfo.getSystem()) {
-            ChatMsgEntity msgExtEntity = CRobotChat.getInstance().luckPacketMsg(1, packageInfo.getHashId(), 0L, packageInfo.getTips());
-            msgExtEntity.setMessage_from(BaseApplication.getInstance().getString(R.string.app_name));
-            msgExtEntity.setMessage_to(mypublickey);
-
-            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-            CRobotChat.getInstance().updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime(), -1, 1);
-//            HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT,
-//                    new Talker(Connect.ChatType.CONNECT_SYSTEM, BaseApplication.getInstance().getBaseContext().getString(R.string.app_name)));
-        } else {
-            Connect.UserInfo userInfo = packageInfo.getSender();
-
-            CFriendChat normalChat = new CFriendChat(userInfo.getPubKey());
-            ChatMsgEntity msgExtEntity = normalChat.luckPacketMsg(1, packageInfo.getHashId(), 0L, packageInfo.getTips());
-            msgExtEntity.setMessage_to(mypublickey);
-            msgExtEntity.setSend_status(1);
-
-            MessageHelper.getInstance().insertMsgExtEntity(msgExtEntity);
-            normalChat.updateRoomMsg(null, msgExtEntity.showContent(), msgExtEntity.getCreatetime());
-            // HomeAction.getInstance().sendEvent(HomeAction.HomeType.TOCHAT, new Talker(Connect.ChatType.PRIVATE, userInfo.getPubKey()));
         }
     }
 }
