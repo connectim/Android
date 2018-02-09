@@ -17,7 +17,5 @@ public interface ConnectListener {
 
     void welcome();
 
-    void notifyBarNotice(String pubkey, int type, String content);
-
     void exceptionConnect();
 }

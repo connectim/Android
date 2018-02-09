@@ -66,11 +66,6 @@ public class ConnectReceiver implements ConnectListener {
     }
 
     @Override
-    public void notifyBarNotice(String pubkey, int type, String content) {
-        NotificationBar.notificationBar.noticeBarMsg(pubkey, type, content);
-    }
-
-    @Override
     public void exceptionConnect() {
         HomeAction.getInstance().sendEvent(HomeAction.HomeType.DELAY_EXIT);
     }

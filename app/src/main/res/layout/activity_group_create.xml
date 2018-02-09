@@ -26,6 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginRight="@dimen/dp_12"
+        android:inputType="text"
         android:background="@drawable/shape_stroke_20_ffffff"
         android:maxLength="10"
         android:maxLines="1"

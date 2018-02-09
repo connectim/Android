@@ -61,12 +61,6 @@ public class ConnectLocalReceiver implements ConnectListener{
     }
 
     @Override
-    public void notifyBarNotice(String pubkey, int type, String content) {
-        getConnectListener().notifyBarNotice(pubkey, type, content);
-    }
-
-
-    @Override
     public void exceptionConnect() {
         getConnectListener().exceptionConnect();
     }

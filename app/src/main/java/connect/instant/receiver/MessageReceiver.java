@@ -72,13 +72,15 @@ public class MessageReceiver implements MessageListener {
         MessageHelper.getInstance().insertMsgExtEntity(chatMsgEntity);
 
         long messageTime = chatMessage.getMsgTime();
+        String content = chatMsgEntity.showContent();
+
         CFriendChat friendChat = new CFriendChat(friendUid);
         friendChat.setUserName(senderName);
         friendChat.setUserAvatar(senderAvatar);
-        friendChat.updateRoomMsg(null, chatMsgEntity.showContent(), messageTime, -1, 1, false);
+        friendChat.updateRoomMsg(null, content, messageTime, -1, 1, false);
 
         RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, chatMsgEntity.getMessage_from(), chatMsgEntity);
-        NotificationBar.notificationBar.noticeBarMsg(chatMsgEntity.getMessage_from(), Connect.ChatType.PRIVATE_VALUE, chatMsgEntity.showContent());
+        NotificationBar.notificationBar.noticeBarMsg(friendUid, Connect.ChatType.PRIVATE_VALUE, senderName, content);
     }
 
     @Override
@@ -119,17 +121,14 @@ public class MessageReceiver implements MessageListener {
             }
         }
 
-        Connect.MessageUserInfo senderInfo = chatMessage.getSender();
-        String senderAvatar = senderInfo == null ? "" : senderInfo.getAvatar();
-        String senderName = senderInfo == null ? "" : senderInfo.getUsername();
-
-        String showContent = senderName + ":" + content;
-        NotificationBar.notificationBar.noticeBarMsg(groupIdentify, Connect.ChatType.GROUPCHAT_VALUE, showContent);
-
         int isMyAttention = -1;
         ContactEntity contactEntity = ContactHelper.getInstance().loadFriendEntity(chatMessage.getFrom());
         isMyAttention = contactEntity == null ? -1 : 1;
 
+        Connect.MessageUserInfo senderInfo = chatMessage.getSender();
+        String senderAvatar = senderInfo == null ? "" : senderInfo.getAvatar();
+        String senderName = senderInfo == null ? "" : senderInfo.getUsername();
+        String showContent = senderName + ": " + content;
         final GroupUpdate groupUpdate = new GroupUpdate(groupIdentify, showContent, chatMessage.getMsgTime(), isAtMe, isMyAttention, msgExtEntity);
 
         if (groupEntity == null) {//group backup
@@ -194,6 +193,9 @@ public class MessageReceiver implements MessageListener {
             CGroupChat cGroupChat = new CGroupChat(groupEntity);
             cGroupChat.updateRoomMsg(null, content, messageTime, isAtMe, 1, false, isMyAttention);
             RecExtBean.getInstance().sendEvent(RecExtBean.ExtType.MESSAGE_RECEIVE, identify, msgEntity);
+
+
+            NotificationBar.notificationBar.noticeBarMsg(identify, Connect.ChatType.GROUPCHAT_VALUE, groupEntity.getName(), content);
         }
     }
 }
