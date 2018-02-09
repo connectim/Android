@@ -1,7 +1,5 @@
 package connect.utils.log;
 
-import connect.utils.ConfigUtil;
-
 /**
  * interface for a logger class to replace the static calls to {@link android.util.Log}
  */
@@ -10,8 +8,8 @@ public interface Logger {
     /**
      *  debug true :print log， false :close log
      */
-    boolean debugEnade = !ConfigUtil.getInstance().appMode();
-
+//    boolean debugEnade = !ConfigUtil.getInstance().appMode();
+    boolean debugEnade = true;
     /**
      * Send a {@link android.util.Log#VERBOSE} log message.
      *

@@ -1,15 +1,13 @@
 package connect.activity.chat.set.presenter;
 
 import android.app.Activity;
-import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import connect.activity.chat.ChatActivity;
 import connect.activity.chat.bean.Talker;
-import connect.activity.chat.set.contract.TalkGroupCreateContract;
-import connect.activity.home.bean.GroupRecBean;
+import connect.activity.chat.set.contract.GroupCreateContract;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
 import connect.database.green.DaoHelper.ContactHelper;
@@ -34,13 +32,13 @@ import protos.Connect;
  * Created by PuJin on 2018/1/11.
  */
 
-public class TalkGroupCreatePresenter implements TalkGroupCreateContract.Presenter {
+public class GroupCreatePresenter implements GroupCreateContract.Presenter {
 
     private Activity activity;
-    private TalkGroupCreateContract.BView view;
+    private GroupCreateContract.BView view;
     private List<Connect.Workmate> contactEntities = new ArrayList<>();
 
-    public TalkGroupCreatePresenter(TalkGroupCreateContract.BView view) {
+    public GroupCreatePresenter(GroupCreateContract.BView view) {
         this.view = view;
         view.setPresenter(this);
     }
@@ -53,8 +51,6 @@ public class TalkGroupCreatePresenter implements TalkGroupCreateContract.Present
 
     /**
      * @param groupName
-     * @param groupCategory “LOW”:1,
-     *                      “HIGH”:2
      */
     @Override
     public void createGroup(String groupName) {

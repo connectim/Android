@@ -25,6 +25,7 @@ import instant.utils.XmlParser;
 import instant.utils.cryption.DecryptionUtil;
 import instant.utils.cryption.EncryptionUtil;
 import instant.utils.cryption.SupportKeyUril;
+import instant.utils.log.LogManager;
 import instant.utils.manager.FailMsgsManager;
 import protos.Connect;
 
@@ -110,6 +111,7 @@ public class ShakeHandParser extends InterParse {
      * connect success
      */
     private void connectSuccess() {
+        LogManager.getLogger().d(TAG, "===>  connectSuccess");
         try {
             ConnectLocalReceiver.receiver.loginSuccess();
         } catch (Exception e) {

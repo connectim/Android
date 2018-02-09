@@ -17,8 +17,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import connect.activity.base.BaseActivity;
 import connect.activity.chat.adapter.TalkGroupCreateAdapter;
-import connect.activity.chat.set.contract.TalkGroupCreateContract;
-import connect.activity.chat.set.presenter.TalkGroupCreatePresenter;
+import connect.activity.chat.set.contract.GroupCreateContract;
+import connect.activity.chat.set.presenter.GroupCreatePresenter;
 import connect.activity.home.view.LineDecoration;
 import connect.activity.login.bean.UserBean;
 import connect.database.SharedPreferenceUtil;
@@ -27,7 +27,7 @@ import connect.utils.ActivityUtil;
 import connect.widget.TopToolBar;
 import protos.Connect;
 
-public class GroupCreateActivity extends BaseActivity implements TalkGroupCreateContract.BView {
+public class GroupCreateActivity extends BaseActivity implements GroupCreateContract.BView {
 
     @Bind(R.id.toolbar)
     TopToolBar toolbar;
@@ -40,7 +40,7 @@ public class GroupCreateActivity extends BaseActivity implements TalkGroupCreate
     private GroupCreateActivity activity;
     boolean isCreate = true;
     private List<Connect.Workmate> workmates;
-    private TalkGroupCreateContract.Presenter presenter;
+    private GroupCreateContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +102,7 @@ public class GroupCreateActivity extends BaseActivity implements TalkGroupCreate
         adapter.setData(workmates);
         recyclerview.setAdapter(adapter);
 
-        new TalkGroupCreatePresenter(this).start();
+        new GroupCreatePresenter(this).start();
     }
 
     private Handler handler = new Handler() {
@@ -123,7 +123,11 @@ public class GroupCreateActivity extends BaseActivity implements TalkGroupCreate
     }
 
     @Override
-    public void setPresenter(TalkGroupCreateContract.Presenter presenter) {
+    public void leftClickEnable(boolean b) {
+    }
+
+    @Override
+    public void setPresenter(GroupCreateContract.Presenter presenter) {
         this.presenter = presenter;
     }
 
