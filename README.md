@@ -29,7 +29,7 @@ The end-to-end encrypted communication between both sides of the session as well
 1. Session initiator_A use the agreed ECC (elliptic curve cryptography) locally to generate a pair of key(Public_key_A,Private_key_A) and a 512-bit random number salt, and send the random number “saltA” and “Public_key_A” to receiver_B after AES256-GCM encrypted.
 2. The receiver_B receives “PublicKey_A” and “saltA” after decrypt. then use the same ECC (elliptic curve cryptography) generate a pair of key(Public_Key_B,Private_Key_b) and a 512-bit random number salt, and send the random number “saltB” and “Public_key_B” to initiator_A after AES256-GCM encrypted.
 3. Initiator_A get “saltB” and “Public_key_B”. Then both initiator_A and receiver_B get ECDH_Key
-ECDH_Key = ECDH(PrivateKey_A, PublicKey_B) = ECDH(PrivateKey_B, PublicKey_A)
+ECDH_Key = ECDH(PrivateKey_A, PublicKey_B) = ECDH(PrivateKey_B, PublicKey_A).
 4. Then the PBKDF2key expansion algorithm to obtain the negotiated key "K" by ECDH_KEY and random number salts of both sides.
 Shared_key = PBKDF2(HMAC-SHA512, ecdhKey, saltA^saltB, pow(2, n), 256) ，（n=12)
 5. The key agreement is completed, and both sides of the AB erase their session key pairs from their respective memory. (ECDH_Key,PublicKey_A,PublicKey_B)
